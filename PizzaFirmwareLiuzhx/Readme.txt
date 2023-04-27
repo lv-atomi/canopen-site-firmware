@@ -5,7 +5,6 @@ Hardware Schematic Detail:
   Key select --- PC15
   Key enter  --- PC14
 
-
 Version V01:
 1. CAN Bus information: 500kbps, standard frame;
 2. CAN Bus is worked, CAN Receive is realized by Interrupt, and CAN Transmit is realized by loop, transmit cycle is 100ms;
