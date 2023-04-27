@@ -3,6 +3,7 @@
 Hardware Schematic Detail:
 1.CAN_TX --- PB9
   CAN_RX --- PB8
+  
 2.Key Input
   Key select --- PC15
   Key enter  --- PC14
@@ -15,11 +16,6 @@ Version V01:
 	--if key is on aciton more than 5 seconds, adjust mode will be closed automatic;
 	
 Path 
-1.Hardware schematic path:
-...\Hock\Pizza_softv01\SCH_BaseBoardTest_2023-04-27.pdf
+1.Hardware schematic path:SCH_BaseBoardTest_2023-04-27.pdf
 
-2. user software .h and .c
-...\Hock\Pizza_softv01\project\at32f403a_407_board
-
-3. keil project 
-...\Hock\Pizza_softv01\project\at_start_f403a\examples\can\communication_mode\mdk_v5\communication_mode.uvprojx
+2. user software .h and .c--user
