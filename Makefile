@@ -10,6 +10,7 @@ OBJDIR = build
 LIBROOT := Libraries
 CMSISROOT := $(LIBROOT)/cmsis/cm4
 DRIVERROOT := $(LIBROOT)/Drivers
+CANOPENROOT := canopen
 
 ifdef DEBUG
 CFLAGS  = -O0 -g3 -MMD
@@ -25,11 +26,25 @@ LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gc
 DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection
 export DEFINES
 
+CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen
+CFLAGS += $(DEFINES) -Iuser -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC)
 
-CFLAGS += $(DEFINES) -Iuser -I $(CMSISROOT)/coresupport -I $(CMSISROOT)/devicesupport -I $(DRIVERROOT)/inc
-
+CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
+	$(CANOPENROOT)/301/CO_NMT_Heartbeat.c \
+	$(CANOPENROOT)/301/CO_HBconsumer.c \
+	$(CANOPENROOT)/301/CO_Emergency.c \
+	$(CANOPENROOT)/301/CO_SDOserver.c \
+	$(CANOPENROOT)/301/CO_TIME.c \
+	$(CANOPENROOT)/301/CO_SYNC.c \
+	$(CANOPENROOT)/301/CO_PDO.c \
+	$(CANOPENROOT)/303/CO_LEDs.c \
+	$(CANOPENROOT)/305/CO_LSSslave.c \
+	$(CANOPENROOT)/storage/CO_storage.c \
+	$(CANOPENROOT)/CANopen.c \
+	$(wildcard user/canopen/*.c)
 
 SRCS = $(wildcard user/*.c) \
+	$(CANOPENSRC) \
 	$(wildcard $(DRIVERROOT)/src/*.c) \
 	$(CMSISROOT)/devicesupport/system_at32f403a_407.c \
 	$(CMSISROOT)/devicesupport/gcc/startup_at32f403a_407.s
@@ -42,12 +57,9 @@ OBJS := $(addprefix $(OBJDIR)/,$(OBJS))
 
 all: proj
 
-# $(FWLIB): $(wildcard $(LIBROOT)/STM32F4xx_StdPeriph_Driver/*.h) $(wildcard $(LIBROOT)/STM32F4xx_StdPeriph_Driver/inc/*.h)
-# 	@cd $(FWROOT) && $(MAKE)
-
 proj: $(OBJDIR)/$(PROJ_NAME).elf $(OBJDIR)/$(PROJ_NAME).hex $(OBJDIR)/$(PROJ_NAME).bin
 
-$(OBJDIR)/%.elf: $(OBJS) $(FWLIB)
+$(OBJDIR)/%.elf: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 %.hex: %.elf
@@ -85,7 +97,7 @@ gdb: $(OBJDIR)/$(PROJ_NAME).elf
 	$(GDB) --tui $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"
 
 # Dependdencies
-$(OBJDIR)/$(PROJ_NAME).elf: $(FWLIB) $(OBJS) | $(OBJDIR)
+$(OBJDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR)
 
 
 TAGFILES    := $(OBJS:.o=.t)

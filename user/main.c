@@ -19,26 +19,26 @@ int main(void)
 {	
 
 	system_clock_config(); //8M HSE
-  at32_board_init();
+	at32_board_init();
 	
 	Timer1_Init();
 	OLED_Init();
 
 	GPIO_Init();
-  nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
-  can_gpio_config();
-  can_configuration();
-  CAN_DataInit();  //Data Init
+	nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
+	can_gpio_config();
+	can_configuration();
+	CAN_DataInit();  //Data Init
 	
 	/* read data from flash */
-  flash_read(TEST_FLASH_ADDRESS_START, buffer_read, TEST_BUFEER_SIZE);
+	flash_read(TEST_FLASH_ADDRESS_START, buffer_read, TEST_BUFEER_SIZE);
 	gSysParm.basePara.CanDataId = buffer_read[0];
 	if((gSysParm.basePara.CanDataId >= 0x7ff)||(gSysParm.basePara.CanDataId == 0)) gSysParm.basePara.CanDataId = SLAVEBOARD_ID;
 	VolShowTest = buffer_read[1];
 	if((VolShowTest > 350)||(VolShowTest == 0)) VolShowTest = DEFAULTVOL;
 	
-  while(1)
-  {		
+	while(1)
+	{		
 		DisplayPra(keySta.Dismode);      // OLED Display
 		if(TimerCount_1ms == 1)          // Every 100ms send can frame
 		{
