@@ -88,10 +88,10 @@ clean:
 
 
 flash: $(OBJDIR)/$(PROJ_NAME).elf
-	openocd -f interface/stlink-v2.cfg -f target/stm32f4x_stlink.cfg -f program.cfg
+	openocd -f interface/stlink.cfg -f openocd/target/at32f403axx.cfg -f program.cfg
 
 openocd:
-	openocd -f interface/stlink-v2.cfg -f target/stm32f4x_stlink.cfg
+	openocd -f interface/stlink.cfg -f openocd/target/at32f403axx.cfg
 
 gdb: $(OBJDIR)/$(PROJ_NAME).elf
 	$(GDB) --tui $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"
