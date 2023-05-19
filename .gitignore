@@ -286,3 +286,4 @@ fp-info-cache
 *.xml
 *.csv
 
+pyocd_log.txt

@@ -1,0 +1,20 @@
+
+pack:
+  - ./programmer_pyocd/packs/ArteryTek.AT32F403A_407_DFP.2.1.4.pack
+
+logging:
+  root:
+    handlers: [logfile]
+  formatters:
+    precise:
+      format: "[%(relativeCreated)07d:%(levelname)s:%(module)s] %(message)s"
+  handlers:
+    logfile:
+      class: logging.FileHandler
+      formatter: precise
+      filename: pyocd_log.txt
+      mode: w
+      delay: false
+  loggers:
+    pyocd:
+      level: DEBUG        # set all pyocd loggers to INFO level

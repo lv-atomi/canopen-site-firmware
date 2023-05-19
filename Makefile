@@ -3,7 +3,8 @@ PROJ_NAME=main
 DEBUG=1
 
 CC=arm-none-eabi-gcc --specs=nosys.specs
-GDB=arm-none-eabi-gdb
+#GDB=arm-none-eabi-gdb
+GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy
 OBJDIR = build
 
@@ -87,11 +88,18 @@ clean:
 	find $(OBJDIR) -type f -name '*.[odt]' -print0 | xargs -0 -r rm
 
 
-flash: $(OBJDIR)/$(PROJ_NAME).elf
-	openocd -f interface/stlink.cfg -f openocd/target/at32f403axx.cfg -f program.cfg
+flash-openocd: $(OBJDIR)/$(PROJ_NAME).elf
+	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid" -f program.cfg
+
+flash-pyocd: $(OBJDIR)/$(PROJ_NAME).elf
+	pyocd flash -v --config programmer_pyocd/pyocd_at32.yaml -t _at32f403acgu7 $<
+
+pyocd: $(OBJDIR)/$(PROJ_NAME).elf
+	pyocd gdbserver --config programmer_pyocd/pyocd_at32.yaml -t _at32f403acgu7
+
 
 openocd:
-	openocd -f interface/stlink.cfg -f openocd/target/at32f403axx.cfg
+	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_vid_pid 0xc251 0xf001; cmsis_dap_backend hid"
 
 gdb: $(OBJDIR)/$(PROJ_NAME).elf
 	$(GDB) --tui $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"
