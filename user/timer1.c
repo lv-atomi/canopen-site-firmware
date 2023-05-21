@@ -39,33 +39,30 @@ void Timer1_Init()
 	
 }
 
-void TMR1_OVF_TMR10_IRQHandler(void)
-{
-  if(tmr_flag_get(TMR1, TMR_OVF_FLAG) != RESET)
-  {
+void TMR1_OVF_TMR10_IRQHandler(void) {
+  if (tmr_flag_get(TMR1, TMR_OVF_FLAG) != RESET) {
     /* add user code... */
-		TimerCountms++;	
-		if(TimerCountms%100 == 0) //100ms can send circle
-		{
-			TimerCount_1ms = 1;
-		}
-		if(TimerCountms%300 == 0)  //key press circly is 300 ms
-		{
-			Key_ScanFun();
-		}
-		if(TimerCountms > 10000) TimerCountms = 0;
-		
-		if(keySta.KeyCnt10s >= 1) 
-		{
-			keySta.KeyCnt10s--;
-			if(keySta.KeyCnt10s == 0)
-			{
-				keySta.Dismode = 0;
-				/* write data to flash */
-				err_status = flash_write(TEST_FLASH_ADDRESS_START, buffer_write, TEST_BUFEER_SIZE);				
-			}
-		}
+    TimerCountms++;
+    if (TimerCountms % 100 == 0) // 100ms can send circle
+    {
+      TimerCount_1ms = 1;
+    }
+    if (TimerCountms % 300 == 0) // key press circly is 300 ms
+    {
+      Key_ScanFun();
+    }
+    if (TimerCountms > 10000)
+      TimerCountms = 0;
+
+    if (keySta.KeyCnt10s >= 1) {
+      keySta.KeyCnt10s--;
+      if (keySta.KeyCnt10s == 0) {
+        keySta.Dismode = 0;
+        /* write data to flash */
+        err_status = flash_write(TEST_FLASH_ADDRESS_START, buffer_write,
+                                 TEST_BUFEER_SIZE);
+      }
+    }
     tmr_flag_clear(TMR1, TMR_OVF_FLAG);
   }
 }
-
