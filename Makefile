@@ -42,8 +42,8 @@ CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
 	$(CANOPENROOT)/305/CO_LSSslave.c \
 	$(CANOPENROOT)/storage/CO_storage.c \
 	$(CANOPENROOT)/CANopen.c \
-	$(wildcard user/canopen/driver/*.c)
-	$(wildcard user/canopen/application/*.c) \
+	$(wildcard user/canopen/driver/*.c) \
+	$(wildcard user/canopen/application/*.c)
 
 SRCS = $(wildcard user/*.c) \
 	$(CANOPENSRC) \
