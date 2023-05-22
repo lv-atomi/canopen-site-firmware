@@ -10,11 +10,13 @@ crm_clocks_freq_type crm_clocks_freq_struct = {0};
 uint16_t TimerCount_1ms = 0;
 uint16_t TimerCountms   = 0;
 uint16_t TimerCount = 0;
+
 extern KeyPressMode keySta;
 extern error_status err_status;
 extern uint16_t buffer_write[TEST_BUFEER_SIZE];
 extern uint16_t buffer_read[TEST_BUFEER_SIZE];
 extern SysEprom_TypeDef gSysEpromData;
+
 void Timer1_Init()
 {
   /* get system clock */

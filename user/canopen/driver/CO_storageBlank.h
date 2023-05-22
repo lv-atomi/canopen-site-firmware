@@ -43,11 +43,15 @@ extern "C" {
  *   CANopenLinux/CO_storageLinux.h files.
  */
 
-CO_ReturnError_t CO_storageBlank_init(CO_storage_t* storage, CO_CANmodule_t* CANmodule,
-                                      OD_entry_t* OD_1010_StoreParameters, OD_entry_t* OD_1011_RestoreDefaultParam,
-                                      CO_storage_entry_t* entries, uint8_t entriesCount, uint32_t* storageInitError);
+CO_ReturnError_t CO_storageBlank_init(CO_storage_t *storage,
+                                      CO_CANmodule_t *CANmodule,
+                                      OD_entry_t *OD_1010_StoreParameters,
+                                      OD_entry_t *OD_1011_RestoreDefaultParam,
+                                      CO_storage_entry_t *entries,
+                                      uint8_t entriesCount,
+                                      uint32_t *storageInitError);
 
-uint32_t CO_storageBlank_auto_process(CO_storage_t* storage, bool_t closeFiles);
+uint32_t CO_storageBlank_auto_process(CO_storage_t *storage, bool_t closeFiles);
 
 #ifdef __cplusplus
 }

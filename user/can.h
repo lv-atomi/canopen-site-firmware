@@ -12,45 +12,39 @@ extern "C" {
 
 #define DEFAULTVOL 120
 
-#define SLAVEBOARD_ID    0x001
+#define SLAVEBOARD_ID 0x001
 #define CONFIGURATION_ID 0x312
 
-typedef struct 
-{        
-	uint8_t     RWCmd;
-	uint16_t    CanDataId;
-}BpsPara_TypeDef;
+typedef struct {
+  uint8_t RWCmd;
+  uint16_t CanDataId;
+} BpsPara_TypeDef;
 
-typedef struct CanFrame
-{
-	uint8_t canTxBuf[8];
-	uint8_t canRxBuf[8];
-	uint8_t canBaudrate;
-	uint8_t canTxCmd;
-	uint8_t canRxCmd;
-	BpsPara_TypeDef basePara;
-}SysParm_TypeDef;
+typedef struct CanFrame {
+  uint8_t canTxBuf[8];
+  uint8_t canRxBuf[8];
+  uint8_t canBaudrate;
+  uint8_t canTxCmd;
+  uint8_t canRxCmd;
+  BpsPara_TypeDef basePara;
+} SysParm_TypeDef;
 
-enum{
-    CAN_TXD_NULL,
-    CAN_TXD_DATA,          
+enum {
+  CAN_TXD_NULL,
+  CAN_TXD_DATA,
 };
 
-enum{
-    CAN_RXD_NULL,
-    CAN_RXD_DATA,                      
+enum {
+  CAN_RXD_NULL,
+  CAN_RXD_DATA,
 };
 
-enum{
-    BASE_READ = 0,               
-    BASE_WRITE                 
-};
+enum { BASE_READ = 0, BASE_WRITE };
 
-
-typedef struct{
-    uint16_t    SysEpromCANID;             //CAN ID
-    uint16_t    SysEpromVoltage;             //Volage
-}SysEprom_TypeDef;
+typedef struct {
+  uint16_t SysEpromCANID;   // CAN ID
+  uint16_t SysEpromVoltage; // Volage
+} SysEprom_TypeDef;
 
 void CAN_DataInit(void);
 void can_gpio_config(void);
