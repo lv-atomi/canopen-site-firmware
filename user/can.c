@@ -187,16 +187,16 @@ uint8_t can_read_para(void)
 
 void CAN_DataInit()
 {
-	uint16_t i;
-	gSysParm.basePara.CanDataId = SLAVEBOARD_ID;
-	keySta.Dismode = 0;//Display normal
-	keySta.KeyCnt10s = 0;
+  uint16_t i;
+  gSysParm.basePara.CanDataId = SLAVEBOARD_ID;
+  keySta.Dismode = 0;//Display normal
+  keySta.KeyCnt10s = 0;
 	
-	for(i = 0;i<TEST_BUFEER_SIZE;i++)//data buffer clear
-	{
-		buffer_read[i]  = 0x00;
-		buffer_write[i] = 0x00;
-	}
+  for(i = 0;i<TEST_BUFEER_SIZE;i++)//data buffer clear
+    {
+      buffer_read[i]  = 0x00;
+      buffer_write[i] = 0x00;
+    }
 }
 
 
