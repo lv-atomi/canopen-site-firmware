@@ -30,6 +30,7 @@
 
 #include "CO_storageBlank.h"
 #include "OD.h"
+#include "timer1.h"
 
 CANopenNodeSTM32
     *canopenNodeSTM32; /* It will be set by canopen_app_init and will be used
@@ -182,7 +183,8 @@ int canopen_app_resetCommunication() {
   }
 
   /* Configure Timer interrupt function for execution every 1 millisecond */
-  HAL_TIM_Base_Start_IT(canopenNodeSTM32->timerHandle); // 1ms interrupt
+  //HAL_TIM_Base_Start_IT(canopenNodeSTM32->timerHandle); // 1ms interrupt
+  /* already configured in timer1.c */
 
   /* Configure CAN transmit and receive interrupt */
 
@@ -204,7 +206,7 @@ int canopen_app_resetCommunication() {
 
   log_printf("CANopenNode - Running...\n");
   fflush(stdout);
-  time_old = time_current = HAL_GetTick();
+  time_old = time_current = get_ticks();
   return 0;
 }
 
@@ -212,7 +214,7 @@ void canopen_app_process() {
   /* loop for normal program execution
    * ******************************************/
   /* get time difference since last function call */
-  time_current = HAL_GetTick();
+  time_current = get_ticks();
 
   if ((time_current - time_old) > 0) { // Make sure more than 1ms elapsed
     /* CANopen process */
@@ -232,7 +234,8 @@ void canopen_app_process() {
       canopen_app_resetCommunication(); // Reset Communication routine
     } else if (reset_status == CO_RESET_APP) {
       log_printf("CANopenNode Device Reset\n");
-      HAL_NVIC_SystemReset(); // Reset the STM32 Microcontroller
+      //HAL_NVIC_SystemReset(); // Reset the STM32 Microcontroller
+      nvic_system_reset();
     }
   }
 }

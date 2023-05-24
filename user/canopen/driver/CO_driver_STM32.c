@@ -313,65 +313,71 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
 
   /* Check if TX FIFO is ready to accept more messages */
 #ifdef CO_STM32_FDCAN_Driver
-  static FDCAN_TxHeaderTypeDef tx_hdr;
-  if (HAL_FDCAN_GetTxFifoFreeLevel(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) {
-    /*
-     * RTR flag is part of identifier value
-     * hence it needs to be properly decoded
-     */
-    tx_hdr.Identifier = buffer->ident & CANID_MASK;
-    tx_hdr.TxFrameType =
-        (buffer->ident & FLAG_RTR) ? FDCAN_REMOTE_FRAME : FDCAN_DATA_FRAME;
-    tx_hdr.IdType = FDCAN_STANDARD_ID;
-    tx_hdr.FDFormat = FDCAN_CLASSIC_CAN;
-    tx_hdr.BitRateSwitch = FDCAN_BRS_OFF;
-    tx_hdr.MessageMarker = 0;
-    tx_hdr.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-    tx_hdr.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
+  #error FDCAN not supported by at32
+  /* static FDCAN_TxHeaderTypeDef tx_hdr; */
+  /* if (HAL_FDCAN_GetTxFifoFreeLevel(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) { */
+  /*   /\* */
+  /*    * RTR flag is part of identifier value */
+  /*    * hence it needs to be properly decoded */
+  /*    *\/ */
+  /*   tx_hdr.Identifier = buffer->ident & CANID_MASK; */
+  /*   tx_hdr.TxFrameType = */
+  /*       (buffer->ident & FLAG_RTR) ? FDCAN_REMOTE_FRAME : FDCAN_DATA_FRAME; */
+  /*   tx_hdr.IdType = FDCAN_STANDARD_ID; */
+  /*   tx_hdr.FDFormat = FDCAN_CLASSIC_CAN; */
+  /*   tx_hdr.BitRateSwitch = FDCAN_BRS_OFF; */
+  /*   tx_hdr.MessageMarker = 0; */
+  /*   tx_hdr.ErrorStateIndicator = FDCAN_ESI_ACTIVE; */
+  /*   tx_hdr.TxEventFifoControl = FDCAN_NO_TX_EVENTS; */
 
-    switch (buffer->DLC) {
-    case 0:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_0;
-      break;
-    case 1:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_1;
-      break;
-    case 2:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_2;
-      break;
-    case 3:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_3;
-      break;
-    case 4:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_4;
-      break;
-    case 5:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_5;
-      break;
-    case 6:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_6;
-      break;
-    case 7:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_7;
-      break;
-    case 8:
-      tx_hdr.DataLength = FDCAN_DLC_BYTES_8;
-      break;
-    default: /* Hard error... */
-      break;
-    }
+  /*   switch (buffer->DLC) { */
+  /*   case 0: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_0; */
+  /*     break; */
+  /*   case 1: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_1; */
+  /*     break; */
+  /*   case 2: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_2; */
+  /*     break; */
+  /*   case 3: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_3; */
+  /*     break; */
+  /*   case 4: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_4; */
+  /*     break; */
+  /*   case 5: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_5; */
+  /*     break; */
+  /*   case 6: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_6; */
+  /*     break; */
+  /*   case 7: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_7; */
+  /*     break; */
+  /*   case 8: */
+  /*     tx_hdr.DataLength = FDCAN_DLC_BYTES_8; */
+  /*     break; */
+  /*   default: /\* Hard error... *\/ */
+  /*     break; */
+  /*   } */
 
-    /* Now add message to FIFO. Should not fail */
-    success = HAL_FDCAN_AddMessageToTxFifoQ(
-                  ((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, &tx_hdr,
-                  buffer->data) == HAL_OK;
-  }
+  /*   /\* Now add message to FIFO. Should not fail *\/ */
+  /*   success = HAL_FDCAN_AddMessageToTxFifoQ( */
+  /*                 ((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, &tx_hdr, */
+  /*                 buffer->data) == HAL_OK; */
+  /* } */
 #else
   //static CAN_TxHeaderTypeDef tx_hdr;
   static can_tx_message_type tx_hdr;
   /* Check if TX FIFO is ready to accept more messages */
-  if (HAL_CAN_GetTxMailboxesFreeLevel(
-          ((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) {
+  /* stm32 */
+  /* if (HAL_CAN_GetTxMailboxesFreeLevel( */
+  /*         ((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) { */
+  /* at32 */
+  if ((((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->tsts_bit.tm0ef) ||
+      (((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->tsts_bit.tm1ef) ||
+      (((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->tsts_bit.tm2ef)) {
     /*
      * RTR flag is part of identifier value
      * hence it needs to be properly decoded
@@ -397,7 +403,8 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
     /* success = */
     /*     HAL_CAN_AddTxMessage(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, */
     /*                          &tx_hdr, buffer->data, &TxMailboxNum) == HAL_OK; */
-    TxMailboxNum = can_message_transmit(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, &tx_hdr);
+    TxMailboxNum = can_message_transmit(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle,
+					&tx_hdr);
     success == TxMailboxNum != CAN_TX_STATUS_NO_EMPTY;        
   }
 #endif

@@ -12,6 +12,7 @@ extern "C" {
 
 extern uint16_t TimerCount_1ms;
 void Timer1_Init(void);
+uint32_t get_ticks(void);
 
 
 #endif
