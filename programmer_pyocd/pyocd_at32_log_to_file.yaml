@@ -8,6 +8,13 @@ logging:
   formatters:
     precise:
       format: "[%(relativeCreated)07d:%(levelname)s:%(module)s] %(message)s"
+  handlers:
+    logfile:
+      class: logging.FileHandler
+      formatter: precise
+      filename: pyocd_log.txt
+      mode: w
+      delay: false
   loggers:
     pyocd:
       level: INFO        # set all pyocd loggers to INFO level

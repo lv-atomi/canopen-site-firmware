@@ -15,7 +15,7 @@ uint16_t TimerCount = 0;
 uint32_t TimerTick = 0;
 
 extern KeyPressMode keySta;
-extern error_status err_status;
+error_status err_status;
 extern uint16_t buffer_write[TEST_BUFEER_SIZE];
 extern uint16_t buffer_read[TEST_BUFEER_SIZE];
 extern SysEprom_TypeDef gSysEpromData;

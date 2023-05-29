@@ -36,7 +36,7 @@ typedef struct {
                           * CANopenNodeSTM32 structure for assigned Node ID.
                           */
   uint8_t activeNodeID;  /* Assigned Node ID */
-  uint8_t baudrate;      /* This is the baudrate you've set in your CubeMX
+  uint16_t baudrate;      /* This is the baudrate you've set in your CubeMX
                             Configuration */
   /* skip it */
   /* tmr_type *timerHandle; /\* Pass in the timer that is going to be used */

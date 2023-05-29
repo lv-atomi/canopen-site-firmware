@@ -89,7 +89,7 @@ clean:
 	find $(OBJDIR) -type f -name '*.[odt]' -print0 | xargs -0 -r rm
 
 
-flash-openocd: $(OBJDIR)/$(PROJ_NAME).elf
+flash: $(OBJDIR)/$(PROJ_NAME).elf
 	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid" -f program.cfg
 
 flash-pyocd: $(OBJDIR)/$(PROJ_NAME).elf
@@ -100,7 +100,7 @@ pyocd: $(OBJDIR)/$(PROJ_NAME).elf
 
 
 openocd:
-	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_vid_pid 0xc251 0xf001; cmsis_dap_backend hid"
+	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid"
 
 gdb: $(OBJDIR)/$(PROJ_NAME).elf
 	$(GDB) --tui $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"

@@ -29,15 +29,15 @@ typedef struct CanFrame {
   BpsPara_TypeDef basePara;
 } SysParm_TypeDef;
 
-enum {
-  CAN_TXD_NULL,
-  CAN_TXD_DATA,
-};
+/* enum { */
+/*   CAN_TXD_NULL, */
+/*   CAN_TXD_DATA, */
+/* }; */
 
-enum {
-  CAN_RXD_NULL,
-  CAN_RXD_DATA,
-};
+/* enum { */
+/*   CAN_RXD_NULL, */
+/*   CAN_RXD_DATA, */
+/* }; */
 
 enum { BASE_READ = 0, BASE_WRITE };
 
@@ -46,10 +46,16 @@ typedef struct {
   uint16_t SysEpromVoltage; // Volage
 } SysEprom_TypeDef;
 
-void CAN_DataInit(void);
+/* void CAN_DataInit(void); */
 void can_gpio_config(void);
 void can_configuration(void);
-void can_transmit_data(void);
-uint8_t can_read_para(void);
+/* void can_transmit_data(void); */
+/* uint8_t can_read_para(void); */
+void canopen_init(void);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

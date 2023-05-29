@@ -2,11 +2,16 @@
 #include "can.h"
 #include "flash.h"
 #include "oled.h"
+#include <stdio.h>
 
-extern uint16_t testkey1;
-extern uint16_t testkey2;
 
-extern uint16_t VolShowTest;
+#define log_printf(macropar_message, ...)                                      \
+  printf(macropar_message, ##__VA_ARGS__)
+
+uint16_t testkey1;
+uint16_t testkey2;
+
+//extern uint16_t VolShowTest;
 extern SysParm_TypeDef gSysParm;
 extern uint16_t buffer_write[TEST_BUFEER_SIZE];
 extern uint16_t buffer_read[TEST_BUFEER_SIZE];
@@ -41,12 +46,16 @@ void GPIO_Init() {
 }
 
 uint8_t Key_Cnt = 0;
+char debug[16];
 
 void Key_ScanFun() {
   uint16_t i, Cnt = 0;
   if (gpio_input_data_bit_read(KEY_PORT, KEY_01_SELECT_PIN) ==
       0) // Select Key Press
   {
+    snprintf(debug, 16, "sel");
+    log_printf("%s\b", debug);
+    debug[0]='T';
     for (i = 0; i < 1000; i++) {
       if (gpio_input_data_bit_read(KEY_PORT, KEY_01_SELECT_PIN) == 0)
         Cnt++;
@@ -54,6 +63,8 @@ void Key_ScanFun() {
     if (Cnt > 900) {
       testkey2++;       // test
       keySta.Dismode++; // 0:normal;1:Select,2:Enter
+      snprintf(debug, 16, "m:%d", keySta.Dismode);
+      log_printf("%s\b", debug);
       if (keySta.Dismode > 2)
         keySta.Dismode = 0;
       keySta.KeyCnt10s = KEEPSTATUSTIME;
@@ -76,10 +87,10 @@ void Key_ScanFun() {
         buffer_write[0] = gSysParm.basePara.CanDataId; // write ID to flash
       } else if (keySta.Dismode == 2)                  // Adjust Voltage Output
       {
-        VolShowTest++;
-        if (VolShowTest > 350)
-          VolShowTest = DEFAULTVOL;
-        buffer_write[1] = VolShowTest; // write Voltage to flash
+        /* VolShowTest++; */
+        /* if (VolShowTest > 350) */
+        /*   VolShowTest = DEFAULTVOL; */
+        /* buffer_write[1] = VolShowTest; // write Voltage to flash */
       }
     }
   }
@@ -92,9 +103,9 @@ void DisplayPra(uint8_t Type) {
     OLED_ShowNum(24, 0, gSysParm.basePara.CanDataId, 4, 16, 1);
     OLED_ShowString(56, 0, " ", 16, 1);
     // Display Voltage, 16-row
-    OLED_ShowString(0, 16, "Vo:", 16, 1);
-    OLED_ShowNum(24, 16, VolShowTest, 3, 16, 1);
-    OLED_ShowString(48, 16, " ", 16, 1);
+    /* OLED_ShowString(0, 16, "Vo:", 16, 1); */
+    /* OLED_ShowNum(24, 16, VolShowTest, 3, 16, 1); */
+    /* OLED_ShowString(48, 16, " ", 16, 1); */
   } else if (Type == 1) // select
   {
     OLED_ShowString(0, 0, "ID:", 16, 1);
@@ -103,10 +114,10 @@ void DisplayPra(uint8_t Type) {
     OLED_ShowString(56, 16, " ", 16, 1);
   } else if (Type == 2) // Enter
   {
-    OLED_ShowString(0, 16, "Vo:", 16, 1);
-    OLED_ShowNum(24, 16, VolShowTest, 3, 16, 1);
-    OLED_ShowString(48, 16, "_", 16, 1);
-    OLED_ShowString(56, 0, " ", 16, 1);
+    /* OLED_ShowString(0, 16, "Vo:", 16, 1); */
+    /* OLED_ShowNum(24, 16, VolShowTest, 3, 16, 1); */
+    /* OLED_ShowString(48, 16, "_", 16, 1); */
+    /* OLED_ShowString(56, 0, " ", 16, 1); */
   }
 
   OLED_Refresh();
