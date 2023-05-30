@@ -19,3 +19,9 @@ Path
 1.Hardware schematic path:SCH_BaseBoardTest_2023-04-27.pdf
 
 2. user software .h and .c--user
+
+This device is divided into 4 sectors, the address please the bellowing information:
+1. Flash as EEPROM address: 0X804B000  //0X80FF000
+2.  boot rom start address: 0x08000000 - 0x08018FFF,size is 100k
+3.  app  rom start address: 0x08019000 - 0x08031FFF,size is 100k
+4.  back rom start address: 0x08032000 - 0x0803AFFF,size is 100k
