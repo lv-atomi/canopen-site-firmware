@@ -56,6 +56,7 @@ void TMR1_OVF_TMR10_IRQHandler(void) {
     TimerTick++;
 
     /* call canopen intervals */
+    /* printf("app interrupt\n"); */
     canopen_app_interrupt();
     
     if (TimerCountms % 100 == 0) // 100ms can send circle

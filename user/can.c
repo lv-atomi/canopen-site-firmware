@@ -4,6 +4,9 @@
 
 #include "CO_app_STM32.h"
 
+#define log_printf(macropar_message, ...)                                      \
+  printf(macropar_message, ##__VA_ARGS__)
+
 /* uint16_t testkey1 = 0, testkey2 = 0; */
 
 SysParm_TypeDef gSysParm;
@@ -118,74 +121,15 @@ void can_configuration(void) {
 /*   //  (can_tx_mailbox_num_type)transmit_mailbox) != CAN_TX_STATUS_SUCCESSFUL); */
 /* } */
 
-void USBFS_H_CAN1_TX_IRQHandler(void){
-  HAL_CAN_TxMailbox0CompleteCallback(CAN1); /* Mailbox number is irrelevant in at32 */
-}
-
-void USBFS_L_CAN1_RX0_IRQHandler(void) // CAN Receive interrupt handle function
-{
-  if (can_flag_get(CAN1, CAN_RF0MN_FLAG) != RESET) {
-    HAL_CAN_RxFifo0MsgPendingCallback(CAN1);
-  }
-
-  /* can_rx_message_type rx_message_struct; */
-  /* uint32_t Rec_ID; */
-  /* uint8_t REC_DLC = 0, i = 0; */
-
-  /* if (can_flag_get(CAN1, CAN_RF0MN_FLAG) != RESET) { */
-  /*   can_message_receive(CAN1, CAN_RX_FIFO0, &rx_message_struct); */
-  /*   Rec_ID = rx_message_struct.standard_id; */
-  /*   REC_DLC = rx_message_struct.dlc; */
-  /*   if ((Rec_ID == CONFIGURATION_ID) && (REC_DLC == 8)) { */
-  /*     for (i = 0; i < 8; i++) { */
-  /*       gSysParm.canRxBuf[i] = rx_message_struct.data[i]; */
-  /*     } */
-  /*     gSysParm.canRxCmd = CAN_RXD_DATA; */
-  /*   } */
-  /* } */
-}
-
-
-void CAN1_SE_IRQHandler(void) {
-  __IO uint32_t err_index = 0;
-  if (can_flag_get(CAN1, CAN_ETR_FLAG) != RESET) {
-    err_index = CAN1->ests & 0x70;
-    can_flag_clear(CAN1, CAN_ETR_FLAG);
-    /* error type is stuff error */
-    if (err_index == 0x00000010) {
-      /* when stuff error occur: in order to ensure communication normally,
-      user must restart can or send a frame of highest priority message here */
-    }
-  }
-}
-
-/* void CAN_Init(void) */
-/* { */
-/*   hcan.Instance = CAN1; */
-/*   hcan.Init.Prescaler = 21; */
-/*   hcan.Init.Mode = CAN_MODE_NORMAL; */
-/*   hcan.Init.SyncJumpWidth = CAN_SJW_2TQ; */
-/*   hcan.Init.TimeSeg1 = CAN_BS1_13TQ; */
-/*   hcan.Init.TimeSeg2 = CAN_BS2_2TQ; */
-/*   hcan.Init.TimeTriggeredMode = DISABLE; */
-/*   hcan.Init.AutoBusOff = ENABLE; */
-/*   hcan.Init.AutoWakeUp = DISABLE; */
-/*   hcan.Init.AutoRetransmission = DISABLE; */
-/*   hcan.Init.ReceiveFifoLocked = ENABLE; */
-/*   hcan.Init.TransmitFifoPriority = ENABLE; */
-/*   if (HAL_CAN_Init(&hcan) != HAL_OK) */
-/*   { */
-/*     Error_Handler(); */
-/*   } */
-/* } */
 
 void canopen_init(void){
-  CANopenNodeSTM32 canOpenNodeSTM32;
+  static CANopenNodeSTM32 canOpenNodeSTM32;
   canOpenNodeSTM32.CANHandle = CAN1;
   canOpenNodeSTM32.HWInitFunction = can_configuration;
   canOpenNodeSTM32.desiredNodeID = 1;
   canOpenNodeSTM32.baudrate = 500;
   canopen_app_init(&canOpenNodeSTM32);
+  log_printf("init, canOpenNodeSTM32:%p\n", &canOpenNodeSTM32);
 }
 
 /* uint8_t can_read_para(void) { */

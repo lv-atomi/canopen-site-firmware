@@ -243,6 +243,7 @@ void canopen_app_process() {
 /* Thread function executes in constant intervals, this function can be called
  * from FreeRTOS tasks or Timers ********/
 void canopen_app_interrupt(void) {
+  //log_printf("enter app_interrupt\n");
   CO_LOCK_OD(CO->CANmodule);
   if (!CO->nodeIdUnconfigured && CO->CANmodule->CANnormal) {
     bool_t syncWas = false;
@@ -250,16 +251,21 @@ void canopen_app_interrupt(void) {
     uint32_t timeDifference_us = 1000; // 1ms second
 
 #if (CO_CONFIG_SYNC) & CO_CONFIG_SYNC_ENABLE
+    //log_printf("process sync\n");
     syncWas = CO_process_SYNC(CO, timeDifference_us, NULL);
 #endif
 #if (CO_CONFIG_PDO) & CO_CONFIG_RPDO_ENABLE
+    //log_printf("process rpdo\n");
     CO_process_RPDO(CO, syncWas, timeDifference_us, NULL);
 #endif
 #if (CO_CONFIG_PDO) & CO_CONFIG_TPDO_ENABLE
+    //log_printf("process tpdo\n");
     CO_process_TPDO(CO, syncWas, timeDifference_us, NULL);
 #endif
 
     /* Further I/O or nonblocking application code may go here. */
   }
   CO_UNLOCK_OD(CO->CANmodule);
+  //log_printf("leave app_interrupt\n");
+
 }

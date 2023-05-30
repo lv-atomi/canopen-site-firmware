@@ -20,13 +20,14 @@ int main(void) {
   at32_board_init();
   uart_print_init(115200);	/* init debug uart */
 
+  can_gpio_config();
+  canopen_init();
+
   Timer1_Init();
   OLED_Init();
   GPIO_Init();
   nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
 
-  can_gpio_config();
-  canopen_init();
 
   /* can_gpio_config(); */
   /* can_configuration(); */
@@ -49,6 +50,7 @@ int main(void) {
   while (1) {
     OLED_ShowString(0, 0, debug, 16, 1);
     OLED_Refresh();
+    canopen_app_process();
     //DisplayPra(keySta.Dismode); // OLED Display
     /* if (TimerCount_1ms == 1)    // Every 100ms send can frame */
     /* { */
