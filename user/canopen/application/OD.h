@@ -33,6 +33,19 @@
 /*******************************************************************************
     Counters of OD objects
 *******************************************************************************/
+#define OD_CNT_NMT 1
+#define OD_CNT_EM 1
+#define OD_CNT_SYNC 1
+#define OD_CNT_SYNC_PROD 1
+#define OD_CNT_STORAGE 1
+#define OD_CNT_TIME 1
+#define OD_CNT_EM_PROD 1
+#define OD_CNT_HB_CONS 1
+#define OD_CNT_HB_PROD 1
+#define OD_CNT_SDO_SRV 1
+#define OD_CNT_SDO_CLI 1
+#define OD_CNT_RPDO 4
+#define OD_CNT_TPDO 4
 
 
 /*******************************************************************************
@@ -422,32 +435,32 @@ extern OD_ATTR_OD OD_t *OD;
 *******************************************************************************/
 #ifdef CO_MULTIPLE_OD
 #define OD_INIT_CONFIG(config) {\
-    (config).CNT_NMT = 0;\
+    (config).CNT_NMT = OD_CNT_NMT;\
     (config).ENTRY_H1017 = OD_ENTRY_H1017;\
-    (config).CNT_HB_CONS = 0;\
+    (config).CNT_HB_CONS = OD_CNT_HB_CONS;\
     (config).CNT_ARR_1016 = OD_CNT_ARR_1016;\
     (config).ENTRY_H1016 = OD_ENTRY_H1016;\
-    (config).CNT_EM = 0;\
+    (config).CNT_EM = OD_CNT_EM;\
     (config).ENTRY_H1001 = OD_ENTRY_H1001;\
     (config).ENTRY_H1014 = OD_ENTRY_H1014;\
     (config).ENTRY_H1015 = OD_ENTRY_H1015;\
     (config).CNT_ARR_1003 = OD_CNT_ARR_1003;\
     (config).ENTRY_H1003 = OD_ENTRY_H1003;\
-    (config).CNT_SDO_SRV = 0;\
+    (config).CNT_SDO_SRV = OD_CNT_SDO_SRV;\
     (config).ENTRY_H1200 = OD_ENTRY_H1200;\
-    (config).CNT_SDO_CLI = 0;\
+    (config).CNT_SDO_CLI = OD_CNT_SDO_CLI;\
     (config).ENTRY_H1280 = OD_ENTRY_H1280;\
-    (config).CNT_TIME = 0;\
+    (config).CNT_TIME = OD_CNT_TIME;\
     (config).ENTRY_H1012 = OD_ENTRY_H1012;\
-    (config).CNT_SYNC = 0;\
+    (config).CNT_SYNC = OD_CNT_SYNC;\
     (config).ENTRY_H1005 = OD_ENTRY_H1005;\
     (config).ENTRY_H1006 = OD_ENTRY_H1006;\
     (config).ENTRY_H1007 = OD_ENTRY_H1007;\
     (config).ENTRY_H1019 = OD_ENTRY_H1019;\
-    (config).CNT_RPDO = 0;\
+    (config).CNT_RPDO = OD_CNT_RPDO;\
     (config).ENTRY_H1400 = OD_ENTRY_H1400;\
     (config).ENTRY_H1600 = OD_ENTRY_H1600;\
-    (config).CNT_TPDO = 0;\
+    (config).CNT_TPDO = OD_CNT_TPDO;\
     (config).ENTRY_H1800 = OD_ENTRY_H1800;\
     (config).ENTRY_H1A00 = OD_ENTRY_H1A00;\
     (config).CNT_LEDS = 0;\

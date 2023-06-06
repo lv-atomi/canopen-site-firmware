@@ -2869,7 +2869,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x000A
 AccessType=rw
-DefaultValue=C8 3D BB
+DefaultValue=C83DBB
 PDOMapping=0
 
 [2122]
