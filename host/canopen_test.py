@@ -34,7 +34,7 @@ def test_discovery():
 
 def test_list_objectdict(nid=127, show_value=False):
     cos = CanOpenStack()
-    node = cos.add_node(nid, 'ASDA_A2_1042sub980_C.eds')
+    node = cos.add_node(nid, 'DS301_profile.eds')
 
     def dump_values(obj, show_value, oaccess):
         for subobj in obj.values():
@@ -70,10 +70,16 @@ def dump(node, *names):
     print('  '.join(
         [f'{node.sdo[name].name}: {hex(node.sdo[name].read())}[{bin(node.sdo[name].read())}]' for name in names])
           )
+
+def test_simple(nid=1):
+    cos = CanOpenStack()
+    node = cos.add_node(nid, 'DS301_profile.eds')
+    dump(node, 0x1017)
             
 if __name__ == '__main__':
-    test_discovery()
-    #test_list_objectdict(nid=125, show_value=True)
+    #test_discovery()
+    #test_list_objectdict(nid=1, show_value=True)
+    test_simple()
     
 
 

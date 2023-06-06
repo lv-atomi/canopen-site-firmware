@@ -9,10 +9,13 @@
 #include "timer1.h"
 
 #include "CO_app_STM32.h"
+#include <stdint.h>
+//#include <cstdint>
 
 //extern SysParm_TypeDef gSysParm;
 /* extern KeyPressMode keySta; */
 extern char debug[];
+uint8_t need_reconfigure_can;    
 
 //uint16_t VolShowTest = DEFAULTVOL;
 int main(void) {
@@ -48,8 +51,11 @@ int main(void) {
   snprintf(debug, 16, "start");
   printf("%s\n", debug);
   while (1) {
-    OLED_ShowString(0, 0, debug, 16, 1);
-    OLED_Refresh();
+    if (need_reconfigure_can){
+      can_configuration();
+    }
+    /* OLED_ShowString(0, 0, debug, 16, 1); */
+    /* OLED_Refresh(); */
     canopen_app_process();
     //DisplayPra(keySta.Dismode); // OLED Display
     /* if (TimerCount_1ms == 1)    // Every 100ms send can frame */

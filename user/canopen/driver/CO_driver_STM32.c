@@ -39,6 +39,7 @@
   printf(macropar_message, ##__VA_ARGS__)
 
 extern char debug[];
+extern uint8_t need_reconfigure_can;
 
 /* Local CAN module object */
 static CO_CANmodule_t* CANModule_local = NULL; /* Local instance of global CAN module */
@@ -76,7 +77,8 @@ void CO_CANsetNormalMode(CO_CANmodule_t *CANmodule) {
   /* can interrupt config */
   if (((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle == CAN1){
     can_reset(CAN1);
-    can_configuration();
+    need_reconfigure_can = 1;
+    //can_configuration();
     /*  /\* Interrupt priority setting and enable: CAN1 status */
     /* 	change/error interrupt *\/ */
     /* nvic_irq_enable(CAN1_SE_IRQn, 0x00, 0x00);  */
@@ -893,15 +895,17 @@ void HAL_CAN_TxMailbox2CompleteCallback(can_type *hcan) {
 void CAN1_SE_IRQHandler(void) {
   __IO uint32_t err_index = 0;
   if (can_flag_get(CAN1, CAN_ETR_FLAG) != RESET) {
-    log_printf("clear etr\n");
     err_index = CAN1->ests & 0x70;
     can_flag_clear(CAN1, CAN_ETR_FLAG);
+    log_printf("clear etr, ERC:%d, tec:%d, rec:%d\n",
+	       err_index >> 4, CAN1->ests_bit.tec, CAN1->ests_bit.rec);
     /* error type is stuff error */
     if (err_index == 0x00000010) {
       /* when stuff error occur: in order to ensure communication normally,
       user must restart can or send a frame of highest priority message here */
       can_reset(CAN1);
-      can_configuration();
+      need_reconfigure_can = 1;
+      /* can_configuration(); */
     }
     err_index=1;
   }

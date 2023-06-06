@@ -70,6 +70,9 @@ extern "C" {
 typedef uint_fast8_t bool_t;
 typedef float float32_t;
 typedef double float64_t;
+/* typedef uint8_t char_t; */
+/* typedef uint8_t oChar_t; */
+/* typedef uint8_t domain_t; */
 
 /**
  * \brief           CAN RX message for platform
