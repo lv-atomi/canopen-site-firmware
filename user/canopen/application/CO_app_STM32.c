@@ -32,6 +32,10 @@
 #include "OD.h"
 #include "timer1.h"
 
+#define DBG_OD_ENTRY              "(%s) Error in Object Dictionary entry: 0x%X", __func__
+#define DBG_CAN_OPEN              "(%s) CANopen error in %s, err=%d", __func__
+
+
 CANopenNodeSTM32
     *canopenNodeSTM32; /* It will be set by canopen_app_init and will be used
                         * across app to get access to CANOpen objects
@@ -57,6 +61,42 @@ CO_t *CO = NULL; /* CANopen object */
 // Global variables
 uint32_t time_old, time_current;
 CO_ReturnError_t err;
+OD_extension_t OD_1015_extension;
+
+static ODR_t my_OD_read_1015(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead)
+{
+  printf("read 1015\n");
+  *countRead = 4;
+  return ODR_OK;
+}
+
+static ODR_t my_OD_write_1015(OD_stream_t *stream, const void *buf,
+			      OD_size_t count, OD_size_t *countWritten){
+  printf("write 1015\n");
+  return ODR_OK;
+}
+
+CO_ReturnError_t app_programStart() {
+  
+  OD_entry_t * param_1015 = OD_ENTRY_H1015_inhibitTimeEMCY;
+  OD_1015_extension.object = NULL;
+  OD_1015_extension.read = my_OD_read_1015;
+  OD_1015_extension.write = my_OD_write_1015;
+
+  OD_extension_init(param_1015, &OD_1015_extension);
+  
+  return CO_ERROR_NO;
+}
+
+void app_programAsync(CO_t *co, uint32_t timer1usDiff) {
+  
+  /* printf("loop:%d\n", OD_ENTRY_H1015_inhibitTimeEMCY); */
+}
+
+void app_communicationReset(CO_t *co) {}
+
+void app_programEnd() {}
 
 /* This function will basically setup the CANopen node */
 int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
@@ -110,6 +150,22 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
   }
 #endif
 
+
+  /* co app program */
+  uint32_t errInfo_app_programStart = 0;
+  err = app_programStart();
+  if (err != CO_ERROR_NO) {
+    if (err == CO_ERROR_OD_PARAMETERS) {
+      log_printf(//LOG_CRIT,
+		 DBG_OD_ENTRY, errInfo_app_programStart);
+    } else {
+      log_printf(//LOG_CRIT,
+		 DBG_CAN_OPEN, "app_programStart()", err);
+    }
+    return 1;
+  }
+  
+  app_communicationReset(CO);
   canopen_app_resetCommunication();
   return 0;
 }
@@ -237,6 +293,8 @@ void canopen_app_process() {
       //HAL_NVIC_SystemReset(); // Reset the STM32 Microcontroller
       nvic_system_reset();
     }
+
+    app_programAsync(CO, timeDifference_us);
   }
 }
 

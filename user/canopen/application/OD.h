@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/6/6 16:59:30
+        Modified:     2023/6/18 15:00:25
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -69,9 +69,14 @@
 *******************************************************************************/
 typedef struct {
     uint32_t x1000_deviceType;
+    uint8_t x1001_errorRegister;
     uint32_t x1005_COB_ID_SYNCMessage;
     uint32_t x1006_communicationCyclePeriod;
     uint32_t x1007_synchronousWindowLength;
+    uint8_t x1010_storeParameters_sub0;
+    uint32_t x1010_storeParameters[OD_CNT_ARR_1010];
+    uint8_t x1011_restoreDefaultParameters_sub0;
+    uint32_t x1011_restoreDefaultParameters[OD_CNT_ARR_1011];
     uint32_t x1012_COB_IDTimeStampObject;
     uint32_t x1014_COB_ID_EMCY;
     uint16_t x1015_inhibitTimeEMCY;
@@ -86,6 +91,11 @@ typedef struct {
         uint32_t serialNumber;
     } x1018_identity;
     uint8_t x1019_synchronousCounterOverflowValue;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t COB_IDClientToServerRx;
+        uint32_t COB_IDServerToClientTx;
+    } x1200_SDOServerParameter;
     struct {
         uint8_t highestSub_indexSupported;
         uint32_t COB_IDClientToServerTx;
@@ -236,41 +246,14 @@ typedef struct {
         uint32_t applicationObject7;
         uint32_t applicationObject8;
     } x1A03_TPDOMappingParameter;
-} OD_PERSIST_COMM_t;
-
-typedef struct {
-    uint8_t x1001_errorRegister;
-    uint8_t x1010_storeParameters_sub0;
-    uint32_t x1010_storeParameters[OD_CNT_ARR_1010];
-    uint8_t x1011_restoreDefaultParameters_sub0;
-    uint32_t x1011_restoreDefaultParameters[OD_CNT_ARR_1011];
-    struct {
-        uint8_t highestSub_indexSupported;
-        uint32_t COB_IDClientToServerRx;
-        uint32_t COB_IDServerToClientTx;
-    } x1200_SDOServerParameter;
     uint8_t x2100_errorStatusBits[1];
+    uint32_t x2106_power_onCounter;
     uint8_t x2110_variableInt32_sub0;
     int32_t x2110_variableInt32[OD_CNT_ARR_2110];
-    uint8_t x6000_readDigitalInput8_bit_sub0;
-    uint8_t x6000_readDigitalInput8_bit[OD_CNT_ARR_6000];
-    uint8_t x6200_writeDigitalOutput8_bit_sub0;
-    uint8_t x6200_writeDigitalOutput8_bit[OD_CNT_ARR_6200];
-    uint8_t x6401_readAnalogInput16_bit_sub0;
-    int16_t x6401_readAnalogInput16_bit[OD_CNT_ARR_6401];
-    uint8_t x6411_writeAnalogOutput16_bit_sub0;
-    int16_t x6411_writeAnalogOutput16_bit[OD_CNT_ARR_6411];
-} OD_RAM_t;
-
-typedef struct {
-    uint32_t x2106_power_onCounter;
-    uint8_t x2112_variableNV_Int32AutoSave_sub0;
-    int32_t x2112_variableNV_Int32AutoSave[OD_CNT_ARR_2112];
-} OD_PERSIST_APP_AUTO_t;
-
-typedef struct {
     uint8_t x2111_variableInt32Save_sub0;
     int32_t x2111_variableInt32Save[OD_CNT_ARR_2111];
+    uint8_t x2112_variableNV_Int32AutoSave_sub0;
+    int32_t x2112_variableNV_Int32AutoSave[OD_CNT_ARR_2112];
     struct {
         uint8_t highestSub_indexSupported;
         int64_t I64;
@@ -285,36 +268,24 @@ typedef struct {
         char stringLong[111];
         uint8_t octetString[3];
     } x2121_demoStrings;
-} OD_PERSIST_APP_t;
-
-typedef struct {
-    uint32_t x6412_lvtest;
-} OD_test_t;
-
-#ifndef OD_ATTR_PERSIST_COMM
-#define OD_ATTR_PERSIST_COMM
-#endif
-extern OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM;
+    uint8_t x6000_readDigitalInput8_bit_sub0;
+    uint8_t x6000_readDigitalInput8_bit[OD_CNT_ARR_6000];
+    uint8_t x6200_writeDigitalOutput8_bit_sub0;
+    uint8_t x6200_writeDigitalOutput8_bit[OD_CNT_ARR_6200];
+    uint8_t x6401_readAnalogInput16_bit_sub0;
+    int16_t x6401_readAnalogInput16_bit[OD_CNT_ARR_6401];
+    uint8_t x6411_writeAnalogOutput16_bit_sub0;
+    int16_t x6411_writeAnalogOutput16_bit[OD_CNT_ARR_6411];
+    uint32_t x6412_PSU_CurrentRead;
+    uint32_t x6413_PSU_VoltageRead;
+    uint32_t x6414_PSU_CurentSet;
+    uint32_t x6415_PSU_VoltageSet;
+} OD_RAM_t;
 
 #ifndef OD_ATTR_RAM
 #define OD_ATTR_RAM
 #endif
 extern OD_ATTR_RAM OD_RAM_t OD_RAM;
-
-#ifndef OD_ATTR_PERSIST_APP_AUTO
-#define OD_ATTR_PERSIST_APP_AUTO
-#endif
-extern OD_ATTR_PERSIST_APP_AUTO OD_PERSIST_APP_AUTO_t OD_PERSIST_APP_AUTO;
-
-#ifndef OD_ATTR_PERSIST_APP
-#define OD_ATTR_PERSIST_APP
-#endif
-extern OD_ATTR_PERSIST_APP OD_PERSIST_APP_t OD_PERSIST_APP;
-
-#ifndef OD_ATTR_test
-#define OD_ATTR_test
-#endif
-extern OD_ATTR_test OD_test_t OD_test;
 
 #ifndef OD_ATTR_OD
 #define OD_ATTR_OD
@@ -374,6 +345,9 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6401 &OD->list[46]
 #define OD_ENTRY_H6411 &OD->list[47]
 #define OD_ENTRY_H6412 &OD->list[48]
+#define OD_ENTRY_H6413 &OD->list[49]
+#define OD_ENTRY_H6414 &OD->list[50]
+#define OD_ENTRY_H6415 &OD->list[51]
 
 
 /*******************************************************************************
@@ -427,7 +401,10 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6200_writeDigitalOutput8_bit &OD->list[45]
 #define OD_ENTRY_H6401_readAnalogInput16_bit &OD->list[46]
 #define OD_ENTRY_H6411_writeAnalogOutput16_bit &OD->list[47]
-#define OD_ENTRY_H6412_lvtest &OD->list[48]
+#define OD_ENTRY_H6412_PSU_CurrentRead &OD->list[48]
+#define OD_ENTRY_H6413_PSU_VoltageRead &OD->list[49]
+#define OD_ENTRY_H6414_PSU_CurentSet &OD->list[50]
+#define OD_ENTRY_H6415_PSU_VoltageSet &OD->list[51]
 
 
 /*******************************************************************************

@@ -28,7 +28,7 @@ CFLAGS += -Wall -Wno-missing-braces -std=c99 -mthumb -mcpu=cortex-m4
 CFLAGS += -mfloat-abi=soft
 # TODO: hard float was causing an exception; see what's up.
 LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gcc/linker/AT32F403AxG_FLASH.ld
-DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1 -DCO_USE_APPLICATION	# device & board selection, use APPLICATION
+DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection, use APPLICATION
 export DEFINES
 
 CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application

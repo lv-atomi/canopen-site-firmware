@@ -8,8 +8,8 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=12:31PM
-ModificationDate=06-28-2021
+ModificationTime=3:00PM
+ModificationDate=06-18-2023
 ModifiedBy=Janez Paternoster
 
 [DeviceInfo]
@@ -57,7 +57,7 @@ SupportedObjects=3
 [1000]
 ParameterName=Device type
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=ro
 DefaultValue=0x000F0191
@@ -75,7 +75,7 @@ PDOMapping=1
 [1018]
 ParameterName=Identity
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x5
 
 [1018sub0]
@@ -124,7 +124,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=38
+SupportedObjects=41
 1=0x1003
 2=0x1005
 3=0x1006
@@ -163,6 +163,9 @@ SupportedObjects=38
 36=0x6401
 37=0x6411
 38=0x6412
+39=0x6413
+40=0x6414
+41=0x6415
 
 [1003]
 ParameterName=Pre-defined error field
@@ -326,7 +329,7 @@ PDOMapping=0
 [1005]
 ParameterName=COB-ID SYNC message
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0x00000080
@@ -335,7 +338,7 @@ PDOMapping=0
 [1006]
 ParameterName=Communication cycle period
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0
@@ -344,7 +347,7 @@ PDOMapping=0
 [1007]
 ParameterName=Synchronous window length
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0
@@ -353,7 +356,7 @@ PDOMapping=0
 [1008]
 ParameterName=Manufacturer device name
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0009
 AccessType=ro
 DefaultValue=
@@ -362,7 +365,7 @@ PDOMapping=0
 [1009]
 ParameterName=Manufacturer hardware version
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0009
 AccessType=ro
 DefaultValue=
@@ -371,7 +374,7 @@ PDOMapping=0
 [100A]
 ParameterName=Manufacturer software version
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0009
 AccessType=ro
 DefaultValue=
@@ -518,7 +521,7 @@ PDOMapping=0
 [1012]
 ParameterName=COB-ID time stamp object
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0x00000100
@@ -527,7 +530,7 @@ PDOMapping=0
 [1014]
 ParameterName=COB-ID EMCY
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0x80+$NODEID
@@ -536,7 +539,7 @@ PDOMapping=0
 [1015]
 ParameterName=Inhibit time EMCY
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
 DefaultValue=0
@@ -545,7 +548,7 @@ PDOMapping=0
 [1016]
 ParameterName=Consumer heartbeat time
 ObjectType=0x8
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1016sub0]
@@ -632,7 +635,7 @@ PDOMapping=0
 [1017]
 ParameterName=Producer heartbeat time
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0006
 AccessType=rw
 DefaultValue=0
@@ -641,7 +644,7 @@ PDOMapping=0
 [1019]
 ParameterName=Synchronous counter overflow value
 ObjectType=0x7
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
 DefaultValue=0
@@ -683,7 +686,7 @@ PDOMapping=1
 [1280]
 ParameterName=SDO client parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x4
 
 [1280sub0]
@@ -725,7 +728,7 @@ PDOMapping=0
 [1400]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x4
 
 [1400sub0]
@@ -767,7 +770,7 @@ PDOMapping=0
 [1401]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x4
 
 [1401sub0]
@@ -809,7 +812,7 @@ PDOMapping=0
 [1402]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x4
 
 [1402sub0]
@@ -851,7 +854,7 @@ PDOMapping=0
 [1403]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x4
 
 [1403sub0]
@@ -893,7 +896,7 @@ PDOMapping=0
 [1600]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1600sub0]
@@ -980,7 +983,7 @@ PDOMapping=0
 [1601]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1601sub0]
@@ -1067,7 +1070,7 @@ PDOMapping=0
 [1602]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1602sub0]
@@ -1154,7 +1157,7 @@ PDOMapping=0
 [1603]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1603sub0]
@@ -1241,7 +1244,7 @@ PDOMapping=0
 [1800]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x6
 
 [1800sub0]
@@ -1301,7 +1304,7 @@ PDOMapping=0
 [1801]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x6
 
 [1801sub0]
@@ -1361,7 +1364,7 @@ PDOMapping=0
 [1802]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x6
 
 [1802sub0]
@@ -1421,7 +1424,7 @@ PDOMapping=0
 [1803]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x6
 
 [1803sub0]
@@ -1481,7 +1484,7 @@ PDOMapping=0
 [1A00]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1A00sub0]
@@ -1568,7 +1571,7 @@ PDOMapping=0
 [1A01]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1A01sub0]
@@ -1655,7 +1658,7 @@ PDOMapping=0
 [1A02]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1A02sub0]
@@ -1742,7 +1745,7 @@ PDOMapping=0
 [1A03]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=PERSIST_COMM
+;StorageLocation=RAM
 SubNumber=0x9
 
 [1A03sub0]
@@ -2247,9 +2250,36 @@ DefaultValue=0
 PDOMapping=1
 
 [6412]
-ParameterName=lvtest
+ParameterName=PSU Current Read
 ObjectType=0x7
-;StorageLocation=test
+;StorageLocation=RAM
+DataType=0x0007
+AccessType=ro
+DefaultValue=0
+PDOMapping=0
+
+[6413]
+ParameterName=PSU Voltage Read
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0007
+AccessType=ro
+DefaultValue=0
+PDOMapping=0
+
+[6414]
+ParameterName=PSU Curent Set
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0007
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[6415]
+ParameterName=PSU Voltage Set
+ObjectType=0x7
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0
@@ -2278,7 +2308,7 @@ PDOMapping=1
 [2106]
 ParameterName=Power-on counter
 ObjectType=0x7
-;StorageLocation=PERSIST_APP_AUTO
+;StorageLocation=RAM
 DataType=0x0007
 AccessType=ro
 DefaultValue=0
@@ -2446,7 +2476,7 @@ PDOMapping=1
 [2111]
 ParameterName=Variable Int32 save
 ObjectType=0x8
-;StorageLocation=PERSIST_APP
+;StorageLocation=RAM
 SubNumber=0x11
 
 [2111sub0]
@@ -2605,7 +2635,7 @@ PDOMapping=0
 [2112]
 ParameterName=Variable NV Int32 auto save
 ObjectType=0x8
-;StorageLocation=PERSIST_APP_AUTO
+;StorageLocation=RAM
 SubNumber=0x11
 
 [2112sub0]
@@ -2764,7 +2794,7 @@ PDOMapping=0
 [2120]
 ParameterName=Demo record
 ObjectType=0x9
-;StorageLocation=PERSIST_APP
+;StorageLocation=RAM
 SubNumber=0x7
 
 [2120sub0]
@@ -2833,7 +2863,7 @@ PDOMapping=0
 [2121]
 ParameterName=Demo strings
 ObjectType=0x9
-;StorageLocation=PERSIST_APP
+;StorageLocation=RAM
 SubNumber=0x4
 
 [2121sub0]
