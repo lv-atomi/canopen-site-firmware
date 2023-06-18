@@ -61,31 +61,86 @@ CO_t *CO = NULL; /* CANopen object */
 // Global variables
 uint32_t time_old, time_current;
 CO_ReturnError_t err;
-OD_extension_t OD_1015_extension;
+OD_extension_t OD_6412_extension;
+OD_extension_t OD_6413_extension;
+OD_extension_t OD_6414_extension;
+OD_extension_t OD_6415_extension;
 
-static ODR_t my_OD_read_1015(OD_stream_t *stream, void *buf,
+static ODR_t my_OD_read_6412(OD_stream_t *stream, void *buf,
 			     OD_size_t count, OD_size_t *countRead)
 {
-  printf("read 1015\n");
+  printf("read 6412\n");
   *countRead = 4;
   return ODR_OK;
 }
 
-static ODR_t my_OD_write_1015(OD_stream_t *stream, const void *buf,
+static ODR_t my_OD_read_6413(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead)
+{
+  printf("read 6412\n");
+  *countRead = 4;
+  return ODR_OK;
+}
+
+
+static ODR_t my_OD_read_6414(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead)
+{
+  printf("read 6414\n");
+  *countRead = 4;
+  return ODR_OK;
+}
+
+static ODR_t my_OD_read_6415(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead)
+{
+  printf("read 6415\n");
+  *countRead = 4;
+  return ODR_OK;
+}
+
+static ODR_t my_OD_write_6414(OD_stream_t *stream, const void *buf,
 			      OD_size_t count, OD_size_t *countWritten){
-  printf("write 1015\n");
+  printf("write 6414\n");
+  return ODR_OK;
+}
+
+static ODR_t my_OD_write_6415(OD_stream_t *stream, const void *buf,
+			      OD_size_t count, OD_size_t *countWritten){
+  printf("write 6414\n");
   return ODR_OK;
 }
 
 CO_ReturnError_t app_programStart() {
-  
-  OD_entry_t * param_1015 = OD_ENTRY_H1015_inhibitTimeEMCY;
-  OD_1015_extension.object = NULL;
-  OD_1015_extension.read = my_OD_read_1015;
-  OD_1015_extension.write = my_OD_write_1015;
+  OD_entry_t * param_6412 = OD_ENTRY_H6412_PSU_CurrentRead;
+  OD_6412_extension.object = NULL;
+  OD_6412_extension.read = my_OD_read_6412;
+  OD_6412_extension.write = NULL;
 
-  OD_extension_init(param_1015, &OD_1015_extension);
+  OD_extension_init(param_6412, &OD_6412_extension);
+
+  OD_entry_t * param_6413 = OD_ENTRY_H6413_PSU_VoltageRead;
+  OD_6413_extension.object = NULL;
+  OD_6413_extension.read = my_OD_read_6413;
+  OD_6413_extension.write = NULL;
+
+  OD_extension_init(param_6413, &OD_6413_extension);
+
+  OD_entry_t * param_6414 = OD_ENTRY_H6414_PSU_CurentSet;
+  OD_6412_extension.object = NULL;
+  OD_6412_extension.read = my_OD_read_6414;
+  OD_6412_extension.write = my_OD_write_6414;
+
+  OD_extension_init(param_6414, &OD_6414_extension);
+
+  OD_entry_t * param_6415 = OD_ENTRY_H6415_PSU_VoltageSet;
+  OD_6413_extension.object = NULL;
+  OD_6413_extension.read = my_OD_read_6415;
+  OD_6413_extension.write = my_OD_write_6415;
+
+  OD_extension_init(param_6415, &OD_6415_extension);
   
+
   return CO_ERROR_NO;
 }
 
