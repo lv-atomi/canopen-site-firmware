@@ -5,6 +5,7 @@ import time
 # node = network.add_node(127, 'delta_servo_dictionary.eds')
 #local_node = canopen.LocalNode(1, '/path/to/master_dictionary.eds')
 #network.add_node(local_node)
+EDS_PATH = '../user/canopen/application/DS301_profile2.eds'
 
 class CanOpenStack:
     def __init__(self, ifname='can0') -> None:
@@ -34,7 +35,7 @@ def test_discovery():
 
 def test_list_objectdict(nid=127, show_value=False):
     cos = CanOpenStack()
-    node = cos.add_node(nid, 'DS301_profile.eds')
+    node = cos.add_node(nid, EDS_PATH)
 
     def dump_values(obj, show_value, oaccess):
         for subobj in obj.values():
@@ -73,13 +74,13 @@ def dump(node, *names):
 
 def test_simple(nid=1):
     cos = CanOpenStack()
-    node = cos.add_node(nid, 'DS301_profile.eds')
-    dump(node, 0x1017)
+    node = cos.add_node(nid, EDS_PATH)
+    dump(node, 0x6415)
             
 if __name__ == '__main__':
-    test_discovery()
+    #test_discovery()
     #test_list_objectdict(nid=1, show_value=True)
-    #test_simple()
+    test_simple()
     
 
 
