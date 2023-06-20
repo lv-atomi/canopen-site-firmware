@@ -207,8 +207,14 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x2110_variableInt32 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     .x6000_readDigitalInput8_bit_sub0 = 0x08,
     .x6000_readDigitalInput8_bit = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+    .x6001_triggerInput_sub0 = 0x08,
+    .x6001_triggerInput = {true, true, true, true, true, true, true, true},
+    .x6002_thermal7705_sub0 = 0x02,
+    .x6002_thermal7705 = {0, 0},
     .x6200_writeDigitalOutput8_bit_sub0 = 0x08,
     .x6200_writeDigitalOutput8_bit = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+    .x6201_triggerOutput_sub0 = 0x08,
+    .x6201_triggerOutput = {true, true, true, true, true, true, true, true},
     .x6401_readAnalogInput16_bit_sub0 = 0x10,
     .x6401_readAnalogInput16_bit = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     .x6411_writeAnalogOutput16_bit_sub0 = 0x08,
@@ -216,7 +222,9 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6412_PSU_CurrentRead = 0x00000000,
     .x6413_PSU_VoltageRead = 0x00000000,
     .x6414_PSU_CurentSet = 0x00000000,
-    .x6415_PSU_VoltageSet = 0x00000000
+    .x6415_PSU_VoltageSet = 0x00000000,
+    .x6416_capacitorDisplacement = 0x00000000,
+    .x6417_HBridgeMotor = 0
 };
 
 OD_ATTR_PERSIST_APP_AUTO OD_PERSIST_APP_AUTO_t OD_PERSIST_APP_AUTO = {
@@ -295,13 +303,18 @@ typedef struct {
     OD_obj_record_t o_2121_demoStrings[4];
     OD_obj_var_t o_2122_demoDomain;
     OD_obj_array_t o_6000_readDigitalInput8_bit;
+    OD_obj_array_t o_6001_triggerInput;
+    OD_obj_array_t o_6002_thermal7705;
     OD_obj_array_t o_6200_writeDigitalOutput8_bit;
+    OD_obj_array_t o_6201_triggerOutput;
     OD_obj_array_t o_6401_readAnalogInput16_bit;
     OD_obj_array_t o_6411_writeAnalogOutput16_bit;
     OD_obj_var_t o_6412_PSU_CurrentRead;
     OD_obj_var_t o_6413_PSU_VoltageRead;
     OD_obj_var_t o_6414_PSU_CurentSet;
     OD_obj_var_t o_6415_PSU_VoltageSet;
+    OD_obj_var_t o_6416_capacitorDisplacement;
+    OD_obj_var_t o_6417_HBridgeMotor;
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -1301,6 +1314,22 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataElementLength = 1,
         .dataElementSizeof = sizeof(uint8_t)
     },
+    .o_6001_triggerInput = {
+        .dataOrig0 = &OD_RAM.x6001_triggerInput_sub0,
+        .dataOrig = &OD_RAM.x6001_triggerInput[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_R | ODA_TRPDO,
+        .dataElementLength = 1,
+        .dataElementSizeof = sizeof(bool_t)
+    },
+    .o_6002_thermal7705 = {
+        .dataOrig0 = &OD_RAM.x6002_thermal7705_sub0,
+        .dataOrig = &OD_RAM.x6002_thermal7705[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_R | ODA_TRPDO | ODA_MB,
+        .dataElementLength = 4,
+        .dataElementSizeof = sizeof(int32_t)
+    },
     .o_6200_writeDigitalOutput8_bit = {
         .dataOrig0 = &OD_RAM.x6200_writeDigitalOutput8_bit_sub0,
         .dataOrig = &OD_RAM.x6200_writeDigitalOutput8_bit[0],
@@ -1308,6 +1337,14 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW | ODA_TRPDO,
         .dataElementLength = 1,
         .dataElementSizeof = sizeof(uint8_t)
+    },
+    .o_6201_triggerOutput = {
+        .dataOrig0 = &OD_RAM.x6201_triggerOutput_sub0,
+        .dataOrig = &OD_RAM.x6201_triggerOutput[0],
+        .attribute0 = ODA_SDO_R | ODA_TRPDO,
+        .attribute = ODA_SDO_RW | ODA_TRPDO,
+        .dataElementLength = 1,
+        .dataElementSizeof = sizeof(bool_t)
     },
     .o_6401_readAnalogInput16_bit = {
         .dataOrig0 = &OD_RAM.x6401_readAnalogInput16_bit_sub0,
@@ -1342,6 +1379,16 @@ static CO_PROGMEM ODObjs_t ODObjs = {
     },
     .o_6415_PSU_VoltageSet = {
         .dataOrig = &OD_RAM.x6415_PSU_VoltageSet,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 4
+    },
+    .o_6416_capacitorDisplacement = {
+        .dataOrig = &OD_RAM.x6416_capacitorDisplacement,
+        .attribute = ODA_SDO_R | ODA_MB,
+        .dataLength = 4
+    },
+    .o_6417_HBridgeMotor = {
+        .dataOrig = &OD_RAM.x6417_HBridgeMotor,
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 4
     }
@@ -1397,13 +1444,18 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x2121, 0x04, ODT_REC, &ODObjs.o_2121_demoStrings, NULL},
     {0x2122, 0x01, ODT_VAR, &ODObjs.o_2122_demoDomain, NULL},
     {0x6000, 0x09, ODT_ARR, &ODObjs.o_6000_readDigitalInput8_bit, NULL},
+    {0x6001, 0x09, ODT_ARR, &ODObjs.o_6001_triggerInput, NULL},
+    {0x6002, 0x03, ODT_ARR, &ODObjs.o_6002_thermal7705, NULL},
     {0x6200, 0x09, ODT_ARR, &ODObjs.o_6200_writeDigitalOutput8_bit, NULL},
+    {0x6201, 0x09, ODT_ARR, &ODObjs.o_6201_triggerOutput, NULL},
     {0x6401, 0x11, ODT_ARR, &ODObjs.o_6401_readAnalogInput16_bit, NULL},
     {0x6411, 0x09, ODT_ARR, &ODObjs.o_6411_writeAnalogOutput16_bit, NULL},
     {0x6412, 0x01, ODT_VAR, &ODObjs.o_6412_PSU_CurrentRead, NULL},
     {0x6413, 0x01, ODT_VAR, &ODObjs.o_6413_PSU_VoltageRead, NULL},
     {0x6414, 0x01, ODT_VAR, &ODObjs.o_6414_PSU_CurentSet, NULL},
     {0x6415, 0x01, ODT_VAR, &ODObjs.o_6415_PSU_VoltageSet, NULL},
+    {0x6416, 0x01, ODT_VAR, &ODObjs.o_6416_capacitorDisplacement, NULL},
+    {0x6417, 0x01, ODT_VAR, &ODObjs.o_6417_HBridgeMotor, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

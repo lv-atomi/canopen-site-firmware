@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-06-18" fileModificationTime="15:24:48.7454750+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-06-20" fileModificationTime="16:32:41.0700150+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>lv</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -79,9 +79,21 @@
             <q1:subrange lowerLimit="0" upperLimit="8" />
             <USINT />
           </q1:array>
+          <q1:array name="TriggerInput" uniqueID="UID_ARR_6001">
+            <q1:subrange lowerLimit="0" upperLimit="8" />
+            <BOOL />
+          </q1:array>
+          <q1:array name="Thermal7705" uniqueID="UID_ARR_6002">
+            <q1:subrange lowerLimit="0" upperLimit="2" />
+            <DINT />
+          </q1:array>
           <q1:array name="Write digital output 8-bit" uniqueID="UID_ARR_6200">
             <q1:subrange lowerLimit="0" upperLimit="8" />
             <USINT />
+          </q1:array>
+          <q1:array name="TriggerOutput" uniqueID="UID_ARR_6201">
+            <q1:subrange lowerLimit="0" upperLimit="8" />
+            <BOOL />
           </q1:array>
           <q1:array name="Read analog input 16-bit" uniqueID="UID_ARR_6401">
             <q1:subrange lowerLimit="0" upperLimit="16" />
@@ -1944,6 +1956,74 @@
             <USINT />
             <q1:defaultValue value="0x00" />
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6001">
+            <label lang="en">TriggerInput</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6001" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600100">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x08" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600101">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600102">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600103">
+            <label lang="en">In2</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600104">
+            <label lang="en">In3</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600105">
+            <label lang="en">In4</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600106">
+            <label lang="en">In5</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600107">
+            <label lang="en">In6</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600108">
+            <label lang="en">In7</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6002">
+            <label lang="en">Thermal7705</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6002" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600200">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x02" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600201">
+            <label lang="en">Thermal0</label>
+            <DINT />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_600202">
+            <label lang="en">Thermal1</label>
+            <DINT />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6200">
             <label lang="en">Write digital output 8-bit</label>
             <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6200" />
@@ -1991,6 +2071,55 @@
           <q1:parameter uniqueID="UID_SUB_620008" access="readWrite">
             <label lang="en">Output</label>
             <USINT />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6201">
+            <label lang="en">TriggerOutput</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6201" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620100">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x08" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620101" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620102" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620103" access="readWrite">
+            <label lang="en">Out2</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620104" access="readWrite">
+            <label lang="en">Out3</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620105" access="readWrite">
+            <label lang="en">Out4</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620106" access="readWrite">
+            <label lang="en">Out5</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620107" access="readWrite">
+            <label lang="en">Out6</label>
+            <BOOL />
+            <q1:defaultValue value="0x00" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_620108" access="readWrite">
+            <label lang="en">Out7</label>
+            <BOOL />
             <q1:defaultValue value="0x00" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6401">
@@ -2151,6 +2280,16 @@
             <UDINT />
             <q1:defaultValue value="0" />
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6416">
+            <label lang="en">Capacitor displacement</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6417" access="readWrite">
+            <label lang="en">HBridge Motor </label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
         </q1:parameterList>
       </q1:ApplicationProcess>
     </ProfileBody>
@@ -2168,7 +2307,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-06-18" fileModificationTime="15:24:48.7454750+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-06-20" fileModificationTime="16:32:41.0700150+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />
@@ -2480,6 +2619,22 @@
             <CANopenSubObject subIndex="07" name="Input" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600007" />
             <CANopenSubObject subIndex="08" name="Input" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600008" />
           </CANopenObject>
+          <CANopenObject index="6001" name="TriggerInput" objectType="8" uniqueIDRef="UID_OBJ_6001" subNumber="9">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_600100" />
+            <CANopenSubObject subIndex="01" name="In0" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600101" />
+            <CANopenSubObject subIndex="02" name="In1" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600102" />
+            <CANopenSubObject subIndex="03" name="In2" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600103" />
+            <CANopenSubObject subIndex="04" name="In3" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600104" />
+            <CANopenSubObject subIndex="05" name="In4" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600105" />
+            <CANopenSubObject subIndex="06" name="In5" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600106" />
+            <CANopenSubObject subIndex="07" name="In6" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600107" />
+            <CANopenSubObject subIndex="08" name="In7" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600108" />
+          </CANopenObject>
+          <CANopenObject index="6002" name="Thermal7705" objectType="8" uniqueIDRef="UID_OBJ_6002" subNumber="3">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_600200" />
+            <CANopenSubObject subIndex="01" name="Thermal0" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600201" />
+            <CANopenSubObject subIndex="02" name="Thermal1" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_600202" />
+          </CANopenObject>
           <CANopenObject index="6200" name="Write digital output 8-bit" objectType="8" uniqueIDRef="UID_OBJ_6200" subNumber="9">
             <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620000" />
             <CANopenSubObject subIndex="01" name="Output" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620001" />
@@ -2490,6 +2645,17 @@
             <CANopenSubObject subIndex="06" name="Output" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620006" />
             <CANopenSubObject subIndex="07" name="Output" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620007" />
             <CANopenSubObject subIndex="08" name="Output" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620008" />
+          </CANopenObject>
+          <CANopenObject index="6201" name="TriggerOutput" objectType="8" uniqueIDRef="UID_OBJ_6201" subNumber="9">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620100" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620101" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620102" />
+            <CANopenSubObject subIndex="03" name="Out2" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620103" />
+            <CANopenSubObject subIndex="04" name="Out3" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620104" />
+            <CANopenSubObject subIndex="05" name="Out4" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620105" />
+            <CANopenSubObject subIndex="06" name="Out5" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620106" />
+            <CANopenSubObject subIndex="07" name="Out6" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620107" />
+            <CANopenSubObject subIndex="08" name="Out7" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_620108" />
           </CANopenObject>
           <CANopenObject index="6401" name="Read analog input 16-bit" objectType="8" uniqueIDRef="UID_OBJ_6401" subNumber="17">
             <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="optional" uniqueIDRef="UID_SUB_640100" />
@@ -2525,6 +2691,8 @@
           <CANopenObject index="6413" name="PSU Voltage Read" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6413" />
           <CANopenObject index="6414" name="PSU Curent Set" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6414" />
           <CANopenObject index="6415" name="PSU Voltage Set" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6415" />
+          <CANopenObject index="6416" name="Capacitor displacement" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6416" />
+          <CANopenObject index="6417" name="HBridge Motor " objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6417" />
         </q2:CANopenObjectList>
         <dummyUsage>
           <dummy entry="Dummy0001=0" />

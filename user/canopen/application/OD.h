@@ -16,14 +16,14 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/6/18 15:18:38
+        Modified:     2023/6/20 16:32:41
         Modified By:  Janez Paternoster
 
     Device Info:
         Vendor Name:  lv
         Vendor ID:    1234
         Product Name: Demo device
-        Product ID:   
+        Product ID:   1234
 
         Description:  Demo CANopen device with example usage.
 *******************************************************************************/
@@ -59,7 +59,10 @@
 #define OD_CNT_ARR_2111 16
 #define OD_CNT_ARR_2112 16
 #define OD_CNT_ARR_6000 8
+#define OD_CNT_ARR_6001 8
+#define OD_CNT_ARR_6002 2
 #define OD_CNT_ARR_6200 8
+#define OD_CNT_ARR_6201 8
 #define OD_CNT_ARR_6401 16
 #define OD_CNT_ARR_6411 8
 
@@ -254,8 +257,14 @@ typedef struct {
     int32_t x2110_variableInt32[OD_CNT_ARR_2110];
     uint8_t x6000_readDigitalInput8_bit_sub0;
     uint8_t x6000_readDigitalInput8_bit[OD_CNT_ARR_6000];
+    uint8_t x6001_triggerInput_sub0;
+    bool_t x6001_triggerInput[OD_CNT_ARR_6001];
+    uint8_t x6002_thermal7705_sub0;
+    int32_t x6002_thermal7705[OD_CNT_ARR_6002];
     uint8_t x6200_writeDigitalOutput8_bit_sub0;
     uint8_t x6200_writeDigitalOutput8_bit[OD_CNT_ARR_6200];
+    uint8_t x6201_triggerOutput_sub0;
+    bool_t x6201_triggerOutput[OD_CNT_ARR_6201];
     uint8_t x6401_readAnalogInput16_bit_sub0;
     int16_t x6401_readAnalogInput16_bit[OD_CNT_ARR_6401];
     uint8_t x6411_writeAnalogOutput16_bit_sub0;
@@ -264,6 +273,8 @@ typedef struct {
     uint32_t x6413_PSU_VoltageRead;
     uint32_t x6414_PSU_CurentSet;
     uint32_t x6415_PSU_VoltageSet;
+    uint32_t x6416_capacitorDisplacement;
+    int32_t x6417_HBridgeMotor;
 } OD_RAM_t;
 
 typedef struct {
@@ -365,13 +376,18 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2121 &OD->list[42]
 #define OD_ENTRY_H2122 &OD->list[43]
 #define OD_ENTRY_H6000 &OD->list[44]
-#define OD_ENTRY_H6200 &OD->list[45]
-#define OD_ENTRY_H6401 &OD->list[46]
-#define OD_ENTRY_H6411 &OD->list[47]
-#define OD_ENTRY_H6412 &OD->list[48]
-#define OD_ENTRY_H6413 &OD->list[49]
-#define OD_ENTRY_H6414 &OD->list[50]
-#define OD_ENTRY_H6415 &OD->list[51]
+#define OD_ENTRY_H6001 &OD->list[45]
+#define OD_ENTRY_H6002 &OD->list[46]
+#define OD_ENTRY_H6200 &OD->list[47]
+#define OD_ENTRY_H6201 &OD->list[48]
+#define OD_ENTRY_H6401 &OD->list[49]
+#define OD_ENTRY_H6411 &OD->list[50]
+#define OD_ENTRY_H6412 &OD->list[51]
+#define OD_ENTRY_H6413 &OD->list[52]
+#define OD_ENTRY_H6414 &OD->list[53]
+#define OD_ENTRY_H6415 &OD->list[54]
+#define OD_ENTRY_H6416 &OD->list[55]
+#define OD_ENTRY_H6417 &OD->list[56]
 
 
 /*******************************************************************************
@@ -422,13 +438,18 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2121_demoStrings &OD->list[42]
 #define OD_ENTRY_H2122_demoDomain &OD->list[43]
 #define OD_ENTRY_H6000_readDigitalInput8_bit &OD->list[44]
-#define OD_ENTRY_H6200_writeDigitalOutput8_bit &OD->list[45]
-#define OD_ENTRY_H6401_readAnalogInput16_bit &OD->list[46]
-#define OD_ENTRY_H6411_writeAnalogOutput16_bit &OD->list[47]
-#define OD_ENTRY_H6412_PSU_CurrentRead &OD->list[48]
-#define OD_ENTRY_H6413_PSU_VoltageRead &OD->list[49]
-#define OD_ENTRY_H6414_PSU_CurentSet &OD->list[50]
-#define OD_ENTRY_H6415_PSU_VoltageSet &OD->list[51]
+#define OD_ENTRY_H6001_triggerInput &OD->list[45]
+#define OD_ENTRY_H6002_thermal7705 &OD->list[46]
+#define OD_ENTRY_H6200_writeDigitalOutput8_bit &OD->list[47]
+#define OD_ENTRY_H6201_triggerOutput &OD->list[48]
+#define OD_ENTRY_H6401_readAnalogInput16_bit &OD->list[49]
+#define OD_ENTRY_H6411_writeAnalogOutput16_bit &OD->list[50]
+#define OD_ENTRY_H6412_PSU_CurrentRead &OD->list[51]
+#define OD_ENTRY_H6413_PSU_VoltageRead &OD->list[52]
+#define OD_ENTRY_H6414_PSU_CurentSet &OD->list[53]
+#define OD_ENTRY_H6415_PSU_VoltageSet &OD->list[54]
+#define OD_ENTRY_H6416_capacitorDisplacement &OD->list[55]
+#define OD_ENTRY_H6417_HBridgeMotor &OD->list[56]
 
 
 /*******************************************************************************
