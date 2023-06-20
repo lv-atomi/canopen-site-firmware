@@ -224,7 +224,116 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6414_PSU_CurentSet = 0x00000000,
     .x6415_PSU_VoltageSet = 0x00000000,
     .x6416_capacitorDisplacement = 0x00000000,
-    .x6417_HBridgeMotor = 0
+    .x6417_HBridgeMotor = 0,
+    .x6418_weightSensor_sub0 = 0x04,
+    .x6418_weightSensor = {0x00000000, 0x00000000, 0x00000000, 0x00000000},
+    .x6419_airConditionThermalSensor_sub0 = 0x04,
+    .x6419_airConditionThermalSensor = {0x00000000, 0x00000000, 0x00000000, 0x00000000},
+    .x641A_airConditionFAN_Control_sub0 = 0x04,
+    .x641A_airConditionFAN_Control = {0x00, 0x00, 0x00, 0x00},
+    .x641B_airConditionWorkload = 0x00,
+    .x641C_airConditionStatus = 0x00,
+    .x641D_brushlessMotor = 0,
+    .x6500_cameraModule0 = {
+        .highestSub_indexSupported = 0x0B,
+        .strobe = false,
+        .trigger = false,
+        .XMove = 0,
+        .YMove = 0,
+        .ZMove = 0,
+        .XTilt = 0,
+        .YTilt = 0,
+        .ZTilt = 0,
+        .zoom = 0,
+        .iris = 0,
+        .focus = 0
+    },
+    .x6501_cameraModule1 = {
+        .highestSub_indexSupported = 0x0B,
+        .strobe = false,
+        .trigger = false,
+        .XMove = 0,
+        .YMove = 0,
+        .ZMove = 0,
+        .XTilt = 0,
+        .YTilt = 0,
+        .ZTilt = 0,
+        .zoom = 0,
+        .iris = 0,
+        .focus = 0
+    },
+    .x6600_stackableModule0 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6601_stackableModule1 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6602_stackableModule2 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6603_stackableModule3 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6604_stackableModule4 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6605_stackableModule5 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6606_stackableModule6 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    },
+    .x6607_stackableModule7 = {
+        .highestSub_indexSupported = 0x06,
+        .out0 = false,
+        .out1 = false,
+        .in0 = false,
+        .in1 = false,
+        .HBridgeMotor = 0,
+        .I2CAddr = 0x00
+    }
 };
 
 OD_ATTR_PERSIST_APP_AUTO OD_PERSIST_APP_AUTO_t OD_PERSIST_APP_AUTO = {
@@ -315,6 +424,22 @@ typedef struct {
     OD_obj_var_t o_6415_PSU_VoltageSet;
     OD_obj_var_t o_6416_capacitorDisplacement;
     OD_obj_var_t o_6417_HBridgeMotor;
+    OD_obj_array_t o_6418_weightSensor;
+    OD_obj_array_t o_6419_airConditionThermalSensor;
+    OD_obj_array_t o_641A_airConditionFAN_Control;
+    OD_obj_var_t o_641B_airConditionWorkload;
+    OD_obj_var_t o_641C_airConditionStatus;
+    OD_obj_var_t o_641D_brushlessMotor;
+    OD_obj_record_t o_6500_cameraModule0[12];
+    OD_obj_record_t o_6501_cameraModule1[12];
+    OD_obj_record_t o_6600_stackableModule0[7];
+    OD_obj_record_t o_6601_stackableModule1[7];
+    OD_obj_record_t o_6602_stackableModule2[7];
+    OD_obj_record_t o_6603_stackableModule3[7];
+    OD_obj_record_t o_6604_stackableModule4[7];
+    OD_obj_record_t o_6605_stackableModule5[7];
+    OD_obj_record_t o_6606_stackableModule6[7];
+    OD_obj_record_t o_6607_stackableModule7[7];
 } ODObjs_t;
 
 static CO_PROGMEM ODObjs_t ODObjs = {
@@ -1391,6 +1516,545 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataOrig = &OD_RAM.x6417_HBridgeMotor,
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 4
+    },
+    .o_6418_weightSensor = {
+        .dataOrig0 = &OD_RAM.x6418_weightSensor_sub0,
+        .dataOrig = &OD_RAM.x6418_weightSensor[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_R | ODA_MB,
+        .dataElementLength = 4,
+        .dataElementSizeof = sizeof(uint32_t)
+    },
+    .o_6419_airConditionThermalSensor = {
+        .dataOrig0 = &OD_RAM.x6419_airConditionThermalSensor_sub0,
+        .dataOrig = &OD_RAM.x6419_airConditionThermalSensor[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_R | ODA_MB,
+        .dataElementLength = 4,
+        .dataElementSizeof = sizeof(uint32_t)
+    },
+    .o_641A_airConditionFAN_Control = {
+        .dataOrig0 = &OD_RAM.x641A_airConditionFAN_Control_sub0,
+        .dataOrig = &OD_RAM.x641A_airConditionFAN_Control[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_RW,
+        .dataElementLength = 1,
+        .dataElementSizeof = sizeof(uint8_t)
+    },
+    .o_641B_airConditionWorkload = {
+        .dataOrig = &OD_RAM.x641B_airConditionWorkload,
+        .attribute = ODA_SDO_RW,
+        .dataLength = 1
+    },
+    .o_641C_airConditionStatus = {
+        .dataOrig = &OD_RAM.x641C_airConditionStatus,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_641D_brushlessMotor = {
+        .dataOrig = &OD_RAM.x641D_brushlessMotor,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataLength = 4
+    },
+    .o_6500_cameraModule0 = {
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.strobe,
+            .subIndex = 1,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.trigger,
+            .subIndex = 2,
+            .attribute = ODA_SDO_W,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.XMove,
+            .subIndex = 3,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.YMove,
+            .subIndex = 4,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.ZMove,
+            .subIndex = 5,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.XTilt,
+            .subIndex = 6,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.YTilt,
+            .subIndex = 7,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.ZTilt,
+            .subIndex = 8,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.zoom,
+            .subIndex = 9,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.iris,
+            .subIndex = 10,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6500_cameraModule0.focus,
+            .subIndex = 11,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        }
+    },
+    .o_6501_cameraModule1 = {
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.strobe,
+            .subIndex = 1,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.trigger,
+            .subIndex = 2,
+            .attribute = ODA_SDO_W,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.XMove,
+            .subIndex = 3,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.YMove,
+            .subIndex = 4,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.ZMove,
+            .subIndex = 5,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.XTilt,
+            .subIndex = 6,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.YTilt,
+            .subIndex = 7,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.ZTilt,
+            .subIndex = 8,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.zoom,
+            .subIndex = 9,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.iris,
+            .subIndex = 10,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6501_cameraModule1.focus,
+            .subIndex = 11,
+            .attribute = ODA_SDO_W | ODA_MB,
+            .dataLength = 4
+        }
+    },
+    .o_6600_stackableModule0 = {
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6600_stackableModule0.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6601_stackableModule1 = {
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6601_stackableModule1.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6602_stackableModule2 = {
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6602_stackableModule2.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6603_stackableModule3 = {
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6603_stackableModule3.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6604_stackableModule4 = {
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6604_stackableModule4.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6605_stackableModule5 = {
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6605_stackableModule5.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6606_stackableModule6 = {
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6606_stackableModule6.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
+    },
+    .o_6607_stackableModule7 = {
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.out0,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.out1,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.in0,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.in1,
+            .subIndex = 4,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.HBridgeMotor,
+            .subIndex = 5,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6607_stackableModule7.I2CAddr,
+            .subIndex = 6,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        }
     }
 };
 
@@ -1456,6 +2120,22 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6415, 0x01, ODT_VAR, &ODObjs.o_6415_PSU_VoltageSet, NULL},
     {0x6416, 0x01, ODT_VAR, &ODObjs.o_6416_capacitorDisplacement, NULL},
     {0x6417, 0x01, ODT_VAR, &ODObjs.o_6417_HBridgeMotor, NULL},
+    {0x6418, 0x05, ODT_ARR, &ODObjs.o_6418_weightSensor, NULL},
+    {0x6419, 0x05, ODT_ARR, &ODObjs.o_6419_airConditionThermalSensor, NULL},
+    {0x641A, 0x05, ODT_ARR, &ODObjs.o_641A_airConditionFAN_Control, NULL},
+    {0x641B, 0x01, ODT_VAR, &ODObjs.o_641B_airConditionWorkload, NULL},
+    {0x641C, 0x01, ODT_VAR, &ODObjs.o_641C_airConditionStatus, NULL},
+    {0x641D, 0x01, ODT_VAR, &ODObjs.o_641D_brushlessMotor, NULL},
+    {0x6500, 0x0C, ODT_REC, &ODObjs.o_6500_cameraModule0, NULL},
+    {0x6501, 0x0C, ODT_REC, &ODObjs.o_6501_cameraModule1, NULL},
+    {0x6600, 0x07, ODT_REC, &ODObjs.o_6600_stackableModule0, NULL},
+    {0x6601, 0x07, ODT_REC, &ODObjs.o_6601_stackableModule1, NULL},
+    {0x6602, 0x07, ODT_REC, &ODObjs.o_6602_stackableModule2, NULL},
+    {0x6603, 0x07, ODT_REC, &ODObjs.o_6603_stackableModule3, NULL},
+    {0x6604, 0x07, ODT_REC, &ODObjs.o_6604_stackableModule4, NULL},
+    {0x6605, 0x07, ODT_REC, &ODObjs.o_6605_stackableModule5, NULL},
+    {0x6606, 0x07, ODT_REC, &ODObjs.o_6606_stackableModule6, NULL},
+    {0x6607, 0x07, ODT_REC, &ODObjs.o_6607_stackableModule7, NULL},
     {0x0000, 0x00, 0, NULL, NULL}
 };
 

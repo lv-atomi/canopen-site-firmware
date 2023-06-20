@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "capacitor_displacement.h"
-#include "psu.h"
 
 OD_extension_t OD_6416_extension;
 
@@ -12,7 +11,6 @@ static ODR_t my_OD_read_6416(OD_stream_t *stream, void *buf,
   *countRead = 4;
   return ODR_OK;
 }
-
 
 
 CO_ReturnError_t app_capacitor_displacement_init() {

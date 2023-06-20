@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-06-20" fileModificationTime="16:32:41.0700150+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-06-20" fileModificationTime="22:31:39.6307150+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>lv</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -102,6 +102,18 @@
           <q1:array name="Write analog output 16-bit" uniqueID="UID_ARR_6411">
             <q1:subrange lowerLimit="0" upperLimit="8" />
             <INT />
+          </q1:array>
+          <q1:array name="Weight Sensor" uniqueID="UID_ARR_6418">
+            <q1:subrange lowerLimit="0" upperLimit="4" />
+            <UDINT />
+          </q1:array>
+          <q1:array name="AirCondition Thermal Sensor" uniqueID="UID_ARR_6419">
+            <q1:subrange lowerLimit="0" upperLimit="4" />
+            <UDINT />
+          </q1:array>
+          <q1:array name="AirCondition FAN Control" uniqueID="UID_ARR_641A">
+            <q1:subrange lowerLimit="0" upperLimit="4" />
+            <USINT />
           </q1:array>
           <q1:struct name="Identity" uniqueID="UID_REC_1018">
             <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_101800">
@@ -548,6 +560,266 @@
             </q1:varDeclaration>
             <q1:varDeclaration name="Octet string" uniqueID="UID_RECSUB_212103">
               <BITSTRING />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Camera Module0" uniqueID="UID_REC_6500">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_650000">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Strobe" uniqueID="UID_RECSUB_650001">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Trigger" uniqueID="UID_RECSUB_650002">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="X move" uniqueID="UID_RECSUB_650003">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Y move" uniqueID="UID_RECSUB_650004">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Z move" uniqueID="UID_RECSUB_650005">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="X tilt" uniqueID="UID_RECSUB_650006">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Y tilt" uniqueID="UID_RECSUB_650007">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Z tilt" uniqueID="UID_RECSUB_650008">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Zoom" uniqueID="UID_RECSUB_650009">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Iris" uniqueID="UID_RECSUB_65000A">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Focus" uniqueID="UID_RECSUB_65000B">
+              <DINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Camera Module1" uniqueID="UID_REC_6501">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_650100">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Strobe" uniqueID="UID_RECSUB_650101">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Trigger" uniqueID="UID_RECSUB_650102">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="X move" uniqueID="UID_RECSUB_650103">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Y move" uniqueID="UID_RECSUB_650104">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Z move" uniqueID="UID_RECSUB_650105">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="X tilt" uniqueID="UID_RECSUB_650106">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Y tilt" uniqueID="UID_RECSUB_650107">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Z tilt" uniqueID="UID_RECSUB_650108">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Zoom" uniqueID="UID_RECSUB_650109">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Iris" uniqueID="UID_RECSUB_65010A">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Focus" uniqueID="UID_RECSUB_65010B">
+              <DINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module0" uniqueID="UID_REC_6600">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660000">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660001">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660002">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660003">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660004">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660005">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660006">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module1" uniqueID="UID_REC_6601">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660100">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660101">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660102">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660103">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660104">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660105">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660106">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module2" uniqueID="UID_REC_6602">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660200">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660201">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660202">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660203">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660204">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660205">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660206">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module3" uniqueID="UID_REC_6603">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660300">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660301">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660302">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660303">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660304">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660305">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660306">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module4" uniqueID="UID_REC_6604">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660400">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660401">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660402">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660403">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660404">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660405">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660406">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module5" uniqueID="UID_REC_6605">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660500">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660501">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660502">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660503">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660504">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660505">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660506">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module6" uniqueID="UID_REC_6606">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660600">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660601">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660602">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660603">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660604">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660605">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660606">
+              <USINT />
+            </q1:varDeclaration>
+          </q1:struct>
+          <q1:struct name="Stackable Module7" uniqueID="UID_REC_6607">
+            <q1:varDeclaration name="Highest sub-index supported" uniqueID="UID_RECSUB_660700">
+              <USINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out0" uniqueID="UID_RECSUB_660701">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="Out1" uniqueID="UID_RECSUB_660702">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In0" uniqueID="UID_RECSUB_660703">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="In1" uniqueID="UID_RECSUB_660704">
+              <BOOL />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="HBridge Motor" uniqueID="UID_RECSUB_660705">
+              <DINT />
+            </q1:varDeclaration>
+            <q1:varDeclaration name="I2CAddr" uniqueID="UID_RECSUB_660706">
+              <USINT />
             </q1:varDeclaration>
           </q1:struct>
         </q1:dataTypeList>
@@ -2290,6 +2562,560 @@
             <DINT />
             <q1:defaultValue value="0" />
           </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6418">
+            <label lang="en">Weight Sensor</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6418" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641800">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x04" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641801">
+            <label lang="en">CH0</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641802">
+            <label lang="en">CH1</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641803">
+            <label lang="en">CH2</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641804">
+            <label lang="en">CH3</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6419">
+            <label lang="en">AirCondition Thermal Sensor</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_ARR_6419" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641900">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x04" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641901">
+            <label lang="en">CH0</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641902">
+            <label lang="en">CH1</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641903">
+            <label lang="en">CH2</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641904">
+            <label lang="en">CH3</label>
+            <UDINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_641A">
+            <label lang="en">AirCondition FAN Control</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_ARR_641A" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641A00">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x04" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641A01" access="readWrite">
+            <label lang="en">CH0</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641A02" access="readWrite">
+            <label lang="en">CH1</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641A03" access="readWrite">
+            <label lang="en">CH2</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_641A04" access="readWrite">
+            <label lang="en">CH3</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_641B" access="readWrite">
+            <label lang="en">AirCondition workload</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_641C">
+            <label lang="en">AirCondition status</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+            <q1:allowedValues>
+              <q1:range>
+                <minValue value="0" />
+                <maxValue value="100" />
+              </q1:range>
+            </q1:allowedValues>
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_641D" access="readWrite">
+            <label lang="en">Brushless Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6500">
+            <label lang="en">Camera Module0</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6500" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650000">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x0B" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650001">
+            <label lang="en">Strobe</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650002" access="write">
+            <label lang="en">Trigger</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650003" access="write">
+            <label lang="en">X move</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650004" access="write">
+            <label lang="en">Y move</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650005" access="write">
+            <label lang="en">Z move</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650006" access="write">
+            <label lang="en">X tilt</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650007" access="write">
+            <label lang="en">Y tilt</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650008" access="write">
+            <label lang="en">Z tilt</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650009" access="write">
+            <label lang="en">Zoom</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_65000A" access="write">
+            <label lang="en">Iris</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_65000B" access="write">
+            <label lang="en">Focus</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6501">
+            <label lang="en">Camera Module1</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6501" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650100">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x0B" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650101">
+            <label lang="en">Strobe</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650102" access="write">
+            <label lang="en">Trigger</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650103" access="write">
+            <label lang="en">X move</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650104" access="write">
+            <label lang="en">Y move</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650105" access="write">
+            <label lang="en">Z move</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650106" access="write">
+            <label lang="en">X tilt</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650107" access="write">
+            <label lang="en">Y tilt</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650108" access="write">
+            <label lang="en">Z tilt</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_650109" access="write">
+            <label lang="en">Zoom</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_65010A" access="write">
+            <label lang="en">Iris</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_65010B" access="write">
+            <label lang="en">Focus</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6600">
+            <label lang="en">Stackable Module0</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6600" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660000">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660001" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660002" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660003">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660004">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660005" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660006">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6601">
+            <label lang="en">Stackable Module1</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6601" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660100">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660101" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660102" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660103">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660104">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660105" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660106">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6602">
+            <label lang="en">Stackable Module2</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6602" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660200">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660201" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660202" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660203">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660204">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660205" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660206">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6603">
+            <label lang="en">Stackable Module3</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6603" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660300">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660301" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660302" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660303">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660304">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660305" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660306">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6604">
+            <label lang="en">Stackable Module4</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6604" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660400">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660401" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660402" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660403">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660404">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660405" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660406">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6605">
+            <label lang="en">Stackable Module5</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6605" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660500">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660501" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660502" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660503">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660504">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660505" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660506">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6606">
+            <label lang="en">Stackable Module6</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6606" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660600">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660601" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660602" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660603">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660604">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660605" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660606">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_OBJ_6607">
+            <label lang="en">Stackable Module7</label>
+            <q1:dataTypeIDRef uniqueIDRef="UID_REC_6607" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660700">
+            <label lang="en">Highest sub-index supported</label>
+            <USINT />
+            <q1:defaultValue value="0x06" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660701" access="readWrite">
+            <label lang="en">Out0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660702" access="readWrite">
+            <label lang="en">Out1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660703">
+            <label lang="en">In0</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660704">
+            <label lang="en">In1</label>
+            <BOOL />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660705" access="readWrite">
+            <label lang="en">HBridge Motor</label>
+            <DINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
+          <q1:parameter uniqueID="UID_SUB_660706">
+            <label lang="en">I2CAddr</label>
+            <USINT />
+            <q1:defaultValue value="0" />
+          </q1:parameter>
         </q1:parameterList>
       </q1:ApplicationProcess>
     </ProfileBody>
@@ -2307,7 +3133,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-06-20" fileModificationTime="16:32:41.0700150+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-06-20" fileModificationTime="22:31:39.6307150+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />
@@ -2693,6 +3519,130 @@
           <CANopenObject index="6415" name="PSU Voltage Set" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6415" />
           <CANopenObject index="6416" name="Capacitor displacement" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6416" />
           <CANopenObject index="6417" name="HBridge Motor " objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_6417" />
+          <CANopenObject index="6418" name="Weight Sensor" objectType="8" uniqueIDRef="UID_OBJ_6418" subNumber="5">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641800" />
+            <CANopenSubObject subIndex="01" name="CH0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641801" />
+            <CANopenSubObject subIndex="02" name="CH1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641802" />
+            <CANopenSubObject subIndex="03" name="CH2" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641803" />
+            <CANopenSubObject subIndex="04" name="CH3" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641804" />
+          </CANopenObject>
+          <CANopenObject index="6419" name="AirCondition Thermal Sensor" objectType="8" uniqueIDRef="UID_OBJ_6419" subNumber="5">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641900" />
+            <CANopenSubObject subIndex="01" name="CH0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641901" />
+            <CANopenSubObject subIndex="02" name="CH1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641902" />
+            <CANopenSubObject subIndex="03" name="CH2" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641903" />
+            <CANopenSubObject subIndex="04" name="CH3" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641904" />
+          </CANopenObject>
+          <CANopenObject index="641A" name="AirCondition FAN Control" objectType="8" uniqueIDRef="UID_OBJ_641A" subNumber="5">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641A00" />
+            <CANopenSubObject subIndex="01" name="CH0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641A01" />
+            <CANopenSubObject subIndex="02" name="CH1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641A02" />
+            <CANopenSubObject subIndex="03" name="CH2" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641A03" />
+            <CANopenSubObject subIndex="04" name="CH3" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_641A04" />
+          </CANopenObject>
+          <CANopenObject index="641B" name="AirCondition workload" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_641B" />
+          <CANopenObject index="641C" name="AirCondition status" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_641C" />
+          <CANopenObject index="641D" name="Brushless Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_641D" />
+          <CANopenObject index="6500" name="Camera Module0" objectType="9" uniqueIDRef="UID_OBJ_6500" subNumber="12">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650000" />
+            <CANopenSubObject subIndex="01" name="Strobe" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650001" />
+            <CANopenSubObject subIndex="02" name="Trigger" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650002" />
+            <CANopenSubObject subIndex="03" name="X move" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650003" />
+            <CANopenSubObject subIndex="04" name="Y move" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650004" />
+            <CANopenSubObject subIndex="05" name="Z move" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650005" />
+            <CANopenSubObject subIndex="06" name="X tilt" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650006" />
+            <CANopenSubObject subIndex="07" name="Y tilt" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650007" />
+            <CANopenSubObject subIndex="08" name="Z tilt" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650008" />
+            <CANopenSubObject subIndex="09" name="Zoom" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650009" />
+            <CANopenSubObject subIndex="0A" name="Iris" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_65000A" />
+            <CANopenSubObject subIndex="0B" name="Focus" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_65000B" />
+          </CANopenObject>
+          <CANopenObject index="6501" name="Camera Module1" objectType="9" uniqueIDRef="UID_OBJ_6501" subNumber="12">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650100" />
+            <CANopenSubObject subIndex="01" name="Strobe" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650101" />
+            <CANopenSubObject subIndex="02" name="Trigger" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650102" />
+            <CANopenSubObject subIndex="03" name="X move" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650103" />
+            <CANopenSubObject subIndex="04" name="Y move" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650104" />
+            <CANopenSubObject subIndex="05" name="Z move" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650105" />
+            <CANopenSubObject subIndex="06" name="X tilt" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650106" />
+            <CANopenSubObject subIndex="07" name="Y tilt" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650107" />
+            <CANopenSubObject subIndex="08" name="Z tilt" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650108" />
+            <CANopenSubObject subIndex="09" name="Zoom" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_650109" />
+            <CANopenSubObject subIndex="0A" name="Iris" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_65010A" />
+            <CANopenSubObject subIndex="0B" name="Focus" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_65010B" />
+          </CANopenObject>
+          <CANopenObject index="6600" name="Stackable Module0" objectType="9" uniqueIDRef="UID_OBJ_6600" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660000" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660001" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660002" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660003" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660004" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660005" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660006" />
+          </CANopenObject>
+          <CANopenObject index="6601" name="Stackable Module1" objectType="9" uniqueIDRef="UID_OBJ_6601" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660100" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660101" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660102" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660103" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660104" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660105" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660106" />
+          </CANopenObject>
+          <CANopenObject index="6602" name="Stackable Module2" objectType="9" uniqueIDRef="UID_OBJ_6602" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660200" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660201" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660202" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660203" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660204" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660205" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660206" />
+          </CANopenObject>
+          <CANopenObject index="6603" name="Stackable Module3" objectType="9" uniqueIDRef="UID_OBJ_6603" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660300" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660301" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660302" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660303" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660304" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660305" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660306" />
+          </CANopenObject>
+          <CANopenObject index="6604" name="Stackable Module4" objectType="9" uniqueIDRef="UID_OBJ_6604" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660400" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660401" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660402" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660403" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660404" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660405" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660406" />
+          </CANopenObject>
+          <CANopenObject index="6605" name="Stackable Module5" objectType="9" uniqueIDRef="UID_OBJ_6605" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660500" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660501" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660502" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660503" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660504" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660505" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660506" />
+          </CANopenObject>
+          <CANopenObject index="6606" name="Stackable Module6" objectType="9" uniqueIDRef="UID_OBJ_6606" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660600" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660601" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660602" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660603" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660604" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660605" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660606" />
+          </CANopenObject>
+          <CANopenObject index="6607" name="Stackable Module7" objectType="9" uniqueIDRef="UID_OBJ_6607" subNumber="7">
+            <CANopenSubObject subIndex="00" name="Highest sub-index supported" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660700" />
+            <CANopenSubObject subIndex="01" name="Out0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660701" />
+            <CANopenSubObject subIndex="02" name="Out1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660702" />
+            <CANopenSubObject subIndex="03" name="In0" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660703" />
+            <CANopenSubObject subIndex="04" name="In1" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660704" />
+            <CANopenSubObject subIndex="05" name="HBridge Motor" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660705" />
+            <CANopenSubObject subIndex="06" name="I2CAddr" objectType="7" PDOmapping="no" uniqueIDRef="UID_SUB_660706" />
+          </CANopenObject>
         </q2:CANopenObjectList>
         <dummyUsage>
           <dummy entry="Dummy0001=0" />

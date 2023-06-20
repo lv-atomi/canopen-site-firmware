@@ -1,8 +1,6 @@
 #include <stdio.h>
 
 #include "hbridge.h"
-#include "thermal_7705.h"
-#include "psu.h"
 
 OD_extension_t OD_6417_extension;
 
