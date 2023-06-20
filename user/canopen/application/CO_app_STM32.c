@@ -32,6 +32,17 @@
 #include "OD.h"
 #include "timer1.h"
 
+#include "brushless.h"
+#include "gpio.h"
+#include "aircondition.h"
+#include "stackable_module_food_dispenser.h"
+#include "camera.h"
+#include "hbridge.h"
+#include "weight_sensor.h"
+#include "psu.h"
+#include "thermal_7705.h"
+#include "capacitor_displacement.h"
+
 #define DBG_OD_ENTRY              "(%s) Error in Object Dictionary entry: 0x%X", __func__
 #define DBG_CAN_OPEN              "(%s) CANopen error in %s, err=%d", __func__
 
@@ -61,14 +72,19 @@ CO_t *CO = NULL; /* CANopen object */
 // Global variables
 uint32_t time_old, time_current;
 CO_ReturnError_t err;
-OD_extension_t OD_6412_extension;
-OD_extension_t OD_6413_extension;
-OD_extension_t OD_6414_extension;
-OD_extension_t OD_6415_extension;
 
 
 CO_ReturnError_t app_programStart() {
-  assert(app_psu_init() != CO_ERR_NO);
+  assert(app_psu_init() != CO_ERROR_NO);
+  assert(app_brushless_init() != CO_ERROR_NO);
+  assert(app_hbridge_init() != CO_ERROR_NO);
+  assert(app_thermal_7705_init() != CO_ERROR_NO);
+  assert(app_aircondition_init() != CO_ERROR_NO);
+  assert(app_gpio_init() != CO_ERROR_NO);
+  assert(app_stackable_module_food_dispenser_init() != CO_ERROR_NO);
+  assert(app_camera_init() != CO_ERROR_NO);
+  assert(app_weight_sensor_init() != CO_ERROR_NO);
+  
   
 }
 

@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "aircondition.h"
 
 OD_extension_t OD_6419_extension;
@@ -14,7 +12,7 @@ static ODR_t my_OD_read_6419(OD_stream_t *stream, void *buf,
   return ODR_OK;
 }
 
-Static ODR_t my_OD_read_641A(OD_stream_t *stream, void *buf,
+static ODR_t my_OD_read_641A(OD_stream_t *stream, void *buf,
 			     OD_size_t count, OD_size_t *countRead) {
   printf("read 641A\n");
   *countRead = 4;
@@ -48,32 +46,32 @@ static ODR_t my_OD_read_641C(OD_stream_t *stream, void *buf,
 }
 
 
-CO_ReturnError_t app_psu_init() {
-  OD_entry_t * param_6419 = OD_ENTRY_H6419_airConditionThermalSensor
-  OD_6412_extension.object = NULL;
-  OD_6412_extension.read = my_OD_read_6419;
-  OD_6412_extension.write = NULL;
+CO_ReturnError_t app_aircondition_init() {
+  OD_entry_t * param_6419 = OD_ENTRY_H6419_airConditionThermalSensor;
+  OD_6419_extension.object = NULL;
+  OD_6419_extension.read = my_OD_read_6419;
+  OD_6419_extension.write = NULL;
 
   OD_extension_init(param_6419, &OD_6419_extension);
 
   OD_entry_t * param_641A = OD_ENTRY_H641A_airConditionFAN_Control;
-  OD_6413_extension.object = NULL;
-  OD_6413_extension.read = my_OD_read_641A;
-  OD_6413_extension.write = my_OD_write_641A;
+  OD_641A_extension.object = NULL;
+  OD_641A_extension.read = my_OD_read_641A;
+  OD_641A_extension.write = my_OD_write_641A;
 
   OD_extension_init(param_641A, &OD_641A_extension);
 
   OD_entry_t * param_641B = OD_ENTRY_H641B_airConditionWorkload;
-  OD_6414_extension.object = NULL;
-  OD_6414_extension.read = my_OD_read_641B;
-  OD_6414_extension.write = my_OD_write_641B;
+  OD_641B_extension.object = NULL;
+  OD_641B_extension.read = my_OD_read_641B;
+  OD_641B_extension.write = my_OD_write_641B;
 
   OD_extension_init(param_641B, &OD_641B_extension);
 
   OD_entry_t * param_641C = OD_ENTRY_H641C_airConditionStatus;
-  od_6415_extension.object = NULL;
-  OD_6415_extension.read = my_OD_read_641C;
-  OD_6415_extension.write = NULL;
+  OD_641C_extension.object = NULL;
+  OD_641C_extension.read = my_OD_read_641C;
+  OD_641C_extension.write = NULL;
 
   OD_extension_init(param_641C, &OD_641C_extension);
 

@@ -1,8 +1,8 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-#include "CANopen.h"
+#include "app_common.h"
 
-CO_ReturnError_t app_GPIO_init();
+CO_ReturnError_t app_gpio_init();
 
 #endif

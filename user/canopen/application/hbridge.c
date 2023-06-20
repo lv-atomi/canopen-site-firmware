@@ -19,9 +19,9 @@ static ODR_t my_OD_write_6417(OD_stream_t *stream, const void *buf,
 
 CO_ReturnError_t app_hbridge_init() {
   OD_entry_t * param_6417 = OD_ENTRY_H6417_HBridgeMotor;
-  OD_6412_extension.object = NULL;
-  OD_6412_extension.read = my_OD_read_6417;
-  OD_6412_extension.write = my_OD_write_6417;
+  OD_6417_extension.object = NULL;
+  OD_6417_extension.read = my_OD_read_6417;
+  OD_6417_extension.write = my_OD_write_6417;
 
   OD_extension_init(param_6417, &OD_6417_extension);
 

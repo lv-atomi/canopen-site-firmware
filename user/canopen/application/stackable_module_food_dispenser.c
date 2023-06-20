@@ -44,11 +44,11 @@ CO_ReturnError_t stackable_module_food_dispenser_init(uint8_t offset) {
     return 1;
   }
   
-  OD_660V_extension.object = param_660V;
-  OD_660V_extension.read = my_OD_read_660V;
-  OD_660V_extension.write = my_OD_write_660V;
+  OD_660V_extension[offset].object = param_660V;
+  OD_660V_extension[offset].read = my_OD_read_660V;
+  OD_660V_extension[offset].write = my_OD_write_660V;
 
-  OD_extension_init(param_660V, &OD_660V_extension);
+  OD_extension_init(param_660V, &(OD_660V_extension[offset]));
  
   return CO_ERROR_NO;
 }

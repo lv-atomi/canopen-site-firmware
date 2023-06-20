@@ -14,9 +14,9 @@ static ODR_t my_OD_read_6002(OD_stream_t *stream, void *buf,
 
 CO_ReturnError_t app_thermal_7705_init() {
   OD_entry_t * param_6002 = OD_ENTRY_H6002_thermal7705;
-  OD_6412_extension.object = NULL;
-  OD_6412_extension.read = my_OD_read_6002;
-  OD_6412_extension.write = NULL;
+  OD_6002_extension.object = NULL;
+  OD_6002_extension.read = my_OD_read_6002;
+  OD_6002_extension.write = NULL;
 
   OD_extension_init(param_6002, &OD_6002_extension);
 

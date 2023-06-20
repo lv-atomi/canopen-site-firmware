@@ -34,15 +34,15 @@ CO_ReturnError_t camera_init(uint8_t offset) {
   }
   
   OD_650V_extension[offset].object = NULL;
-  OD_6412_extension[offset].read = my_OD_read_650V;
-  OD_6412_extension[offset].write = my_OD_write_650V;
+  OD_650V_extension[offset].read = my_OD_read_650V;
+  OD_650V_extension[offset].write = my_OD_write_650V;
 
   OD_extension_init(param_650V, &OD_650V_extension);
 
   return CO_ERROR_NO;
 }
 
-CO_ReturnError_t app_camera_init(uint8_t offset) {
+CO_ReturnError_t app_camera_init() {
   if ((camera_init(0) == CO_ERROR_NO) && (camera_init(1) == CO_ERROR_NO))
     return CO_ERROR_NO;
   return 1;

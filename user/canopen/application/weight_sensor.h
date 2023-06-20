@@ -1,7 +1,7 @@
 #ifndef WEIGHT_SENSOR_H
 #define WEIGHT_SENSOR_H
 
-#include "CANopen.h"
+#include "app_common.h"
 
 CO_ReturnError_t app_weight_sensor_init();
 

@@ -19,9 +19,9 @@ static ODR_t my_OD_write_641D(OD_stream_t *stream, const void *buf,
 
 CO_ReturnError_t app_brushless_init() {
   OD_entry_t * param_641D = OD_ENTRY_H641D_brushlessMotor;
-  OD_6412_extension.object = NULL;
-  OD_6412_extension.read = my_OD_read_641D;
-  OD_6412_extension.write = my_OD_write_641D;
+  OD_641D_extension.object = NULL;
+  OD_641D_extension.read = my_OD_read_641D;
+  OD_641D_extension.write = my_OD_write_641D;
 
   OD_extension_init(param_641D, &OD_641D_extension);
 
