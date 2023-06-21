@@ -211,6 +211,7 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6001_triggerInput = {true, true, true, true, true, true, true, true},
     .x6002_thermal7705_sub0 = 0x02,
     .x6002_thermal7705 = {0, 0},
+    .x6003_moduleTemperature = 0x00000000,
     .x6200_writeDigitalOutput8_bit_sub0 = 0x08,
     .x6200_writeDigitalOutput8_bit = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     .x6201_triggerOutput_sub0 = 0x08,
@@ -414,6 +415,7 @@ typedef struct {
     OD_obj_array_t o_6000_readDigitalInput8_bit;
     OD_obj_array_t o_6001_triggerInput;
     OD_obj_array_t o_6002_thermal7705;
+    OD_obj_var_t o_6003_moduleTemperature;
     OD_obj_array_t o_6200_writeDigitalOutput8_bit;
     OD_obj_array_t o_6201_triggerOutput;
     OD_obj_array_t o_6401_readAnalogInput16_bit;
@@ -1455,6 +1457,11 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataElementLength = 4,
         .dataElementSizeof = sizeof(int32_t)
     },
+    .o_6003_moduleTemperature = {
+        .dataOrig = &OD_RAM.x6003_moduleTemperature,
+        .attribute = ODA_SDO_R | ODA_MB,
+        .dataLength = 4
+    },
     .o_6200_writeDigitalOutput8_bit = {
         .dataOrig0 = &OD_RAM.x6200_writeDigitalOutput8_bit_sub0,
         .dataOrig = &OD_RAM.x6200_writeDigitalOutput8_bit[0],
@@ -2110,6 +2117,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6000, 0x09, ODT_ARR, &ODObjs.o_6000_readDigitalInput8_bit, NULL},
     {0x6001, 0x09, ODT_ARR, &ODObjs.o_6001_triggerInput, NULL},
     {0x6002, 0x03, ODT_ARR, &ODObjs.o_6002_thermal7705, NULL},
+    {0x6003, 0x01, ODT_VAR, &ODObjs.o_6003_moduleTemperature, NULL},
     {0x6200, 0x09, ODT_ARR, &ODObjs.o_6200_writeDigitalOutput8_bit, NULL},
     {0x6201, 0x09, ODT_ARR, &ODObjs.o_6201_triggerOutput, NULL},
     {0x6401, 0x11, ODT_ARR, &ODObjs.o_6401_readAnalogInput16_bit, NULL},
