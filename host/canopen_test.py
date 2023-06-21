@@ -78,9 +78,9 @@ def test_simple(nid=1):
     dump(node, 0x6415)
             
 if __name__ == '__main__':
-    #test_discovery()
+    test_discovery()
     #test_list_objectdict(nid=1, show_value=True)
-    test_simple()
+    #test_simple()
     
 
 
