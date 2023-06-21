@@ -35,9 +35,6 @@
 
 #define min(a, b) (a) > (b) ? (b) : (a)
 
-#define log_printf(macropar_message, ...)                                      \
-  printf(macropar_message, ##__VA_ARGS__)
-
 extern char debug[];
 extern uint8_t need_reconfigure_can;
 

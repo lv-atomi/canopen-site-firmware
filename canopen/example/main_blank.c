@@ -32,10 +32,6 @@
 #include "CO_storageBlank.h"
 
 
-#define log_printf(macropar_message, ...) \
-        printf(macropar_message, ##__VA_ARGS__)
-
-
 /* default values for CO_CANopenInit() */
 #define NMT_CONTROL \
             CO_NMT_STARTUP_TO_OPERATIONAL \

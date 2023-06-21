@@ -8,6 +8,7 @@
 #ifndef CANOPENSTM32_CO_APP_STM32_H_
 #define CANOPENSTM32_CO_APP_STM32_H_
 
+#include "log.h"
 #include "CANopen.h"
 #include "at32f403a_407_board.h"
 

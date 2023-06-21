@@ -1,12 +1,9 @@
 #include "can.h"
 #include "flash.h"
-#include "gpio.h"
+#include "key.h"
 
 #include "CO_app_STM32.h"
 #include <sys/types.h>
-
-#define log_printf(macropar_message, ...)                                      \
-  printf(macropar_message, ##__VA_ARGS__)
 
 /* uint16_t testkey1 = 0, testkey2 = 0; */
 extern uint8_t need_reconfigure_can;

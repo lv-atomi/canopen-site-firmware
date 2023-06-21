@@ -40,7 +40,7 @@ CO_ReturnError_t stackable_module_food_dispenser_init(uint8_t offset) {
   case 7: param_660V = OD_ENTRY_H6607_stackableModule7;
     break;
   default:
-    log_print("ERROR, unknown offset in stackable module:%d\n", offset);
+    log_printf("ERROR, unknown offset in stackable module:%d\n", offset);
     return 1;
   }
   

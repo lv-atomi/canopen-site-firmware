@@ -1,12 +1,9 @@
-#include "gpio.h"
+#include "key.h"
 #include "can.h"
 #include "flash.h"
 #include "oled.h"
 #include <stdio.h>
-
-
-#define log_printf(macropar_message, ...)                                      \
-  printf(macropar_message, ##__VA_ARGS__)
+#include "log.h"
 
 uint16_t testkey1;
 uint16_t testkey2;

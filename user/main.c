@@ -4,7 +4,7 @@
 /* #include "can.h" */
 #include "can.h"
 #include "flash.h"
-#include "gpio.h"
+#include "key.h"
 #include "oled.h"
 #include "timer1.h"
 

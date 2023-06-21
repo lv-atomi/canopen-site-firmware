@@ -1,5 +1,5 @@
-#ifndef __GPIO_H
-#define __GPIO_H
+#ifndef __KEY_H
+#define __KEY_H
 
 #include "at32f403a_407.h"
 
@@ -16,10 +16,10 @@ extern "C" {
 
 typedef struct 
 {        
-	uint8_t    Dismode; //0:normal;1:Select,2:Enter
-	uint8_t    Enter;   //Use to ADD
-	uint16_t   KeyCnt10s;//keep status for 10s
-}KeyPressMode;
+  uint8_t    Dismode; //0:normal;1:Select,2:Enter
+  uint8_t    Enter;   //Use to ADD
+  uint16_t   KeyCnt10s;//keep status for 10s
+} KeyPressMode;
 
 void GPIO_Init(void);
 void Key_ScanFun(void);

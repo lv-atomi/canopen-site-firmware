@@ -29,7 +29,7 @@ CO_ReturnError_t camera_init(uint8_t offset) {
     param_650V = OD_ENTRY_H6417_HBridgeMotor;
     break;
   default:
-    log_print("ERROR, unknown camera offset\n");
+    log_printf("ERROR, unknown camera offset\n");
     return 1;
   }
   

@@ -32,6 +32,7 @@
 #include "OD.h"
 #include "timer1.h"
 
+#include "psu.h"
 #include "brushless.h"
 #include "gpio.h"
 #include "aircondition.h"
@@ -39,7 +40,6 @@
 #include "camera.h"
 #include "hbridge.h"
 #include "weight_sensor.h"
-#include "psu.h"
 #include "thermal_7705.h"
 #include "capacitor_displacement.h"
 
@@ -52,9 +52,6 @@ CANopenNodeSTM32
                         * across app to get access to CANOpen objects
 			*/
 
-/* Printf function of CanOpen app */
-#define log_printf(macropar_message, ...)                                      \
-  printf(macropar_message, ##__VA_ARGS__)
 
 /* default values for CO_CANopenInit() */
 #define NMT_CONTROL                                                            \
@@ -75,15 +72,15 @@ CO_ReturnError_t err;
 
 
 CO_ReturnError_t app_programStart() {
-  assert(app_psu_init() != CO_ERROR_NO);
-  assert(app_brushless_init() != CO_ERROR_NO);
-  assert(app_hbridge_init() != CO_ERROR_NO);
-  assert(app_thermal_7705_init() != CO_ERROR_NO);
-  assert(app_aircondition_init() != CO_ERROR_NO);
-  assert(app_gpio_init() != CO_ERROR_NO);
-  assert(app_stackable_module_food_dispenser_init() != CO_ERROR_NO);
-  assert(app_camera_init() != CO_ERROR_NO);
-  assert(app_weight_sensor_init() != CO_ERROR_NO);
+  ASSERT(app_psu_init() != CO_ERROR_NO);
+  ASSERT(app_brushless_init() != CO_ERROR_NO);
+  ASSERT(app_hbridge_init() != CO_ERROR_NO);
+  ASSERT(app_thermal_7705_init() != CO_ERROR_NO);
+  ASSERT(app_aircondition_init() != CO_ERROR_NO);
+  ASSERT(app_gpio_init() != CO_ERROR_NO);
+  ASSERT(app_stackable_module_food_dispenser_init() != CO_ERROR_NO);
+  ASSERT(app_camera_init() != CO_ERROR_NO);
+  ASSERT(app_weight_sensor_init() != CO_ERROR_NO);
   
   
 }

@@ -25,8 +25,6 @@
 
 #include "CANopen.h"
 
-#define log_printf(macropar_message, ...)	\
-    printf(macropar_message, ##__VA_ARGS__)
 
 /* Get values from CO_config_t or from single default OD.h ********************/
 #ifdef CO_MULTIPLE_OD

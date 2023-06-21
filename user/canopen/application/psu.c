@@ -8,8 +8,7 @@ OD_extension_t OD_6414_extension;
 OD_extension_t OD_6415_extension;
 
 static ODR_t my_OD_read_6412(OD_stream_t *stream, void *buf,
-			     OD_size_t count, OD_size_t *countRead)
-{
+			     OD_size_t count, OD_size_t *countRead) {
   printf("read 6412\n");
   *countRead = 4;
   return ODR_OK;
