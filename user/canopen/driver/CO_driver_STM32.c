@@ -29,6 +29,56 @@
  *
  * Implementation Author:               Tilen Majerle <tilen@majerle.eu>
  */
+
+/*
+Organization
+
+6000 PSU current read
+6001 PSU voltage read
+6002 PSU current set
+6003 PSU voltage set
+6004 PSU module temperature
+
+6100 GPIO input x8
+6101 HBridge Motor
+
+6200 Camera Module0
+6201 Camera Module1
+
+6300 Fan0
+6301 Fan1
+6302 Fan2
+6303 Thermal DS18B20 x4
+6304 Aircondition load
+6305 Aircondition status
+
+6400 Trigger Input x2
+6401 Trigger Output x2
+6402 Capacitor displacement
+6403 Thermocouple/PT100 x2
+6404 Motor(HBridge / brushless)
+
+6500 Stackable Module0
+6501 Stackable Module1
+6502 Stackable Module2
+6503 Stackable Module3
+6504 Stackable Module4
+6505 Stackable Module5
+6506 Stackable Module6
+6507 Stackable Module7
+
+6600 Weight sensor x4
+
+6700 Line Current
+6701 Line voltage
+6702 IGBT Temp
+6703 Plate Temp
+6704 System Load
+6705 Fan0
+
+ */
+
+
 #include "301/CO_driver.h"
 #include "CO_app_STM32.h"
 #include <stdio.h>

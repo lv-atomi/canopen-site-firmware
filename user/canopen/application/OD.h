@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/6/21 13:39:40
+        Modified:     2023/6/22 14:20:22
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -58,16 +58,12 @@
 #define OD_CNT_ARR_2110 16
 #define OD_CNT_ARR_2111 16
 #define OD_CNT_ARR_2112 16
-#define OD_CNT_ARR_6000 8
-#define OD_CNT_ARR_6001 8
-#define OD_CNT_ARR_6002 2
-#define OD_CNT_ARR_6200 8
-#define OD_CNT_ARR_6201 8
-#define OD_CNT_ARR_6401 16
-#define OD_CNT_ARR_6411 8
-#define OD_CNT_ARR_6418 4
-#define OD_CNT_ARR_6419 4
-#define OD_CNT_ARR_641A 4
+#define OD_CNT_ARR_6100 8
+#define OD_CNT_ARR_6303 4
+#define OD_CNT_ARR_6400 2
+#define OD_CNT_ARR_6401 2
+#define OD_CNT_ARR_6403 2
+#define OD_CNT_ARR_6600 4
 
 
 /*******************************************************************************
@@ -258,36 +254,13 @@ typedef struct {
     uint8_t x2100_errorStatusBits[1];
     uint8_t x2110_variableInt32_sub0;
     int32_t x2110_variableInt32[OD_CNT_ARR_2110];
-    uint8_t x6000_readDigitalInput8_bit_sub0;
-    uint8_t x6000_readDigitalInput8_bit[OD_CNT_ARR_6000];
-    uint8_t x6001_triggerInput_sub0;
-    bool_t x6001_triggerInput[OD_CNT_ARR_6001];
-    uint8_t x6002_thermal7705_sub0;
-    int32_t x6002_thermal7705[OD_CNT_ARR_6002];
-    uint32_t x6003_moduleTemperature;
-    uint8_t x6200_writeDigitalOutput8_bit_sub0;
-    uint8_t x6200_writeDigitalOutput8_bit[OD_CNT_ARR_6200];
-    uint8_t x6201_triggerOutput_sub0;
-    bool_t x6201_triggerOutput[OD_CNT_ARR_6201];
-    uint8_t x6401_readAnalogInput16_bit_sub0;
-    int16_t x6401_readAnalogInput16_bit[OD_CNT_ARR_6401];
-    uint8_t x6411_writeAnalogOutput16_bit_sub0;
-    int16_t x6411_writeAnalogOutput16_bit[OD_CNT_ARR_6411];
-    uint32_t x6412_PSU_CurrentRead;
-    uint32_t x6413_PSU_VoltageRead;
-    uint32_t x6414_PSU_CurentSet;
-    uint32_t x6415_PSU_VoltageSet;
-    uint32_t x6416_capacitorDisplacement;
-    int32_t x6417_HBridgeMotor;
-    uint8_t x6418_weightSensor_sub0;
-    uint32_t x6418_weightSensor[OD_CNT_ARR_6418];
-    uint8_t x6419_airConditionThermalSensor_sub0;
-    uint32_t x6419_airConditionThermalSensor[OD_CNT_ARR_6419];
-    uint8_t x641A_airConditionFAN_Control_sub0;
-    uint8_t x641A_airConditionFAN_Control[OD_CNT_ARR_641A];
-    uint8_t x641B_airConditionWorkload;
-    uint8_t x641C_airConditionStatus;
-    int32_t x641D_brushlessMotor;
+    uint32_t x6000_PSU_CurrentRead;
+    uint32_t x6001_PSU_VoltageRead;
+    uint32_t x6002_PSU_CurentSet;
+    uint32_t x6003_PSU_VoltageSet;
+    uint32_t x6004_PSUModuleTemperature;
+    uint8_t x6100_triggerInputX8_sub0;
+    bool_t x6100_triggerInputX8[OD_CNT_ARR_6100];
     struct {
         uint8_t highestSub_indexSupported;
         bool_t strobe;
@@ -301,7 +274,7 @@ typedef struct {
         int32_t zoom;
         int32_t iris;
         int32_t focus;
-    } x6500_cameraModule0;
+    } x6200_cameraModule0;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t strobe;
@@ -315,7 +288,39 @@ typedef struct {
         int32_t zoom;
         int32_t iris;
         int32_t focus;
-    } x6501_cameraModule1;
+    } x6201_cameraModule1;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t currentSpeed;
+        uint32_t targetSpeed;
+    } x6300_FAN0;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t currentSpeed;
+        uint32_t targetSpeed;
+    } x6301_FAN1;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t currentSpeed;
+        uint32_t targetSpeed;
+    } x6302_FAN2;
+    uint8_t x6303_thermalDS18B20X4_sub0;
+    int32_t x6303_thermalDS18B20X4[OD_CNT_ARR_6303];
+    uint8_t x6304_airConditionLoadControl;
+    uint8_t x6305_airConditionStatus;
+    uint8_t x6400_triggerInputX2_sub0;
+    bool_t x6400_triggerInputX2[OD_CNT_ARR_6400];
+    uint8_t x6401_triggerOutputX2_sub0;
+    bool_t x6401_triggerOutputX2[OD_CNT_ARR_6401];
+    uint32_t x6402_capacitorDisplacement;
+    uint8_t x6403_thermocouplePT100X2_sub0;
+    int32_t x6403_thermocouplePT100X2[OD_CNT_ARR_6403];
+    struct {
+        uint8_t highestSub_indexSupported;
+        bool_t isBrushlessMotor;
+        int32_t motorSpeedSet;
+        int32_t motorSpeedRead;
+    } x6404_motor;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -324,7 +329,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6600_stackableModule0;
+    } x6500_stackableModule0;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -333,7 +338,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6601_stackableModule1;
+    } x6501_stackableModule1;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -342,7 +347,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6602_stackableModule2;
+    } x6502_stackableModule2;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -351,7 +356,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6603_stackableModule3;
+    } x6503_stackableModule3;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -360,7 +365,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6604_stackableModule4;
+    } x6504_stackableModule4;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -369,7 +374,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6605_stackableModule5;
+    } x6505_stackableModule5;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -378,7 +383,7 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6606_stackableModule6;
+    } x6506_stackableModule6;
     struct {
         uint8_t highestSub_indexSupported;
         bool_t out0;
@@ -387,7 +392,19 @@ typedef struct {
         bool_t in1;
         int32_t HBridgeMotor;
         uint8_t I2CAddr;
-    } x6607_stackableModule7;
+    } x6507_stackableModule7;
+    uint8_t x6600_weightSensorX4_sub0;
+    uint32_t x6600_weightSensorX4[OD_CNT_ARR_6600];
+    uint32_t x6700_lineCurrent;
+    uint32_t x6701_lineVoltage;
+    int32_t x6702_IGBT_Temperature;
+    int32_t x6703_plateTemperature;
+    uint32_t x6704_systemLoad;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t currentSpeed;
+        uint32_t targetSpeed;
+    } x6705_FAN0;
 } OD_RAM_t;
 
 typedef struct {
@@ -492,32 +509,36 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6001 &OD->list[45]
 #define OD_ENTRY_H6002 &OD->list[46]
 #define OD_ENTRY_H6003 &OD->list[47]
-#define OD_ENTRY_H6200 &OD->list[48]
-#define OD_ENTRY_H6201 &OD->list[49]
-#define OD_ENTRY_H6401 &OD->list[50]
-#define OD_ENTRY_H6411 &OD->list[51]
-#define OD_ENTRY_H6412 &OD->list[52]
-#define OD_ENTRY_H6413 &OD->list[53]
-#define OD_ENTRY_H6414 &OD->list[54]
-#define OD_ENTRY_H6415 &OD->list[55]
-#define OD_ENTRY_H6416 &OD->list[56]
-#define OD_ENTRY_H6417 &OD->list[57]
-#define OD_ENTRY_H6418 &OD->list[58]
-#define OD_ENTRY_H6419 &OD->list[59]
-#define OD_ENTRY_H641A &OD->list[60]
-#define OD_ENTRY_H641B &OD->list[61]
-#define OD_ENTRY_H641C &OD->list[62]
-#define OD_ENTRY_H641D &OD->list[63]
-#define OD_ENTRY_H6500 &OD->list[64]
-#define OD_ENTRY_H6501 &OD->list[65]
-#define OD_ENTRY_H6600 &OD->list[66]
-#define OD_ENTRY_H6601 &OD->list[67]
-#define OD_ENTRY_H6602 &OD->list[68]
-#define OD_ENTRY_H6603 &OD->list[69]
-#define OD_ENTRY_H6604 &OD->list[70]
-#define OD_ENTRY_H6605 &OD->list[71]
-#define OD_ENTRY_H6606 &OD->list[72]
-#define OD_ENTRY_H6607 &OD->list[73]
+#define OD_ENTRY_H6004 &OD->list[48]
+#define OD_ENTRY_H6100 &OD->list[49]
+#define OD_ENTRY_H6200 &OD->list[50]
+#define OD_ENTRY_H6201 &OD->list[51]
+#define OD_ENTRY_H6300 &OD->list[52]
+#define OD_ENTRY_H6301 &OD->list[53]
+#define OD_ENTRY_H6302 &OD->list[54]
+#define OD_ENTRY_H6303 &OD->list[55]
+#define OD_ENTRY_H6304 &OD->list[56]
+#define OD_ENTRY_H6305 &OD->list[57]
+#define OD_ENTRY_H6400 &OD->list[58]
+#define OD_ENTRY_H6401 &OD->list[59]
+#define OD_ENTRY_H6402 &OD->list[60]
+#define OD_ENTRY_H6403 &OD->list[61]
+#define OD_ENTRY_H6404 &OD->list[62]
+#define OD_ENTRY_H6500 &OD->list[63]
+#define OD_ENTRY_H6501 &OD->list[64]
+#define OD_ENTRY_H6502 &OD->list[65]
+#define OD_ENTRY_H6503 &OD->list[66]
+#define OD_ENTRY_H6504 &OD->list[67]
+#define OD_ENTRY_H6505 &OD->list[68]
+#define OD_ENTRY_H6506 &OD->list[69]
+#define OD_ENTRY_H6507 &OD->list[70]
+#define OD_ENTRY_H6600 &OD->list[71]
+#define OD_ENTRY_H6700 &OD->list[72]
+#define OD_ENTRY_H6701 &OD->list[73]
+#define OD_ENTRY_H6702 &OD->list[74]
+#define OD_ENTRY_H6703 &OD->list[75]
+#define OD_ENTRY_H6704 &OD->list[76]
+#define OD_ENTRY_H6705 &OD->list[77]
 
 
 /*******************************************************************************
@@ -567,36 +588,40 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2120_demoRecord &OD->list[41]
 #define OD_ENTRY_H2121_demoStrings &OD->list[42]
 #define OD_ENTRY_H2122_demoDomain &OD->list[43]
-#define OD_ENTRY_H6000_readDigitalInput8_bit &OD->list[44]
-#define OD_ENTRY_H6001_triggerInput &OD->list[45]
-#define OD_ENTRY_H6002_thermal7705 &OD->list[46]
-#define OD_ENTRY_H6003_moduleTemperature &OD->list[47]
-#define OD_ENTRY_H6200_writeDigitalOutput8_bit &OD->list[48]
-#define OD_ENTRY_H6201_triggerOutput &OD->list[49]
-#define OD_ENTRY_H6401_readAnalogInput16_bit &OD->list[50]
-#define OD_ENTRY_H6411_writeAnalogOutput16_bit &OD->list[51]
-#define OD_ENTRY_H6412_PSU_CurrentRead &OD->list[52]
-#define OD_ENTRY_H6413_PSU_VoltageRead &OD->list[53]
-#define OD_ENTRY_H6414_PSU_CurentSet &OD->list[54]
-#define OD_ENTRY_H6415_PSU_VoltageSet &OD->list[55]
-#define OD_ENTRY_H6416_capacitorDisplacement &OD->list[56]
-#define OD_ENTRY_H6417_HBridgeMotor &OD->list[57]
-#define OD_ENTRY_H6418_weightSensor &OD->list[58]
-#define OD_ENTRY_H6419_airConditionThermalSensor &OD->list[59]
-#define OD_ENTRY_H641A_airConditionFAN_Control &OD->list[60]
-#define OD_ENTRY_H641B_airConditionWorkload &OD->list[61]
-#define OD_ENTRY_H641C_airConditionStatus &OD->list[62]
-#define OD_ENTRY_H641D_brushlessMotor &OD->list[63]
-#define OD_ENTRY_H6500_cameraModule0 &OD->list[64]
-#define OD_ENTRY_H6501_cameraModule1 &OD->list[65]
-#define OD_ENTRY_H6600_stackableModule0 &OD->list[66]
-#define OD_ENTRY_H6601_stackableModule1 &OD->list[67]
-#define OD_ENTRY_H6602_stackableModule2 &OD->list[68]
-#define OD_ENTRY_H6603_stackableModule3 &OD->list[69]
-#define OD_ENTRY_H6604_stackableModule4 &OD->list[70]
-#define OD_ENTRY_H6605_stackableModule5 &OD->list[71]
-#define OD_ENTRY_H6606_stackableModule6 &OD->list[72]
-#define OD_ENTRY_H6607_stackableModule7 &OD->list[73]
+#define OD_ENTRY_H6000_PSU_CurrentRead &OD->list[44]
+#define OD_ENTRY_H6001_PSU_VoltageRead &OD->list[45]
+#define OD_ENTRY_H6002_PSU_CurentSet &OD->list[46]
+#define OD_ENTRY_H6003_PSU_VoltageSet &OD->list[47]
+#define OD_ENTRY_H6004_PSUModuleTemperature &OD->list[48]
+#define OD_ENTRY_H6100_triggerInputX8 &OD->list[49]
+#define OD_ENTRY_H6200_cameraModule0 &OD->list[50]
+#define OD_ENTRY_H6201_cameraModule1 &OD->list[51]
+#define OD_ENTRY_H6300_FAN0 &OD->list[52]
+#define OD_ENTRY_H6301_FAN1 &OD->list[53]
+#define OD_ENTRY_H6302_FAN2 &OD->list[54]
+#define OD_ENTRY_H6303_thermalDS18B20X4 &OD->list[55]
+#define OD_ENTRY_H6304_airConditionLoadControl &OD->list[56]
+#define OD_ENTRY_H6305_airConditionStatus &OD->list[57]
+#define OD_ENTRY_H6400_triggerInputX2 &OD->list[58]
+#define OD_ENTRY_H6401_triggerOutputX2 &OD->list[59]
+#define OD_ENTRY_H6402_capacitorDisplacement &OD->list[60]
+#define OD_ENTRY_H6403_thermocouplePT100X2 &OD->list[61]
+#define OD_ENTRY_H6404_motor &OD->list[62]
+#define OD_ENTRY_H6500_stackableModule0 &OD->list[63]
+#define OD_ENTRY_H6501_stackableModule1 &OD->list[64]
+#define OD_ENTRY_H6502_stackableModule2 &OD->list[65]
+#define OD_ENTRY_H6503_stackableModule3 &OD->list[66]
+#define OD_ENTRY_H6504_stackableModule4 &OD->list[67]
+#define OD_ENTRY_H6505_stackableModule5 &OD->list[68]
+#define OD_ENTRY_H6506_stackableModule6 &OD->list[69]
+#define OD_ENTRY_H6507_stackableModule7 &OD->list[70]
+#define OD_ENTRY_H6600_weightSensorX4 &OD->list[71]
+#define OD_ENTRY_H6700_lineCurrent &OD->list[72]
+#define OD_ENTRY_H6701_lineVoltage &OD->list[73]
+#define OD_ENTRY_H6702_IGBT_Temperature &OD->list[74]
+#define OD_ENTRY_H6703_plateTemperature &OD->list[75]
+#define OD_ENTRY_H6704_systemLoad &OD->list[76]
+#define OD_ENTRY_H6705_FAN0 &OD->list[77]
 
 
 /*******************************************************************************
