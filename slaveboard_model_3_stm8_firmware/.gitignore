@@ -1,0 +1,7 @@
+*.asm
+*.lst
+*.rst
+*.sym
+*.ihx
+*.lk
+
