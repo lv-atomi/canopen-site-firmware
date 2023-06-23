@@ -31,7 +31,7 @@ LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gc
 DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection, use APPLICATION
 export DEFINES
 
-CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application
+CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application -Iuser/canopen/module
 CFLAGS += $(DEFINES) -Iuser -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC)
 
 CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
@@ -47,7 +47,8 @@ CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
 	$(CANOPENROOT)/storage/CO_storage.c \
 	$(CANOPENROOT)/CANopen.c \
 	$(wildcard user/canopen/driver/*.c) \
-	$(wildcard user/canopen/application/*.c)
+	$(wildcard user/canopen/application/*.c) \
+	$(wildcard user/canopen/module/*.c)
 
 SRCS = $(wildcard user/*.c) \
 	$(CANOPENSRC) \

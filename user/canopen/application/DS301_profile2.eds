@@ -8,8 +8,8 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=2:20PM
-ModificationDate=06-22-2023
+ModificationTime=1:17PM
+ModificationDate=06-23-2023
 ModifiedBy=Janez Paternoster
 
 [DeviceInfo]
@@ -124,7 +124,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=67
+SupportedObjects=68
 1=0x1003
 2=0x1005
 3=0x1006
@@ -163,35 +163,36 @@ SupportedObjects=67
 36=0x6002
 37=0x6003
 38=0x6004
-39=0x6100
-40=0x6200
-41=0x6201
-42=0x6300
-43=0x6301
-44=0x6302
-45=0x6303
-46=0x6304
-47=0x6305
-48=0x6400
-49=0x6401
-50=0x6402
-51=0x6403
-52=0x6404
-53=0x6500
-54=0x6501
-55=0x6502
-56=0x6503
-57=0x6504
-58=0x6505
-59=0x6506
-60=0x6507
-61=0x6600
-62=0x6700
-63=0x6701
-64=0x6702
-65=0x6703
-66=0x6704
-67=0x6705
+39=0x6005
+40=0x6100
+41=0x6200
+42=0x6201
+43=0x6300
+44=0x6301
+45=0x6302
+46=0x6303
+47=0x6304
+48=0x6305
+49=0x6400
+50=0x6401
+51=0x6402
+52=0x6403
+53=0x6404
+54=0x6500
+55=0x6501
+56=0x6502
+57=0x6503
+58=0x6504
+59=0x6505
+60=0x6506
+61=0x6507
+62=0x6600
+63=0x6700
+64=0x6701
+65=0x6702
+66=0x6703
+67=0x6704
+68=0x6705
 
 [1003]
 ParameterName=Pre-defined error field
@@ -1856,6 +1857,15 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [6000]
+ParameterName=BoardType
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=ro
+DefaultValue=0
+PDOMapping=0
+
+[6001]
 ParameterName=PSU Current Read
 ObjectType=0x7
 ;StorageLocation=RAM
@@ -1864,7 +1874,7 @@ AccessType=ro
 DefaultValue=0
 PDOMapping=0
 
-[6001]
+[6002]
 ParameterName=PSU Voltage Read
 ObjectType=0x7
 ;StorageLocation=RAM
@@ -1873,7 +1883,7 @@ AccessType=ro
 DefaultValue=0
 PDOMapping=0
 
-[6002]
+[6003]
 ParameterName=PSU Curent Set
 ObjectType=0x7
 ;StorageLocation=RAM
@@ -1882,7 +1892,7 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
-[6003]
+[6004]
 ParameterName=PSU Voltage Set
 ObjectType=0x7
 ;StorageLocation=RAM
@@ -1891,7 +1901,7 @@ AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
-[6004]
+[6005]
 ParameterName=PSU module temperature
 ObjectType=0x7
 ;StorageLocation=RAM

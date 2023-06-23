@@ -287,3 +287,5 @@ fp-info-cache
 *.csv
 
 pyocd_log.txt
+
+TAGS

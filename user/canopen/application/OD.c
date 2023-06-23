@@ -205,11 +205,12 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x2100_errorStatusBits = {0x00},
     .x2110_variableInt32_sub0 = 0x10,
     .x2110_variableInt32 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    .x6000_PSU_CurrentRead = 0x00000000,
-    .x6001_PSU_VoltageRead = 0x00000000,
-    .x6002_PSU_CurentSet = 0x00000000,
-    .x6003_PSU_VoltageSet = 0x00000000,
-    .x6004_PSUModuleTemperature = 0x00000000,
+    .x6000_boardType = 0x00,
+    .x6001_PSU_CurrentRead = 0x00000000,
+    .x6002_PSU_VoltageRead = 0x00000000,
+    .x6003_PSU_CurentSet = 0x00000000,
+    .x6004_PSU_VoltageSet = 0x00000000,
+    .x6005_PSUModuleTemperature = 0x00000000,
     .x6100_triggerInputX8_sub0 = 0x08,
     .x6100_triggerInputX8 = {true, true, true, true, true, true, true, true},
     .x6200_cameraModule0 = {
@@ -433,11 +434,12 @@ typedef struct {
     OD_obj_record_t o_2120_demoRecord[7];
     OD_obj_record_t o_2121_demoStrings[4];
     OD_obj_var_t o_2122_demoDomain;
-    OD_obj_var_t o_6000_PSU_CurrentRead;
-    OD_obj_var_t o_6001_PSU_VoltageRead;
-    OD_obj_var_t o_6002_PSU_CurentSet;
-    OD_obj_var_t o_6003_PSU_VoltageSet;
-    OD_obj_var_t o_6004_PSUModuleTemperature;
+    OD_obj_var_t o_6000_boardType;
+    OD_obj_var_t o_6001_PSU_CurrentRead;
+    OD_obj_var_t o_6002_PSU_VoltageRead;
+    OD_obj_var_t o_6003_PSU_CurentSet;
+    OD_obj_var_t o_6004_PSU_VoltageSet;
+    OD_obj_var_t o_6005_PSUModuleTemperature;
     OD_obj_array_t o_6100_triggerInputX8;
     OD_obj_record_t o_6200_cameraModule0[12];
     OD_obj_record_t o_6201_cameraModule1[12];
@@ -1458,28 +1460,33 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .attribute = ODA_SDO_RW,
         .dataLength = 0
     },
-    .o_6000_PSU_CurrentRead = {
-        .dataOrig = &OD_RAM.x6000_PSU_CurrentRead,
+    .o_6000_boardType = {
+        .dataOrig = &OD_RAM.x6000_boardType,
+        .attribute = ODA_SDO_R,
+        .dataLength = 1
+    },
+    .o_6001_PSU_CurrentRead = {
+        .dataOrig = &OD_RAM.x6001_PSU_CurrentRead,
         .attribute = ODA_SDO_R | ODA_MB,
         .dataLength = 4
     },
-    .o_6001_PSU_VoltageRead = {
-        .dataOrig = &OD_RAM.x6001_PSU_VoltageRead,
+    .o_6002_PSU_VoltageRead = {
+        .dataOrig = &OD_RAM.x6002_PSU_VoltageRead,
         .attribute = ODA_SDO_R | ODA_MB,
         .dataLength = 4
     },
-    .o_6002_PSU_CurentSet = {
-        .dataOrig = &OD_RAM.x6002_PSU_CurentSet,
+    .o_6003_PSU_CurentSet = {
+        .dataOrig = &OD_RAM.x6003_PSU_CurentSet,
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 4
     },
-    .o_6003_PSU_VoltageSet = {
-        .dataOrig = &OD_RAM.x6003_PSU_VoltageSet,
+    .o_6004_PSU_VoltageSet = {
+        .dataOrig = &OD_RAM.x6004_PSU_VoltageSet,
         .attribute = ODA_SDO_RW | ODA_MB,
         .dataLength = 4
     },
-    .o_6004_PSUModuleTemperature = {
-        .dataOrig = &OD_RAM.x6004_PSUModuleTemperature,
+    .o_6005_PSUModuleTemperature = {
+        .dataOrig = &OD_RAM.x6005_PSUModuleTemperature,
         .attribute = ODA_SDO_R | ODA_MB,
         .dataLength = 4
     },
@@ -2228,11 +2235,12 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x2120, 0x07, ODT_REC, &ODObjs.o_2120_demoRecord, NULL},
     {0x2121, 0x04, ODT_REC, &ODObjs.o_2121_demoStrings, NULL},
     {0x2122, 0x01, ODT_VAR, &ODObjs.o_2122_demoDomain, NULL},
-    {0x6000, 0x01, ODT_VAR, &ODObjs.o_6000_PSU_CurrentRead, NULL},
-    {0x6001, 0x01, ODT_VAR, &ODObjs.o_6001_PSU_VoltageRead, NULL},
-    {0x6002, 0x01, ODT_VAR, &ODObjs.o_6002_PSU_CurentSet, NULL},
-    {0x6003, 0x01, ODT_VAR, &ODObjs.o_6003_PSU_VoltageSet, NULL},
-    {0x6004, 0x01, ODT_VAR, &ODObjs.o_6004_PSUModuleTemperature, NULL},
+    {0x6000, 0x01, ODT_VAR, &ODObjs.o_6000_boardType, NULL},
+    {0x6001, 0x01, ODT_VAR, &ODObjs.o_6001_PSU_CurrentRead, NULL},
+    {0x6002, 0x01, ODT_VAR, &ODObjs.o_6002_PSU_VoltageRead, NULL},
+    {0x6003, 0x01, ODT_VAR, &ODObjs.o_6003_PSU_CurentSet, NULL},
+    {0x6004, 0x01, ODT_VAR, &ODObjs.o_6004_PSU_VoltageSet, NULL},
+    {0x6005, 0x01, ODT_VAR, &ODObjs.o_6005_PSUModuleTemperature, NULL},
     {0x6100, 0x09, ODT_ARR, &ODObjs.o_6100_triggerInputX8, NULL},
     {0x6200, 0x0C, ODT_REC, &ODObjs.o_6200_cameraModule0, NULL},
     {0x6201, 0x0C, ODT_REC, &ODObjs.o_6201_cameraModule1, NULL},

@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/6/22 14:20:22
+        Modified:     2023/6/23 13:17:48
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -254,11 +254,12 @@ typedef struct {
     uint8_t x2100_errorStatusBits[1];
     uint8_t x2110_variableInt32_sub0;
     int32_t x2110_variableInt32[OD_CNT_ARR_2110];
-    uint32_t x6000_PSU_CurrentRead;
-    uint32_t x6001_PSU_VoltageRead;
-    uint32_t x6002_PSU_CurentSet;
-    uint32_t x6003_PSU_VoltageSet;
-    uint32_t x6004_PSUModuleTemperature;
+    uint8_t x6000_boardType;
+    uint32_t x6001_PSU_CurrentRead;
+    uint32_t x6002_PSU_VoltageRead;
+    uint32_t x6003_PSU_CurentSet;
+    uint32_t x6004_PSU_VoltageSet;
+    uint32_t x6005_PSUModuleTemperature;
     uint8_t x6100_triggerInputX8_sub0;
     bool_t x6100_triggerInputX8[OD_CNT_ARR_6100];
     struct {
@@ -510,35 +511,36 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H6002 &OD->list[46]
 #define OD_ENTRY_H6003 &OD->list[47]
 #define OD_ENTRY_H6004 &OD->list[48]
-#define OD_ENTRY_H6100 &OD->list[49]
-#define OD_ENTRY_H6200 &OD->list[50]
-#define OD_ENTRY_H6201 &OD->list[51]
-#define OD_ENTRY_H6300 &OD->list[52]
-#define OD_ENTRY_H6301 &OD->list[53]
-#define OD_ENTRY_H6302 &OD->list[54]
-#define OD_ENTRY_H6303 &OD->list[55]
-#define OD_ENTRY_H6304 &OD->list[56]
-#define OD_ENTRY_H6305 &OD->list[57]
-#define OD_ENTRY_H6400 &OD->list[58]
-#define OD_ENTRY_H6401 &OD->list[59]
-#define OD_ENTRY_H6402 &OD->list[60]
-#define OD_ENTRY_H6403 &OD->list[61]
-#define OD_ENTRY_H6404 &OD->list[62]
-#define OD_ENTRY_H6500 &OD->list[63]
-#define OD_ENTRY_H6501 &OD->list[64]
-#define OD_ENTRY_H6502 &OD->list[65]
-#define OD_ENTRY_H6503 &OD->list[66]
-#define OD_ENTRY_H6504 &OD->list[67]
-#define OD_ENTRY_H6505 &OD->list[68]
-#define OD_ENTRY_H6506 &OD->list[69]
-#define OD_ENTRY_H6507 &OD->list[70]
-#define OD_ENTRY_H6600 &OD->list[71]
-#define OD_ENTRY_H6700 &OD->list[72]
-#define OD_ENTRY_H6701 &OD->list[73]
-#define OD_ENTRY_H6702 &OD->list[74]
-#define OD_ENTRY_H6703 &OD->list[75]
-#define OD_ENTRY_H6704 &OD->list[76]
-#define OD_ENTRY_H6705 &OD->list[77]
+#define OD_ENTRY_H6005 &OD->list[49]
+#define OD_ENTRY_H6100 &OD->list[50]
+#define OD_ENTRY_H6200 &OD->list[51]
+#define OD_ENTRY_H6201 &OD->list[52]
+#define OD_ENTRY_H6300 &OD->list[53]
+#define OD_ENTRY_H6301 &OD->list[54]
+#define OD_ENTRY_H6302 &OD->list[55]
+#define OD_ENTRY_H6303 &OD->list[56]
+#define OD_ENTRY_H6304 &OD->list[57]
+#define OD_ENTRY_H6305 &OD->list[58]
+#define OD_ENTRY_H6400 &OD->list[59]
+#define OD_ENTRY_H6401 &OD->list[60]
+#define OD_ENTRY_H6402 &OD->list[61]
+#define OD_ENTRY_H6403 &OD->list[62]
+#define OD_ENTRY_H6404 &OD->list[63]
+#define OD_ENTRY_H6500 &OD->list[64]
+#define OD_ENTRY_H6501 &OD->list[65]
+#define OD_ENTRY_H6502 &OD->list[66]
+#define OD_ENTRY_H6503 &OD->list[67]
+#define OD_ENTRY_H6504 &OD->list[68]
+#define OD_ENTRY_H6505 &OD->list[69]
+#define OD_ENTRY_H6506 &OD->list[70]
+#define OD_ENTRY_H6507 &OD->list[71]
+#define OD_ENTRY_H6600 &OD->list[72]
+#define OD_ENTRY_H6700 &OD->list[73]
+#define OD_ENTRY_H6701 &OD->list[74]
+#define OD_ENTRY_H6702 &OD->list[75]
+#define OD_ENTRY_H6703 &OD->list[76]
+#define OD_ENTRY_H6704 &OD->list[77]
+#define OD_ENTRY_H6705 &OD->list[78]
 
 
 /*******************************************************************************
@@ -588,40 +590,41 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2120_demoRecord &OD->list[41]
 #define OD_ENTRY_H2121_demoStrings &OD->list[42]
 #define OD_ENTRY_H2122_demoDomain &OD->list[43]
-#define OD_ENTRY_H6000_PSU_CurrentRead &OD->list[44]
-#define OD_ENTRY_H6001_PSU_VoltageRead &OD->list[45]
-#define OD_ENTRY_H6002_PSU_CurentSet &OD->list[46]
-#define OD_ENTRY_H6003_PSU_VoltageSet &OD->list[47]
-#define OD_ENTRY_H6004_PSUModuleTemperature &OD->list[48]
-#define OD_ENTRY_H6100_triggerInputX8 &OD->list[49]
-#define OD_ENTRY_H6200_cameraModule0 &OD->list[50]
-#define OD_ENTRY_H6201_cameraModule1 &OD->list[51]
-#define OD_ENTRY_H6300_FAN0 &OD->list[52]
-#define OD_ENTRY_H6301_FAN1 &OD->list[53]
-#define OD_ENTRY_H6302_FAN2 &OD->list[54]
-#define OD_ENTRY_H6303_thermalDS18B20X4 &OD->list[55]
-#define OD_ENTRY_H6304_airConditionLoadControl &OD->list[56]
-#define OD_ENTRY_H6305_airConditionStatus &OD->list[57]
-#define OD_ENTRY_H6400_triggerInputX2 &OD->list[58]
-#define OD_ENTRY_H6401_triggerOutputX2 &OD->list[59]
-#define OD_ENTRY_H6402_capacitorDisplacement &OD->list[60]
-#define OD_ENTRY_H6403_thermocouplePT100X2 &OD->list[61]
-#define OD_ENTRY_H6404_motor &OD->list[62]
-#define OD_ENTRY_H6500_stackableModule0 &OD->list[63]
-#define OD_ENTRY_H6501_stackableModule1 &OD->list[64]
-#define OD_ENTRY_H6502_stackableModule2 &OD->list[65]
-#define OD_ENTRY_H6503_stackableModule3 &OD->list[66]
-#define OD_ENTRY_H6504_stackableModule4 &OD->list[67]
-#define OD_ENTRY_H6505_stackableModule5 &OD->list[68]
-#define OD_ENTRY_H6506_stackableModule6 &OD->list[69]
-#define OD_ENTRY_H6507_stackableModule7 &OD->list[70]
-#define OD_ENTRY_H6600_weightSensorX4 &OD->list[71]
-#define OD_ENTRY_H6700_lineCurrent &OD->list[72]
-#define OD_ENTRY_H6701_lineVoltage &OD->list[73]
-#define OD_ENTRY_H6702_IGBT_Temperature &OD->list[74]
-#define OD_ENTRY_H6703_plateTemperature &OD->list[75]
-#define OD_ENTRY_H6704_systemLoad &OD->list[76]
-#define OD_ENTRY_H6705_FAN0 &OD->list[77]
+#define OD_ENTRY_H6000_boardType &OD->list[44]
+#define OD_ENTRY_H6001_PSU_CurrentRead &OD->list[45]
+#define OD_ENTRY_H6002_PSU_VoltageRead &OD->list[46]
+#define OD_ENTRY_H6003_PSU_CurentSet &OD->list[47]
+#define OD_ENTRY_H6004_PSU_VoltageSet &OD->list[48]
+#define OD_ENTRY_H6005_PSUModuleTemperature &OD->list[49]
+#define OD_ENTRY_H6100_triggerInputX8 &OD->list[50]
+#define OD_ENTRY_H6200_cameraModule0 &OD->list[51]
+#define OD_ENTRY_H6201_cameraModule1 &OD->list[52]
+#define OD_ENTRY_H6300_FAN0 &OD->list[53]
+#define OD_ENTRY_H6301_FAN1 &OD->list[54]
+#define OD_ENTRY_H6302_FAN2 &OD->list[55]
+#define OD_ENTRY_H6303_thermalDS18B20X4 &OD->list[56]
+#define OD_ENTRY_H6304_airConditionLoadControl &OD->list[57]
+#define OD_ENTRY_H6305_airConditionStatus &OD->list[58]
+#define OD_ENTRY_H6400_triggerInputX2 &OD->list[59]
+#define OD_ENTRY_H6401_triggerOutputX2 &OD->list[60]
+#define OD_ENTRY_H6402_capacitorDisplacement &OD->list[61]
+#define OD_ENTRY_H6403_thermocouplePT100X2 &OD->list[62]
+#define OD_ENTRY_H6404_motor &OD->list[63]
+#define OD_ENTRY_H6500_stackableModule0 &OD->list[64]
+#define OD_ENTRY_H6501_stackableModule1 &OD->list[65]
+#define OD_ENTRY_H6502_stackableModule2 &OD->list[66]
+#define OD_ENTRY_H6503_stackableModule3 &OD->list[67]
+#define OD_ENTRY_H6504_stackableModule4 &OD->list[68]
+#define OD_ENTRY_H6505_stackableModule5 &OD->list[69]
+#define OD_ENTRY_H6506_stackableModule6 &OD->list[70]
+#define OD_ENTRY_H6507_stackableModule7 &OD->list[71]
+#define OD_ENTRY_H6600_weightSensorX4 &OD->list[72]
+#define OD_ENTRY_H6700_lineCurrent &OD->list[73]
+#define OD_ENTRY_H6701_lineVoltage &OD->list[74]
+#define OD_ENTRY_H6702_IGBT_Temperature &OD->list[75]
+#define OD_ENTRY_H6703_plateTemperature &OD->list[76]
+#define OD_ENTRY_H6704_systemLoad &OD->list[77]
+#define OD_ENTRY_H6705_FAN0 &OD->list[78]
 
 
 /*******************************************************************************
