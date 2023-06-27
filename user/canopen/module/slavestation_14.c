@@ -350,3 +350,181 @@ void init_slavestation_14() {
   rs485_config();
   fan_init();
 }
+
+static ODR_t my_OD_read_630x(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead, uint8_t fan_idx) {
+  printf("read 630%d, subidx:%d\n", fan_idx, stream->subIndex);
+
+  if (stream->subIndex == 0) {
+    CO_setUint8(buf, 3); // highestSub_indexSupported
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  }
+
+  if(stream->subIndex == 1 || stream->subIndex == 2) { 
+    // currentSpeed, targetSpeed are uint32_t type
+    uint32_t v = /* read from your data structure */;
+    CO_setUint32(buf, v);
+    *countRead = sizeof(uint32_t);
+    return ODR_OK;
+  }
+
+  return ODR_SUB_UNKNOWN; // unknown subIndex
+}
+
+static ODR_t my_OD_write_630x(OD_stream_t *stream, const void *buf,
+			      OD_size_t count, uint8_t fan_idx) {
+  printf("write 630%d, subidx:%d\n", fan_idx, stream->subIndex);
+
+  if (stream->subIndex == 0) {
+    return ODR_RO;
+  }
+
+  if(stream->subIndex == 1) { 
+    // currentSpeed is readonly
+    return ODR_RO;
+  }
+
+  if(stream->subIndex == 2) { 
+    // targetSpeed is uint32_t type
+    uint32_t v = CO_getUint32(buf);
+    /* write into your data structure */
+    return ODR_OK;
+  }
+
+  return ODR_SUB_UNKNOWN; // unknown subIndex
+}
+
+ODR_t my_OD_read_6300(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  return my_OD_read_630x(stream, buf, count, countRead, 0);
+}
+
+ODR_t my_OD_read_6301(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  return my_OD_read_630x(stream, buf, count, countRead, 1);
+}
+
+ODR_t my_OD_read_6302(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  return my_OD_read_630x(stream, buf, count, countRead, 2);
+}
+
+ODR_t my_OD_write_6300(OD_stream_t *stream, const void *buf, OD_size_t count) {
+  return my_OD_write_630x(stream, buf, count, 0);
+}
+
+ODR_t my_OD_write_6301(OD_stream_t *stream, const void *buf, OD_size_t count) {
+  return my_OD_write_630x(stream, buf, count, 1);
+}
+
+ODR_t my_OD_write_6302(OD_stream_t *stream, const void *buf, OD_size_t count) {
+  return my_OD_write_630x(stream, buf, count, 2);
+}
+
+static ODR_t my_OD_read_6303(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead) {
+  printf("read 6303, subidx:%d\n", stream->subIndex);
+
+  if (stream->subIndex == 0) {
+    CO_setUint8(buf, OD_CNT_ARR_6303); // highestSub_indexSupported
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  }
+
+  if(stream->subIndex >= 1 && stream->subIndex <= OD_CNT_ARR_6303) { 
+    // 1 to OD_CNT_ARR_6303, int32_t array
+    int32_t v = /* read from your data structure */;
+    CO_setInt32(buf, v);
+    *countRead = sizeof(int32_t);
+    return ODR_OK;
+  }
+
+  return ODR_SUB_UNKNOWN; // unknown subIndex
+}
+
+static ODR_t my_OD_write_6303(OD_stream_t *stream, const void *buf,
+			      OD_size_t count) {
+  printf("write 6303, subidx:%d\n", stream->subIndex);
+
+  // This parameter is read only, return ODR_RO for all subIndex
+  return ODR_RO;
+}
+
+static ODR_t my_OD_read_6304_6305(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead, uint8_t idx) {
+  printf("read 630%d\n", idx);
+
+  uint8_t v = /* read from your data structure */;
+  CO_setUint8(buf, v);
+  *countRead = sizeof(uint8_t);
+
+  return ODR_OK;
+}
+
+static ODR_t my_OD_write_6304_6305(OD_stream_t *stream, const void *buf,
+			      OD_size_t count, uint8_t idx) {
+  printf("write 630%d\n", idx);
+
+  // This parameter is read only, return ODR_RO
+  return ODR_RO;
+}
+
+ODR_t my_OD_read_6304(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  return my_OD_read_6304_6305(stream, buf, count, countRead, 4);
+}
+
+ODR_t my_OD_read_6305(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  return my_OD_read_6304_6305(stream, buf, count, countRead, 5);
+}
+
+ODR_t my_OD_write_6304(OD_stream_t *stream, const void *buf, OD_size_t count) {
+  return my_OD_write_6304_6305(stream, buf, count, 4);
+}
+
+ODR_t my_OD_write_6305(OD_stream_t *stream, const void *buf, OD_size_t count) {
+  return my_OD_write_6304_6305(stream, buf, count, 5);
+}
+
+CO_ReturnError_t environment_control_module_init() {
+  // Initialize FAN0 to FAN2
+  for (uint8_t i = 0; i < 3; i++) {
+    OD_entry_t *param = (i == 0)   ? OD_ENTRY_H6300_FAN0
+                        : (i == 1) ? OD_ENTRY_H6301_FAN1
+                                   : OD_ENTRY_H6302_FAN2;
+
+    OD_extension[i + 6300].object = param;
+    OD_extension[i + 6300].read = my_OD_read_6300_to_6302;
+    OD_extension[i + 6300].write = my_OD_write_6300_to_6302;
+
+    if (OD_extension_init(param, &OD_extension[i + 6300]) != CO_ERROR_NO) {
+      log_printf("ERROR, unable to extend OD object 630%d\n", i);
+      return CO_ERROR_OD;
+    }
+  }
+
+  // Initialize 6303
+  OD_extension[6303].object = OD_ENTRY_H6303_thermalDS18B20X4;
+  OD_extension[6303].read = my_OD_read_6303;
+  OD_extension[6303].write = NULL;
+
+  if (OD_extension_init(OD_ENTRY_H6303_thermalDS18B20X4, &OD_extension[6303]) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6303\n");
+    return CO_ERROR_OD;
+  }
+
+  // Initialize 6304 - 6305
+  for (uint8_t i = 0; i < 2; i++) {
+    OD_entry_t *param = (i == 0) ? OD_ENTRY_H6304_airConditionLoadControl
+                                 : OD_ENTRY_H6305_airConditionStatus;
+
+    OD_extension[i + 6304].object = param;
+    OD_extension[i + 6304].read = my_OD_read_6304_to_6305;
+    OD_extension[i + 6304].write = NULL;
+
+    if (OD_extension_init(param, &OD_extension[i + 6304]) != CO_ERROR_NO) {
+      log_printf("ERROR, unable to extend OD object 630%d\n", i + 4);
+      return CO_ERROR_OD;
+    }
+  }
+
+  return CO_ERROR_NO;
+}

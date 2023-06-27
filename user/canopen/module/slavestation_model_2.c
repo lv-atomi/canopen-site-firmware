@@ -362,3 +362,187 @@ uint32_t measure(void) {
     return 0;
   }
 }
+
+#define MAX_TRIGGER_INPUTS 2
+#define MAX_TRIGGER_OUTPUTS 2
+#define MAX_THERMOCOUPLES 2
+
+
+OD_extension_t OD_6400_extension;  // Trigger Input X2
+OD_extension_t OD_6401_extension;  // Trigger Output X2
+OD_extension_t OD_6402_extension;  // Capacitor Displacement
+OD_extension_t OD_6403_extension;  // Thermocouple PT100X2
+OD_extension_t OD_6404_extension;  // Motor
+                                   // 
+// read function for Trigger Input X2
+static ODR_t my_OD_read_6400(OD_stream_t *stream, void *buf, OD_size_t count,
+                             OD_size_t *countRead) {
+  switch (stream->subIndex) {
+  case 0:
+    CO_setUint8(buf, MAX_TRIGGER_INPUTS);
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  case 1:
+  case 2:
+    // handle the reading of the actual trigger inputs here
+    // let's assume they are stored in an array named trigger_inputs
+    CO_setUint32(buf, trigger_inputs[stream->subIndex - 1]);
+    *countRead = sizeof(uint32_t);
+    return ODR_OK;
+  default:
+    return ODR_IDX_RANGE;
+  }
+}
+
+// read function for Trigger Output X2
+static ODR_t my_OD_read_6401(OD_stream_t *stream, void *buf, OD_size_t count,
+                             OD_size_t *countRead) {
+  switch (stream->subIndex) {
+  case 0:
+    CO_setUint8(buf, MAX_TRIGGER_INPUTS);
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  case 1:
+  case 2:
+    // handle the reading of the actual trigger inputs here
+    // let's assume they are stored in an array named trigger_inputs
+    CO_setUint32(buf, trigger_inputs[stream->subIndex - 1]);
+    *countRead = sizeof(uint32_t);
+    return ODR_OK;
+  default:
+    return ODR_IDX_RANGE;
+  }
+}
+
+// write function for Trigger Output X2
+static ODR_t my_OD_write_6401(OD_stream_t *stream, const void *buf,
+                              OD_size_t count, OD_size_t *countWritten) {
+  switch (stream->subIndex) {
+  case 0:
+    return ODR_RO_NOT_ALLOW; // subIndex 0 is read-only
+  case 1:
+  case 2:
+    // handle the writing of the actual trigger outputs here
+    // let's assume they are stored in an array named trigger_outputs
+    trigger_outputs[stream->subIndex - 1] = CO_getUint32(buf);
+    return ODR_OK;
+  default:
+    return ODR_IDX_RANGE;
+  }
+}
+
+// read function for Capacitor Displacement
+static ODR_t my_OD_read_6402(OD_stream_t *stream, void *buf, OD_size_t count,
+                             OD_size_t *countRead) {
+  if (stream->subIndex != 0) {
+    return ODR_IDX_RANGE;
+  }
+  // handle the reading of the capacitor displacement here
+  // let's assume it's stored in a variable named capacitor_displacement
+  CO_setUint32(buf, capacitor_displacement);
+  *countRead = sizeof(uint32_t);
+  return ODR_OK;
+}
+
+// read function for Thermocouple PT100X2
+static ODR_t my_OD_read_6403(OD_stream_t *stream, void *buf, OD_size_t count,
+                             OD_size_t *countRead) {
+  switch (stream->subIndex) {
+  case 0:
+    CO_setUint8(buf, MAX_THERMOCOUPLES);
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  case 1:
+  case 2:
+    // handle the reading of the actual thermocouples here
+    // let's assume they are stored in an array named thermocouples
+    CO_setUint32(buf, thermocouples[stream->subIndex - 1]);
+    *countRead = sizeof(uint32_t);
+    return ODR_OK;
+  default:
+    return ODR_IDX_RANGE;
+  }
+}
+
+// read function for Motor
+static ODR_t my_OD_read_6404(OD_stream_t *stream, void *buf, OD_size_t count,
+                             OD_size_t *countRead) {
+  // Assuming a struct motor as defined in the OD
+  // struct {bool_t isBrushlessMotor; int32_t motorSpeedSet; int32_t
+  // motorSpeedRead;} motor;
+
+  switch (stream->subIndex) {
+  case 0:
+    CO_setUint8(buf, 3); // we have 3 sub-indexes
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  case 1:
+    CO_setUint8(buf, motor.isBrushlessMotor);
+    *countRead = sizeof(bool_t);
+    return ODR_OK;
+  case 2:
+    CO_setUint32(buf, motor.motorSpeedSet);
+    *countRead = sizeof(int32_t);
+    return ODR_OK;
+  case 3:
+    CO_setUint32(buf, motor.motorSpeedRead);
+    *countRead = sizeof(int32_t);
+    return ODR_OK;
+  default:
+    return ODR_IDX_RANGE;
+  }
+}
+
+// write function for object 6404
+static ODR_t my_OD_write_6404(OD_stream_t *stream, const void *buf,
+                              OD_size_t count, OD_size_t *countWritten) {
+  switch (stream->subIndex) {
+  case 0:
+    return ODR_RO_NOT_ALLOW; // subIndex 0 is read-only
+  case 1:
+    motor.isBrushlessMotor = CO_getUint8(buf);
+    return ODR_OK;
+  case 2:
+    motor.motorSpeedSet = CO_getUint32(buf);
+    return ODR_OK;
+  case 3:
+    return ODR_RO_NOT_ALLOW; // motorSpeedRead is read-only
+  default:
+    return ODR_IDX_RANGE;
+  }
+}
+
+CO_ReturnError_t bipolar_io_thermo_motor_module_init() {
+  OD_entry_t *param_6400 = OD_ENTRY_H6400_triggerInputX2;
+  OD_entry_t *param_6401 = OD_ENTRY_H6401_triggerOutputX2;
+  OD_entry_t *param_6402 = OD_ENTRY_H6402_capacitorDisplacement;
+  OD_entry_t *param_6403 = OD_ENTRY_H6403_thermocouplePT100X2;
+  OD_entry_t *param_6404 = OD_ENTRY_H6404_motor;
+
+  OD_6400_extension.object = param_6400;
+  OD_6400_extension.read = my_OD_read_6400;
+  OD_6400_extension.write = NULL;
+  OD_extension_init(param_6400, &OD_6400_extension);
+
+  OD_6401_extension.object = param_6401;
+  OD_6401_extension.read = my_OD_read_6401;
+  OD_6401_extension.write = my_OD_write_6401;
+  OD_extension_init(param_6401, &OD_6401_extension);
+
+  OD_6402_extension.object = param_6402;
+  OD_6402_extension.read = my_OD_read_6402;
+  OD_6402_extension.write = NULL;
+  OD_extension_init(param_6402, &OD_6402_extension);
+
+  OD_6403_extension.object = param_6403;
+  OD_6403_extension.read = my_OD_read_6403;
+  OD_6403_extension.write = NULL;
+  OD_extension_init(param_6403, &OD_6403_extension);
+
+  OD_6404_extension.object = param_6404;
+  OD_6404_extension.read = my_OD_read_6404;
+  OD_6404_extension.write = NULL;
+  OD_extension_init(param_6404, &OD_6404_extension);
+
+  return CO_ERROR_NO;
+}

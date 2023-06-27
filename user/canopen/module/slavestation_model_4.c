@@ -92,3 +92,37 @@ uint32_t * weight_read_all() {
   }
   return result_buffer;
 }
+
+#define MAX_WEIGHT_SENSORS 4
+
+OD_extension_t OD_6600_extension;
+
+static ODR_t my_OD_read_6600(OD_stream_t *stream, void *buf, OD_size_t count,
+                             OD_size_t *countRead) {
+  printf("read 6600, subidx:%d\n", stream->subIndex);
+
+  if (stream->subIndex == 0) {
+    CO_setUint8(buf, MAX_WEIGHT_SENSORS);
+    *countRead = sizeof(uint8_t);
+  } else if (stream->subIndex <= MAX_WEIGHT_SENSORS) {
+    // Assume get_weight_sensor_value is a function that retrieves sensor values
+    uint32_t value = 0; // get_weight_sensor_value(stream->subIndex - 1);
+    CO_setUint32(buf, value);
+    *countRead = sizeof(uint32_t);
+  } else {
+    return ODR_SUB_IDX_NOT_EXIST;
+  }
+
+  return ODR_OK;
+}
+
+CO_ReturnError_t app_weight_sensor_init() {
+  OD_entry_t *param_6600 = OD_ENTRY_H6600_weightSensorX4;
+  OD_6600_extension.object = NULL;
+  OD_6600_extension.read = my_OD_read_6600;
+  OD_6600_extension.write = NULL;
+
+  OD_extension_init(param_6600, &OD_6600_extension);
+
+  return CO_ERROR_NO;
+}

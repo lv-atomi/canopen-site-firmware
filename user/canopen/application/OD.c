@@ -213,6 +213,12 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6005_PSUModuleTemperature = 0x00000000,
     .x6100_triggerInputX8_sub0 = 0x08,
     .x6100_triggerInputX8 = {true, true, true, true, true, true, true, true},
+    .x6101_motor = {
+        .highestSub_indexSupported = 0x03,
+        .isBrushlessMotor = false,
+        .motorSpeedSet = 0,
+        .motorSpeedRead = 0
+    },
     .x6200_cameraModule0 = {
         .highestSub_indexSupported = 0x0B,
         .strobe = false,
@@ -441,6 +447,7 @@ typedef struct {
     OD_obj_var_t o_6004_PSU_VoltageSet;
     OD_obj_var_t o_6005_PSUModuleTemperature;
     OD_obj_array_t o_6100_triggerInputX8;
+    OD_obj_record_t o_6101_motor[4];
     OD_obj_record_t o_6200_cameraModule0[12];
     OD_obj_record_t o_6201_cameraModule1[12];
     OD_obj_record_t o_6300_FAN0[3];
@@ -1498,6 +1505,32 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataElementLength = 1,
         .dataElementSizeof = sizeof(bool_t)
     },
+    .o_6101_motor = {
+        {
+            .dataOrig = &OD_RAM.x6101_motor.highestSub_indexSupported,
+            .subIndex = 0,
+            .attribute = ODA_SDO_R,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6101_motor.isBrushlessMotor,
+            .subIndex = 1,
+            .attribute = ODA_SDO_RW,
+            .dataLength = 1
+        },
+        {
+            .dataOrig = &OD_RAM.x6101_motor.motorSpeedSet,
+            .subIndex = 2,
+            .attribute = ODA_SDO_RW | ODA_MB,
+            .dataLength = 4
+        },
+        {
+            .dataOrig = &OD_RAM.x6101_motor.motorSpeedRead,
+            .subIndex = 3,
+            .attribute = ODA_SDO_R | ODA_MB,
+            .dataLength = 4
+        }
+    },
     .o_6200_cameraModule0 = {
         {
             .dataOrig = &OD_RAM.x6200_cameraModule0.highestSub_indexSupported,
@@ -2242,6 +2275,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6004, 0x01, ODT_VAR, &ODObjs.o_6004_PSU_VoltageSet, NULL},
     {0x6005, 0x01, ODT_VAR, &ODObjs.o_6005_PSUModuleTemperature, NULL},
     {0x6100, 0x09, ODT_ARR, &ODObjs.o_6100_triggerInputX8, NULL},
+    {0x6101, 0x04, ODT_REC, &ODObjs.o_6101_motor, NULL},
     {0x6200, 0x0C, ODT_REC, &ODObjs.o_6200_cameraModule0, NULL},
     {0x6201, 0x0C, ODT_REC, &ODObjs.o_6201_cameraModule1, NULL},
     {0x6300, 0x03, ODT_REC, &ODObjs.o_6300_FAN0, NULL},

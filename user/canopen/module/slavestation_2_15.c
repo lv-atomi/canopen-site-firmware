@@ -109,3 +109,115 @@ void init_slavestation_2_15(){
   init_limit_switch();
 }
 
+OD_extension_t OD_6100_extension;  // Trigger Input X8
+OD_extension_t OD_6101_extension;  // Motor
+
+// Read function for Trigger Input X8
+static ODR_t my_OD_read_6100(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+    printf("read 6100, subidx:%d\n", stream->subIndex);
+
+    if (stream->subIndex == 0) {
+        CO_setUint8(buf, 8);  // Max subindex
+        *countRead = sizeof(uint8_t);
+    } else if (stream->subIndex >= 1 && stream->subIndex <= 8) {
+        bool_t value = // Read your actual value here.
+        CO_setUint8(buf, value);
+        *countRead = sizeof(bool_t);
+    } else {
+        return ODR_OUT_OF_RANGE;  // Invalid subindex
+    }
+
+    return ODR_OK;
+}
+
+// Read function for Motor
+static ODR_t my_OD_read_6101(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+    printf("read 6101, subidx:%d\n", stream->subIndex);
+    
+    switch (stream->subIndex) {
+        case 0:
+            CO_setUint8(buf, 4);  // Max subindex
+            *countRead = sizeof(uint8_t);
+            break;
+        case 1:
+        {
+            bool_t value = // Read your actual value here.
+            CO_setUint8(buf, value);
+            *countRead = sizeof(bool_t);
+            break;
+        }
+        case 2:
+        case 3:
+        {
+            int32_t value = // Read your actual value here.
+            CO_setInt32(buf, value);
+            *countRead = sizeof(int32_t);
+            break;
+        }
+        case 4:
+        {
+            int32_t value = // Read your actual value here.
+            CO_setInt32(buf, value);
+            *countRead = sizeof(int32_t);
+            break;
+        }
+        default:
+            return ODR_OUT_OF_RANGE;  // Invalid subindex
+    }
+
+    return ODR_OK;
+}
+
+// Write function for Motor
+static ODR_t my_OD_write_6101(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten) {
+    printf("write 6101, subidx:%d\n", stream->subIndex);
+
+    switch (stream->subIndex) {
+        case 0:
+            return ODR_NO_WRITEABLE;  // Subindex 0 is read-only
+        case 1:
+        {
+            bool_t value = CO_getUint8(buf);
+            // Write your actual value here.
+            break;
+        }
+        case 2:
+        case 3:
+        {
+            int32_t value = CO_getInt32(buf);
+            // Write your actual value here.
+            break;
+        }
+        case 4:
+            return ODR_NO_WRITEABLE;  // Subindex 4 is read-only
+        default:
+            return ODR_OUT_OF_RANGE;  // Invalid subindex
+    }
+
+    return ODR_OK;
+}
+
+CO_ReturnError_t io_module_trigger_input_motor_init() {
+    OD_entry_t *param_6100 = OD_ENTRY_H6100_triggerInputX8;
+    OD_entry_t *param_6101 = OD_ENTRY_H6101_motor;
+
+    OD_6100_extension.object = param_6100;
+    OD_6100_extension.read = my_OD_read_6100;
+    OD_6100_extension.write = my_OD_write_6100;
+
+    OD_6101_extension.object = param_6101;
+    OD_6101_extension.read = my_OD_read_6101;
+    OD_6101_extension.write = my_OD_write_6101;
+
+    if (OD_extension_init(param_6100, &OD_6100_extension) != CO_ERROR_NO) {
+        log_printf("ERROR, unable to extend OD object 6100\n");
+        return CO_ERROR_OD;
+    }
+  
+    if (OD_extension_init(param_6101, &OD_6101_extension) != CO_ERROR_NO) {
+        log_printf("ERROR, unable to extend OD object 6101\n");
+        return CO_ERROR_OD;
+    }
+  
+    return CO_ERROR_NO;
+}

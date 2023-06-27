@@ -53,3 +53,87 @@ void camera_gpios_init(void) {
 void init_slavestation_3(){
   camera_gpios_init();
 }
+
+OD_extension_t OD_6200_extension;
+OD_extension_t OD_6201_extension;
+
+static ODR_t my_OD_read_620X(OD_stream_t *stream, void *buf,
+			     OD_size_t count, OD_size_t *countRead) {
+  uint8_t offset = stream->object == OD_ENTRY_H6200_cameraModule0? 0 : 1;
+  printf("read 620%d, subidx:%d\n", offset, stream->subIndex);
+
+  if (stream->subIndex == 0) {
+    CO_setUint8(buf, 11); // highestSub_indexSupported
+    *countRead = sizeof(uint8_t);
+    return ODR_OK;
+  }
+
+  if(stream->subIndex == 1 || stream->subIndex == 2) { 
+    // strobe, trigger are bool_t type
+    bool_t v = /* read from your data structure */;
+    CO_setUint8(buf, v);
+    *countRead = sizeof(bool_t);
+    return ODR_OK;
+  }
+
+  if(stream->subIndex >= 3 && stream->subIndex <= 11) { 
+    // XMove, YMove, ZMove, XTilt, YTilt, ZTilt, zoom, iris, focus are int32_t type
+    int32_t v = /* read from your data structure */;
+    CO_setInt32(buf, v);
+    *countRead = sizeof(int32_t);
+    return ODR_OK;
+  }
+
+  return ODR_SUB_UNKNOWN; // unknown subIndex
+}
+
+static ODR_t my_OD_write_620X(OD_stream_t *stream, const void *buf,
+			      OD_size_t count) {
+  uint8_t offset = stream->object == OD_ENTRY_H6200_cameraModule0? 0 : 1;
+  printf("write 620%d, subidx:%d\n", offset, stream->subIndex);
+
+  if (stream->subIndex == 0) {
+    return ODR_RO;
+  }
+
+  if(stream->subIndex == 1 || stream->subIndex == 2) { 
+    // strobe, trigger are bool_t type
+    bool_t v = CO_getUint8(buf);
+    /* write into your data structure */
+    return ODR_OK;
+  }
+
+  if(stream->subIndex >= 3 && stream->subIndex <= 11) { 
+    // XMove, YMove, ZMove, XTilt, YTilt, ZTilt, zoom, iris, focus are int32_t type
+    int32_t v = CO_getInt32(buf);
+    /* write into your data structure */
+    return ODR_OK;
+  }
+
+  return ODR_SUB_UNKNOWN; // unknown subIndex
+}
+
+CO_ReturnError_t dual_camera_module_init() {
+    OD_entry_t *param_6200 = OD_ENTRY_H6200_cameraModule0;
+    OD_entry_t *param_6201 = OD_ENTRY_H6201_cameraModule1;
+
+    OD_6200_extension.object = param_6200;
+    OD_6200_extension.read = my_OD_read_620X;
+    OD_6200_extension.write = my_OD_write_620X;
+
+    OD_6201_extension.object = param_6201;
+    OD_6201_extension.read = my_OD_read_620X; // Replace with the correct function name
+    OD_6201_extension.write = my_OD_write_620X; // Replace with the correct function name
+
+    if (OD_extension_init(param_6200, &OD_6200_extension) != CO_ERROR_NO) {
+        log_printf("ERROR, unable to extend OD object 6200\n");
+        return CO_ERROR_OD;
+    }
+  
+    if (OD_extension_init(param_6201, &OD_6201_extension) != CO_ERROR_NO) {
+        log_printf("ERROR, unable to extend OD object 6201\n");
+        return CO_ERROR_OD;
+    }
+  
+    return CO_ERROR_NO;
+}

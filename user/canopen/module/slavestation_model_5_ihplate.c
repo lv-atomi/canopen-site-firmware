@@ -128,3 +128,134 @@ void init_slavestation_model_5_ihplate(){
   fan_timer_init();
   usart_init();
 }
+
+OD_extension_t OD_6700_extension;
+OD_extension_t OD_6701_extension;
+OD_extension_t OD_6702_extension;
+OD_extension_t OD_6703_extension;
+OD_extension_t OD_6704_extension;
+OD_extension_t OD_6705_extension;
+
+OD_size_t my_OD_read_6700_to_6703(OD_stream_t *stream, void *buf,
+                                  OD_size_t count, OD_size_t *countRead) {
+  uint32_t *object = (uint32_t *)stream->attribute;
+  *countRead = sizeof(*object);
+  if (count < *countRead) {
+    return CO_ERROR_NO;
+  }
+  memcpy(buf, object, *countRead);
+  return CO_ERROR_NO;
+}
+
+OD_size_t my_OD_read_6705(OD_stream_t *stream, void *buf, OD_size_t count,
+                          OD_size_t *countRead) {
+  struct {
+    uint8_t highestSub_indexSupported;
+    uint32_t currentSpeed;
+    uint32_t targetSpeed;
+  } *object = (struct {
+                uint8_t highestSub_indexSupported;
+                uint32_t currentSpeed;
+                uint32_t targetSpeed;
+              } *)stream->attribute;
+  *countRead = sizeof(*object);
+  if (count < *countRead) {
+    return CO_ERROR_NO;
+  }
+  memcpy(buf, object, *countRead);
+  return CO_ERROR_NO;
+}
+
+OD_size_t my_OD_write_6704(OD_stream_t *stream, const void *buf,
+                           OD_size_t count, OD_size_t *countWritten) {
+  uint32_t *object = (uint32_t *)stream->attribute;
+  if (count < sizeof(*object)) {
+    return CO_ERROR_NO;
+  }
+  memcpy(object, buf, count);
+  *countWritten = count;
+  return CO_ERROR_NO;
+}
+
+OD_size_t my_OD_write_6705(OD_stream_t *stream, const void *buf,
+                           OD_size_t count, OD_size_t *countWritten) {
+  struct {
+    uint8_t highestSub_indexSupported;
+    uint32_t currentSpeed;
+    uint32_t targetSpeed;
+  } *object = (struct {
+                uint8_t highestSub_indexSupported;
+                uint32_t currentSpeed;
+                uint32_t targetSpeed;
+              } *)stream->attribute;
+  if (count < sizeof(object->targetSpeed)) {
+    return CO_ERROR_NO;
+  }
+  memcpy(&(object->targetSpeed), buf, count);
+  *countWritten = count;
+  return CO_ERROR_NO;
+}
+
+CO_ReturnError_t line_module_init() {
+  // Line Current
+  OD_6700_extension.object = OD_ENTRY_H6700_lineCurrent;
+  OD_6700_extension.read = my_OD_read_6700_to_6703;
+  OD_6700_extension.write = NULL;
+  if (OD_extension_init(OD_ENTRY_H6700_lineCurrent, &OD_6700_extension) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6700\n");
+    return CO_ERROR_OD;
+  }
+
+  // Line Voltage
+  OD_6701_extension.object = OD_ENTRY_H6701_lineVoltage;
+  OD_6701_extension.read = my_OD_read_6700_to_6703;
+  OD_6701_extension.write = NULL;
+  if (OD_extension_init(OD_ENTRY_H6701_lineVoltage, &OD_6701_extension) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6701\n");
+    return CO_ERROR_OD;
+  }
+
+  // IGBT Temperature
+  OD_6702_extension.object = OD_ENTRY_H6702_IGBT_Temperature;
+  OD_6702_extension.read = my_OD_read_6700_to_6703;
+  OD_6702_extension.write = NULL;
+  if (OD_extension_init(OD_ENTRY_H6702_IGBT_Temperature, &OD_6702_extension) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6702\n");
+    return CO_ERROR_OD;
+  }
+
+  // Plate Temperature
+  OD_6703_extension.object = OD_ENTRY_H6703_plateTemperature;
+  OD_6703_extension.read = my_OD_read_6700_to_6703;
+  OD_6703_extension.write = NULL;
+  if (OD_extension_init(OD_ENTRY_H6703_plateTemperature, &OD_6703_extension) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6703\n");
+    return CO_ERROR_OD;
+  }
+
+  // System Load
+  OD_6704_extension.object = OD_ENTRY_H6704_systemLoad;
+  OD_6704_extension.read = my_OD_read_6700_to_6703;
+  OD_6704_extension.write = my_OD_write_6704;
+  if (OD_extension_init(OD_ENTRY_H6704_systemLoad, &OD_6704_extension) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6704\n");
+    return CO_ERROR_OD;
+  }
+
+  // FAN0
+  OD_6705_extension.object = OD_ENTRY_H6705_FAN0;
+  OD_6705_extension.read = my_OD_read_6705;
+  OD_6705_extension.write = my_OD_write_6705;
+  if (OD_extension_init(OD_ENTRY_H6705_FAN0, &OD_6705_extension) !=
+      CO_ERROR_NO) {
+    log_printf("ERROR, unable to extend OD object 6705\n");
+    return CO_ERROR_OD;
+  }
+
+  return CO_ERROR_NO;
+}

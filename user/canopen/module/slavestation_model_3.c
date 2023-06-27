@@ -169,4 +169,101 @@ void motor_speed_set(uint16_t slave_addr, int32_t speed){
   cmd_motor_speed_set(&hi2cx, slave_addr, speed);
 }
 
-/* FIXME: HT8574 don't have pwm input/output mode, cannot do speed sense/control for motor */
+/* FIXME: HT8574 don't have pwm input/output mode, cannot do speed sense/control
+ * for motor */
+
+
+#define MAX_STACKABLE_MODULES 8
+
+OD_extension_t OD_650X_extension[MAX_STACKABLE_MODULES];
+
+static ODR_t my_OD_read_650X(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  uint8_t index = (uint8_t) stream->object;
+  printf("read 650%d, subidx:%d\n", stream->subIndex);
+
+  switch (stream->subIndex) {
+  case 0:                // highestSub_indexSupported
+    CO_setUint8(buf, 7); // number of sub-indexes
+    *countRead = sizeof(uint8_t);
+    break;
+  case 1: // out0
+    // read value from the actual hardware or software model
+    // CO_setUint8(buf, read_out0(module_idx));
+    *countRead = sizeof(bool_t);
+    break;
+  case 2: // out1
+    // read value from the actual hardware or software model
+    // CO_setUint8(buf, read_out1(module_idx));
+    *countRead = sizeof(bool_t);
+    break;
+  case 3: // in0
+    // read value from the actual hardware or software model
+    // CO_setUint8(buf, read_in0(module_idx));
+    *countRead = sizeof(bool_t);
+    break;
+  case 4: // in1
+    // read value from the actual hardware or software model
+    // CO_setUint8(buf, read_in1(module_idx));
+    *countRead = sizeof(bool_t);
+    break;
+  case 5: // HBridgeMotor
+    // read value from the actual hardware or software model
+    // CO_setUint32(buf, read_HBridgeMotor(module_idx));
+    *countRead = sizeof(int32_t);
+    break;
+  case 6: // I2CAddr
+    // read value from the actual hardware or software model
+    // CO_setUint8(buf, read_I2CAddr(module_idx));
+    *countRead = sizeof(uint8_t);
+    break;
+  default:
+    return ODR_SUB_IDX_NOT_EXIST;
+  }
+
+  return ODR_OK;
+}
+
+static ODR_t my_OD_write_650X(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten)
+{
+  uint8_t module_idx =
+      (uint8_t)(stream->extension
+                    ->object); // extract the module index from the object
+  printf("write 650%d, subidx:%d\n", module_idx, stream->subIndex);
+
+  switch (stream->subIndex) {
+  case 1: // out0
+    // write value to the actual hardware or software model
+    // write_out0(module_idx, CO_getUint8(buf));
+    break;
+  case 2: // out1
+    // write value to the actual hardware or software model
+    // write_out1(module_idx, CO_getUint8(buf));
+    break;
+  case 3:                 // in0
+  case 4:                 // in1
+  case 6:                 // I2CAddr
+    return ODR_READONLY; // These values are read-only
+  case 5:                 // HBridgeMotor
+    // write value to the actual hardware or software model
+    // write_HBridgeMotor(module_idx, CO_getUint32(buf));
+    break;
+  default:
+    return ODR_SUB_IDX_NOT_EXIST;
+  }
+
+  return ODR_OK;
+}
+
+CO_ReturnError_t app_stackable_module_init() {
+  for (uint8_t i = 0; i < MAX_STACKABLE_MODULES; i++) {
+    /* OD_entry_t *param_650X = */
+    /*     NULL; // TODO: Get the actual object dictionary entry based on i */
+    OD_650X_extension[i].object = (OD_entry_t *)i;
+    OD_650X_extension[i].read = my_OD_read_650X;
+    OD_650X_extension[i].write = my_OD_write_650X;
+
+    OD_extension_init(param_650X, &(OD_650X_extension[i]));
+  }
+
+  return CO_ERROR_NO;
+}

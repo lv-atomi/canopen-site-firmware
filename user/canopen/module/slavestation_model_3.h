@@ -7,5 +7,6 @@ void init_slavestation_model_3();
 void GPOutSet(uint16_t slave_addr, uint8_t channel, bool_t val);
 bool_t GPOutRead(uint16_t slave_addr, uint8_t channel);
 void motor_speed_set(uint16_t slave_addr, int32_t speed);
+int32_t motor_speed_sense(uint16_t slave_addr);
 
 #endif
