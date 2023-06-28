@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "stm8.h"
+#include <stdio.h>
 
 // Address:
 // PC3-> Addr0
@@ -37,26 +38,30 @@
     PORT(port, CR2) |= (pin);		\
 } while(0)
 
+
 /*
  * PD5 -> TX
  * PD6 -> RX
  */
-/* void uart_init() { */
-/*   UART_BRR2 = 0x00; */
-/*   UART_BRR1 = 0x0D; */
-/*   UART_CR2 = (1 << UART_TEN) | (1 << UART_REN); */
-/* } */
+void uart_init() {
+  UART1_BRR2 = 0x03;
+  UART1_BRR1 = 0x68;		/* 9600 */
+  UART1_CR3 &= ~(UART_CR3_STOP1 | UART_CR3_STOP2); // 1 stop bit
+  UART1_CR2 = UART_CR2_TEN	/* allow tx */
+    // | UART_CR2_REN           /* allow rx */
+    ;
+}
 
-/* void uart_write(uint8_t data) { */
-/*   UART_DR = data; */
-/*   while (!(UART_SR & (1 << UART_TC))) */
-/*     ; */
-/* } */
+void uart_write(uint8_t data) {
+  while (!(UART1_SR & UART_SR_TXE))
+    ;
+  UART1_DR = data;
+}
 
-/* int putchar(int c) { */
-/*   uart_write(c); */
-/*   return 0; */
-/* } */
+int putchar(int c) {
+  uart_write(c);
+  return 0;
+}
 
 
 /* Simple busy loop delay */
@@ -108,19 +113,23 @@ uint16_t sense_position(){
 
 int main(void){
   CLK_CKDIVR = 0;
+  /* CLK_PCKENR1 = 0xFF; // Enable peripherals */
 
-  GPOutput_init(ADDR_PORT, ADDR_PIN);
-  GPOutput_init(CONTROL_PORT, CONTROL_PIN);
+  GPOutput_init(PD, PIN5);	/* enable PD5, UART_TX */
+  GPOutput_init(ADDR_PORT, ADDR_PIN); /* enable PC3~PC7 */
+  GPOutput_init(CONTROL_PORT, CONTROL_PIN); /* enable PA.1(LED), PA.3(Ready) */
+  
   PORT(PA, ODR) |= PIN1;	/* LED off */
   PORT(PA, ODR) &= ~PIN3;	/* Ready off */
+  uart_init();
 
   uint16_t pos = sense_position();
   uint16_t i;
   for (i=0; i<pos; i++){
     PORT(PA, ODR) &= ~PIN1;	/* LED on */
-    delay(250000);
+    delay(2500);
     PORT(PA, ODR) |= PIN1;	/* LED off */
-    delay(250000);
+    delay(2500);
   }
 
   for (i=0; i<5; i++){
