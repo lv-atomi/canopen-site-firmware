@@ -15,7 +15,7 @@
  *
  */
 
-#define I2C_TIMEOUT                      0xFFFFFFFF
+#define I2C_TIMEOUT                      0xFFFFF /* about 0.4s */
 
 #define I2Cx_SPEED                       100000
 #define I2Cx_ADDRESS                     0xA0
@@ -75,9 +75,10 @@ void i2c_lowlevel_init(i2c_handle_type* hi2c) {
 /* returns: 0 if discoveried, 1 if timeout */
 uint32_t cmd_discovery(i2c_handle_type* hi2c, uint16_t slave_addr) { /* FIXME: working */
   i2c_status_type i2c_status;
-  
+
   if((i2c_status = i2c_master_transmit(&hi2cx, slave_addr, tx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) {
-    error_handler();
+    printf("error during discovery\n");
+    //error_handler();
   }
   delay_ms(10);
   if((i2c_status = i2c_master_receive(&hi2cx, slave_addr, rx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) { /* recv failed */
@@ -158,6 +159,7 @@ void init_slavestation_model_3(){
       break;
     }
   }
+  printf("num of slaves:%d\n", i);
 }
 
 void GPOutSet(uint16_t slave_addr, uint8_t channel, bool_t val) {

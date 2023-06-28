@@ -66,9 +66,9 @@ CO_ReturnError_t err;
 
 
 CO_ReturnError_t app_programStart() {
-  ASSERT(app_psu_init() != CO_ERROR_NO);
+  ASSERT(app_psu_init() == CO_ERROR_NO);
   
-  ASSERT(app_stackable_module_init() != CO_ERROR_NO);
+  ASSERT(app_stackable_module_init() == CO_ERROR_NO);
   return CO_ERROR_NO;
 }
 

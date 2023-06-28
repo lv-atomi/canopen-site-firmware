@@ -176,7 +176,7 @@ CO_ReturnError_t CO_CANmodule_init(CO_CANmodule_t *CANmodule, void *CANptr,
 
   /* Keep a local copy of CANModule */
   CANModule_local = CANmodule;
-  //log_printf("canmod local:%p -> %p, canptr:%p\n", CANModule_local, CANmodule, CANptr);
+  /* log_printf("canmod local:%p -> %p, canptr:%p\n", CANModule_local, CANmodule, CANptr); */
 
   /* Configure object variables */
   CANmodule->rxArray = rxArray;
@@ -481,7 +481,6 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
     TxMailboxNum = can_message_transmit(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle,
 					&tx_hdr);
     success = TxMailboxNum != CAN_TX_STATUS_NO_EMPTY;
-    //snprintf(debug, 16, "tx:%d", TxMailboxNum);
     /* log_printf("tx: id:%ld, dlc:%d, mailbox:%ld, success:%d\n", */
     /* 	       tx_hdr.standard_id, */
     /* 	       tx_hdr.dlc, */
@@ -747,7 +746,6 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
   rcvMsg.dlc = rx_hdr.dlc;
   rcvMsgIdent = rcvMsg.ident;
   memcpy(rcvMsg.data, rx_hdr.data, min(8, rx_hdr.dlc));
-  //  snprintf(debug, 16, "rx:%d %d", rcvMsg.ident, rcvMsg.dlc);
   /* log_printf("rx: id:%ld, len:%d\n", rcvMsg.ident, rcvMsg.dlc); */
 #endif
 
