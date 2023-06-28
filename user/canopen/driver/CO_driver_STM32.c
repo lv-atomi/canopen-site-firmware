@@ -176,7 +176,7 @@ CO_ReturnError_t CO_CANmodule_init(CO_CANmodule_t *CANmodule, void *CANptr,
 
   /* Keep a local copy of CANModule */
   CANModule_local = CANmodule;
-  log_printf("canmod local:%p -> %p, canptr:%p\n", CANModule_local, CANmodule, CANptr);
+  //log_printf("canmod local:%p -> %p, canptr:%p\n", CANModule_local, CANmodule, CANptr);
 
   /* Configure object variables */
   CANmodule->rxArray = rxArray;
@@ -444,12 +444,12 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
   /* if (HAL_CAN_GetTxMailboxesFreeLevel( */
   /*         ((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) { */
   /* at32 */
-  log_printf("CAN1 tsts_bit dumps: %ld tm0ef:%d tm1ef:%d tm2ef:%d\n",
-	     CAN1->tsts,
-	     CAN1->tsts_bit.tm0ef,
-	     CAN1->tsts_bit.tm1ef,
-	     CAN1->tsts_bit.tm2ef
-	     );
+  /* log_printf("CAN1 tsts_bit dumps: %ld tm0ef:%d tm1ef:%d tm2ef:%d\n", */
+  /* 	     CAN1->tsts, */
+  /* 	     CAN1->tsts_bit.tm0ef, */
+  /* 	     CAN1->tsts_bit.tm1ef, */
+  /* 	     CAN1->tsts_bit.tm2ef */
+  /* 	     ); */
   if ((((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->tsts_bit.tm0ef) ||
       (((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->tsts_bit.tm1ef) ||
       (((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->tsts_bit.tm2ef)) {
@@ -482,11 +482,11 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
 					&tx_hdr);
     success = TxMailboxNum != CAN_TX_STATUS_NO_EMPTY;
     //snprintf(debug, 16, "tx:%d", TxMailboxNum);
-    log_printf("tx: id:%ld, dlc:%d, mailbox:%ld, success:%d\n",
-	       tx_hdr.standard_id,
-	       tx_hdr.dlc,
-	       TxMailboxNum,
-	       success);
+    /* log_printf("tx: id:%ld, dlc:%d, mailbox:%ld, success:%d\n", */
+    /* 	       tx_hdr.standard_id, */
+    /* 	       tx_hdr.dlc, */
+    /* 	       TxMailboxNum, */
+    /* 	       success); */
   }
 #endif
   return success;
@@ -503,7 +503,7 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
       CANmodule->CANerrorStatus |= CO_CAN_ERRTX_OVERFLOW;
     }
     err = CO_ERROR_TX_OVERFLOW;
-    log_printf("buffer overflow\n");
+    /* log_printf("buffer overflow\n"); */
   }
 
   /*
@@ -513,10 +513,10 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
    */
   CO_LOCK_CAN_SEND(CANmodule);
   if (prv_send_can_message(CANmodule, buffer)) {
-    log_printf("send can message...\n");
+    /* log_printf("send can message...\n"); */
     CANmodule->bufferInhibitFlag = buffer->syncFlag;
   } else {
-    log_printf("send can message failed\n");
+    /* log_printf("send can message failed\n"); */
     buffer->bufferFull = true;
     CANmodule->CANtxCount++;
   }
@@ -621,13 +621,13 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
     uint16_t status = CANmodule->CANerrorStatus;
 
     CANmodule->errOld = err;
-    log_printf("error status changed, let's find out what happened..., errOld update:%ld\n", CANmodule->errOld);
+    /* log_printf("error status changed, let's find out what happened..., errOld update:%ld\n", CANmodule->errOld); */
 
     if (can_flag_get(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, CAN_BOF_FLAG)) {
       can_flag_clear(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, CAN_BOF_FLAG);
       // In this driver, we assume that auto bus recovery is activated ! so this
       // error will eventually handled automatically.
-      log_printf("bof cleared, assume auto bus recovery activated\n");
+      /* log_printf("bof cleared, assume auto bus recovery activated\n"); */
     } else {
       /* recalculate CANerrorStatus, first clear some flags */
       status &= 0xFFFF ^ (CO_CAN_ERRTX_BUS_OFF | CO_CAN_ERRRX_WARNING |
@@ -635,17 +635,17 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
                           CO_CAN_ERRTX_PASSIVE);
 
       if (can_receive_error_counter_get(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) { /* FIXME what's the err counter threshold? */
-	log_printf("rec cleared\n");
+	/* log_printf("rec cleared\n"); */
 	((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->ests_bit.rec = 0; /* clear recv err cnt */
         status |= CO_CAN_ERRRX_WARNING;
       } else if (can_transmit_error_counter_get(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) {
-	log_printf("tec cleared\n");
+	/* log_printf("tec cleared\n"); */
 	((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle->ests_bit.tec = 0; /* clear recv err cnt */
         status |= CO_CAN_ERRTX_WARNING;
       }
 
       if (can_flag_get(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, CAN_EPF_FLAG)) {
-	log_printf("epf triggered, do nothing\n");
+	/* log_printf("epf triggered, do nothing\n"); */
         status |= CO_CAN_ERRRX_PASSIVE | CO_CAN_ERRTX_PASSIVE;
       }
     }
@@ -748,7 +748,7 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
   rcvMsgIdent = rcvMsg.ident;
   memcpy(rcvMsg.data, rx_hdr.data, min(8, rx_hdr.dlc));
   //  snprintf(debug, 16, "rx:%d %d", rcvMsg.ident, rcvMsg.dlc);
-  log_printf("rx: id:%ld, len:%d\n", rcvMsg.ident, rcvMsg.dlc);
+  /* log_printf("rx: id:%ld, len:%d\n", rcvMsg.ident, rcvMsg.dlc); */
 #endif
 
   /*
@@ -765,22 +765,22 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
     
     buffer = CANModule_local->rxArray;
     for (index = CANModule_local->rxSize; index > 0U; --index, ++buffer) {
-      log_printf("filter: idx:%d, rcvid:%ld, ident:%d, mask:%d, found:%d\n",
-		 index, rcvMsgIdent,
-		 buffer->ident, buffer->mask,
-		 (((rcvMsgIdent ^ buffer->ident) & buffer->mask) == 0U)
-		 );
+      /* log_printf("filter: idx:%d, rcvid:%ld, ident:%d, mask:%d, found:%d\n", */
+      /* 		 index, rcvMsgIdent, */
+      /* 		 buffer->ident, buffer->mask, */
+      /* 		 (((rcvMsgIdent ^ buffer->ident) & buffer->mask) == 0U) */
+      /* 		 ); */
       if (((rcvMsgIdent ^ buffer->ident) & buffer->mask) == 0U) {
         messageFound = 1;
         break;
       }
     }
-    log_printf("msg found:%d\n", messageFound);
+    /* log_printf("msg found:%d\n", messageFound); */
   }
 
   /* Call specific function, which will process the message */
   if (messageFound && buffer != NULL && buffer->CANrx_callback != NULL) {
-    log_printf("canrx_callback\n");
+    /* log_printf("canrx_callback\n"); */
     buffer->CANrx_callback(buffer->object, (void *)&rcvMsg);
   }
 }
@@ -944,8 +944,8 @@ void CAN1_SE_IRQHandler(void) {
   if (can_flag_get(CAN1, CAN_ETR_FLAG) != RESET) {
     err_index = CAN1->ests & 0x70;
     can_flag_clear(CAN1, CAN_ETR_FLAG);
-    log_printf("clear etr, ERC:%ld, tec:%d, rec:%d\n",
-	       err_index >> 4, CAN1->ests_bit.tec, CAN1->ests_bit.rec);
+    /* log_printf("clear etr, ERC:%ld, tec:%d, rec:%d\n", */
+    /* 	       err_index >> 4, CAN1->ests_bit.tec, CAN1->ests_bit.rec); */
     /* error type is stuff error */
     if (err_index == 0x00000010) {
       /* when stuff error occur: in order to ensure communication normally,
@@ -958,14 +958,14 @@ void CAN1_SE_IRQHandler(void) {
   }
   if (can_flag_get(CAN1, CAN_EOIF_FLAG) != RESET) {
     err_index=2;
-    log_printf("can1.eoif set, cleared\n");
+    /* log_printf("can1.eoif set, cleared\n"); */
     can_flag_clear(CAN1, CAN_EOIF_FLAG);
   }
   if (err_index == 0){
-    log_printf("unknown err set, can1.msts:%ld can1.ests:%ld eaf:%d, epf:%d, bof:%d, etr:%d, tec:%d, rec:%d\n",
-	       CAN1->msts, CAN1->ests,
-	       CAN1->ests_bit.eaf, CAN1->ests_bit.epf, CAN1->ests_bit.bof,
-	       CAN1->ests_bit.etr, CAN1->ests_bit.tec, CAN1->ests_bit.rec);
+    /* log_printf("unknown err set, can1.msts:%ld can1.ests:%ld eaf:%d, epf:%d, bof:%d, etr:%d, tec:%d, rec:%d\n", */
+    /* 	       CAN1->msts, CAN1->ests, */
+    /* 	       CAN1->ests_bit.eaf, CAN1->ests_bit.epf, CAN1->ests_bit.bof, */
+    /* 	       CAN1->ests_bit.etr, CAN1->ests_bit.tec, CAN1->ests_bit.rec); */
 
     /* log_printf("call canmodule process to handle the error?\n"); */
     /* CO_CANmodule_process(CANModule_local); */

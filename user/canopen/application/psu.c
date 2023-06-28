@@ -106,12 +106,6 @@ CO_ReturnError_t app_psu_init() {
   OD_extension_init(param_6000, &OD_6000_extension);
  
   // 初始化每个OD扩展，并设置读写回调函数
-  OD_entry_t * param_6005 = OD_ENTRY_H6005_PSUModuleTemperature;
-  OD_6005_extension.object = NULL;
-  OD_6005_extension.read = my_OD_read_6005;
-  OD_6005_extension.write = NULL;
-  OD_extension_init(param_6005, &OD_6005_extension);
-
   OD_entry_t * param_6001 = OD_ENTRY_H6001_PSU_CurrentRead;
   OD_6001_extension.object = NULL;
   OD_6001_extension.read = my_OD_read_6001;
@@ -135,6 +129,12 @@ CO_ReturnError_t app_psu_init() {
   OD_6004_extension.read = my_OD_read_6004;
   OD_6004_extension.write = my_OD_write_6004;
   OD_extension_init(param_6004, &OD_6004_extension);
+
+  OD_entry_t * param_6005 = OD_ENTRY_H6005_PSUModuleTemperature;
+  OD_6005_extension.object = NULL;
+  OD_6005_extension.read = my_OD_read_6005;
+  OD_6005_extension.write = NULL;
+  OD_extension_init(param_6005, &OD_6005_extension);
 
   // 初始化外设
   psu_peripheral_init();

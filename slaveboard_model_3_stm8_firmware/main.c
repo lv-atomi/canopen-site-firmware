@@ -134,6 +134,7 @@ int main(void){
   GPOutput_init(ADDR_PORT, ADDR_PIN); /* enable PC3~PC7 */
   GPOutput_init(CONTROL_PORT, CONTROL_PIN); /* enable PA.1(LED), PA.3(Ready) */
 
+  delay(250000);		/* delay 0.5 second for all stacked board power up */
   uart_init();
   init_adc();
   

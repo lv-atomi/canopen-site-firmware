@@ -66,14 +66,8 @@ CO_ReturnError_t err;
 
 CO_ReturnError_t app_programStart() {
   ASSERT(app_psu_init() != CO_ERROR_NO);
-  /* ASSERT(app_brushless_init() != CO_ERROR_NO); */
-  /* ASSERT(app_hbridge_init() != CO_ERROR_NO); */
-  /* ASSERT(app_thermal_7705_init() != CO_ERROR_NO); */
-  /* ASSERT(app_aircondition_init() != CO_ERROR_NO); */
-  /* ASSERT(app_gpio_init() != CO_ERROR_NO); */
-  /* ASSERT(app_stackable_module_food_dispenser_init() != CO_ERROR_NO); */
-  /* ASSERT(app_camera_init() != CO_ERROR_NO); */
-  /* ASSERT(app_weight_sensor_init() != CO_ERROR_NO); */
+  
+  ASSERT(app_stackable_module_food_dispenser_init() != CO_ERROR_NO);
   return CO_ERROR_NO;
 }
 
