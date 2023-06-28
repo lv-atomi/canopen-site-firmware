@@ -34,6 +34,7 @@
 #include "timer1.h"
 
 #include "psu.h"
+#include "slavestation_model_3.h"
 
 
 #define DBG_OD_ENTRY              "(%s) Error in Object Dictionary entry: 0x%" PRIx32 "\n", __func__
@@ -67,7 +68,7 @@ CO_ReturnError_t err;
 CO_ReturnError_t app_programStart() {
   ASSERT(app_psu_init() != CO_ERROR_NO);
   
-  ASSERT(app_stackable_module_food_dispenser_init() != CO_ERROR_NO);
+  ASSERT(app_stackable_module_init() != CO_ERROR_NO);
   return CO_ERROR_NO;
 }
 

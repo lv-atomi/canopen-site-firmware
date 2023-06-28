@@ -262,6 +262,7 @@ static ODR_t my_OD_write_650X(OD_stream_t *stream, const void *buf, OD_size_t co
 }
 
 CO_ReturnError_t app_stackable_module_init() {
+  init_slavestation_model_3();
   for (uint8_t i = 0; i < MAX_STACKABLE_MODULES; i++) {
     OD_entry_t *param_650X = NULL;
     switch (i) {
