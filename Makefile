@@ -2,7 +2,7 @@ PROJ_NAME=main
 
 DEBUG=1
 
-CC=arm-none-eabi-gcc --specs=nosys.specs
+CC=arm-none-eabi-gcc --specs=nosys.specs -Werror -Wno-unused-variable
 #GDB=arm-none-eabi-gdb
 GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy
@@ -12,6 +12,10 @@ LIBROOT := Libraries
 CMSISROOT := $(LIBROOT)/cmsis/cm4
 DRIVERROOT := $(LIBROOT)/Drivers
 CANOPENROOT := canopen
+
+OPENOCD_CMSIS := OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid"
+OPENOCD_ATLINK := OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/atlink.cfg -f target/at32f403axx.cfg
+OPENOCD := $(OPENOCD_ATLINK)
 
 ifdef DEBUG
 CFLAGS  = -O0 -g3 -MMD
@@ -24,11 +28,12 @@ CFLAGS += -Wall -Wno-missing-braces -std=c99 -mthumb -mcpu=cortex-m4
 CFLAGS += -mfloat-abi=soft
 # TODO: hard float was causing an exception; see what's up.
 LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gcc/linker/AT32F403AxG_FLASH.ld
-DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection
+DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection, use APPLICATION
 export DEFINES
 
-CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application
-CFLAGS += $(DEFINES) -Iuser -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC)
+LITTLEFSINC = -Iuser/littlefs
+CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application -Iuser/canopen/module
+CFLAGS += $(DEFINES) -Iuser -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC) $(LITTLEFSINC)
 
 CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
 	$(CANOPENROOT)/301/CO_NMT_Heartbeat.c \
@@ -43,10 +48,12 @@ CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
 	$(CANOPENROOT)/storage/CO_storage.c \
 	$(CANOPENROOT)/CANopen.c \
 	$(wildcard user/canopen/driver/*.c) \
-	$(wildcard user/canopen/application/*.c)
+	$(wildcard user/canopen/application/*.c) \
+	$(wildcard user/canopen/module/*.c)
 
 SRCS = $(wildcard user/*.c) \
 	$(CANOPENSRC) \
+	$(wildcard user/littlefs/*.c) \
 	$(wildcard $(DRIVERROOT)/src/*.c) \
 	$(CMSISROOT)/devicesupport/system_at32f403a_407.c \
 	$(CMSISROOT)/devicesupport/gcc/startup_at32f403a_407.s
@@ -89,8 +96,8 @@ clean:
 	find $(OBJDIR) -type f -name '*.[odt]' -print0 | xargs -0 -r rm
 
 
-flash-openocd: $(OBJDIR)/$(PROJ_NAME).elf
-	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid" -f program.cfg
+flash: $(OBJDIR)/$(PROJ_NAME).elf
+	$(OPENOCD) -f program.cfg
 
 flash-pyocd: $(OBJDIR)/$(PROJ_NAME).elf
 	pyocd flash -v --config programmer_pyocd/pyocd_at32.yaml -t _at32f403acgu7 $<
@@ -100,7 +107,7 @@ pyocd: $(OBJDIR)/$(PROJ_NAME).elf
 
 
 openocd:
-	OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_vid_pid 0xc251 0xf001; cmsis_dap_backend hid"
+	$(OPENOCD)
 
 gdb: $(OBJDIR)/$(PROJ_NAME).elf
 	$(GDB) --tui $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"

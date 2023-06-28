@@ -1,20 +1,25 @@
 #include "at32f403a_407_clock.h"
 #include "timer1.h"
-#include "gpio.h"
+#include "key.h"
 #include "oled.h"
 #include "flash.h"
 #include "can.h"
+//#include <cstdint>
+#include <stdint.h>
 
 crm_clocks_freq_type crm_clocks_freq_struct = {0};
 
 uint16_t TimerCount_1ms = 0;
 uint16_t TimerCountms   = 0;
 uint16_t TimerCount = 0;
+uint32_t TimerTick = 0;
+
 extern KeyPressMode keySta;
-extern error_status err_status;
+error_status err_status;
 extern uint16_t buffer_write[TEST_BUFEER_SIZE];
 extern uint16_t buffer_read[TEST_BUFEER_SIZE];
 extern SysEprom_TypeDef gSysEpromData;
+
 void Timer1_Init()
 {
   /* get system clock */
@@ -35,14 +40,25 @@ void Timer1_Init()
   nvic_irq_enable(TMR1_OVF_TMR10_IRQn, 0, 0);
 
   /* enable tmr1 */
-  tmr_counter_enable(TMR1, TRUE);	
-	
+  tmr_counter_enable(TMR1, TRUE);
+}
+
+extern void canopen_app_interrupt(void);
+
+uint32_t get_ticks(void) {
+  return TimerTick;
 }
 
 void TMR1_OVF_TMR10_IRQHandler(void) {
   if (tmr_flag_get(TMR1, TMR_OVF_FLAG) != RESET) {
     /* add user code... */
     TimerCountms++;
+    TimerTick++;
+
+    /* call canopen intervals */
+    /* printf("app interrupt\n"); */
+    canopen_app_interrupt();
+    
     if (TimerCountms % 100 == 0) // 100ms can send circle
     {
       TimerCount_1ms = 1;

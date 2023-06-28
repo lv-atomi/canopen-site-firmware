@@ -25,6 +25,7 @@
 
 #include "CANopen.h"
 
+
 /* Get values from CO_config_t or from single default OD.h ********************/
 #ifdef CO_MULTIPLE_OD
 #define CO_GET_CO(obj) co->obj
@@ -1305,6 +1306,7 @@ CO_NMT_reset_cmd_t CO_process(CO_t *co,
     CO_CANmodule_process(co->CANmodule);
 
 #if (CO_CONFIG_LSS) & CO_CONFIG_LSS_SLAVE
+    //log_printf("lss_slv counter:%d\n", CO_GET_CNT(LSS_SLV));
     if (CO_GET_CNT(LSS_SLV) == 1) {
         if (CO_LSSslave_process(co->LSSslave)) {
             reset = CO_RESET_COMM;
@@ -1327,7 +1329,8 @@ CO_NMT_reset_cmd_t CO_process(CO_t *co,
  #ifndef CO_STATUS_FIRMWARE_DOWNLOAD_IN_PROGRESS
   #define CO_STATUS_FIRMWARE_DOWNLOAD_IN_PROGRESS 0
  #endif
-
+    
+    //log_printf("leds counter:%d\n", CO_GET_CNT(LEDS));
     if (CO_GET_CNT(LEDS) == 1) {
         CO_LEDs_process(co->LEDs,
             timeDifference_us,
@@ -1347,10 +1350,12 @@ CO_NMT_reset_cmd_t CO_process(CO_t *co,
 
     /* CANopen Node ID is unconfigured (LSS slave), stop processing here */
     if (co->nodeIdUnconfigured) {
+      //log_printf("node id is unconfigured\n");
         return reset;
     }
 
     /* Emergency */
+    //log_printf("emergency counter:%d\n", CO_GET_CNT(EM));
     if (CO_GET_CNT(EM) == 1) {
         CO_EM_process(co->em,
                       NMTisPreOrOperational,
@@ -1359,6 +1364,7 @@ CO_NMT_reset_cmd_t CO_process(CO_t *co,
     }
 
     /* NMT_Heartbeat */
+    //log_printf("nmt heartbeat counter:%d\n", CO_GET_CNT(NMT));
     if (CO_GET_CNT(NMT) == 1) {
         reset = CO_NMT_process(co->NMT,
                                &NMTstate,
@@ -1369,6 +1375,7 @@ CO_NMT_reset_cmd_t CO_process(CO_t *co,
                              || NMTstate == CO_NMT_OPERATIONAL);
 
     /* SDOserver */
+    //log_printf("sdo_srv counter:%d\n", CO_GET_CNT(SDO_SRV));
     for (uint8_t i = 0; i < CO_GET_CNT(SDO_SRV); i++) {
         CO_SDOserver_process(&co->SDOserver[i],
                              NMTisPreOrOperational,

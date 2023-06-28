@@ -92,6 +92,7 @@ static __IO uint32_t fac_ms;
   */
 PUTCHAR_PROTOTYPE
 {
+  /* ITM_SendChar(ch); */
   while(usart_flag_get(PRINT_UART, USART_TDBE_FLAG) == RESET);
   usart_data_transmit(PRINT_UART, ch);
   return ch;
