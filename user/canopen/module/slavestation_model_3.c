@@ -1,9 +1,6 @@
 #include "slavestation_model_3.h"
 
-#include "at32f403a_407_board.h"
-#include "at32f403a_407_clock.h"
 #include "i2c_application.h"
-#include <bits/types.h>
 
 /*
  * Slaveboard model 3, can station 10,11,12,13,15:
@@ -48,7 +45,9 @@ void error_handler() {
   }
 }
 
-void i2c_lowlevel_init(i2c_handle_type* hi2c){
+void i2c_lowlevel_init(i2c_handle_type* hi2c) {
+  gpio_init_type gpio_initstructure;
+
   /* i2c periph clock enable */
   crm_periph_clock_enable(I2Cx_CLK, TRUE);
   crm_periph_clock_enable(I2Cx_SCL_GPIO_CLK, TRUE);
@@ -75,6 +74,8 @@ void i2c_lowlevel_init(i2c_handle_type* hi2c){
 
 /* returns: 0 if discoveried, 1 if timeout */
 uint32_t cmd_discovery(i2c_handle_type* hi2c, uint16_t slave_addr) { /* FIXME: working */
+  i2c_status_type i2c_status;
+  
   if((i2c_status = i2c_master_transmit(&hi2cx, slave_addr, tx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) {
     error_handler();
   }
@@ -87,6 +88,8 @@ uint32_t cmd_discovery(i2c_handle_type* hi2c, uint16_t slave_addr) { /* FIXME: w
 }
 
 void cmd_gpout_set(i2c_handle_type* hi2c, uint16_t slave_addr, uint8_t channel, bool_t value){ /* FIXME: working */
+  i2c_status_type i2c_status;
+
   if((i2c_status = i2c_master_transmit(&hi2cx, slave_addr, tx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) {
     error_handler();
   }
@@ -98,6 +101,8 @@ void cmd_gpout_set(i2c_handle_type* hi2c, uint16_t slave_addr, uint8_t channel, 
 }
 
 bool_t cmd_gpout_read(i2c_handle_type* hi2c, uint16_t slave_addr, uint8_t channel){ /* FIXME: working */
+  i2c_status_type i2c_status;
+
   if((i2c_status = i2c_master_transmit(&hi2cx, slave_addr, tx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) {
     error_handler();
   }
@@ -106,27 +111,32 @@ bool_t cmd_gpout_read(i2c_handle_type* hi2c, uint16_t slave_addr, uint8_t channe
   /*   return 1; */
   /* } */
   /* FIXME: check recved buffer */
+  return TRUE;
 }
 
 int32_t cmd_motor_speed_read(i2c_handle_type* hi2c, uint16_t slave_addr){ /* FIXME: working */
+  i2c_status_type i2c_status;
+
   if((i2c_status = i2c_master_transmit(&hi2cx, slave_addr, tx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) {
     error_handler();
   }
   delay_ms(10);
   if((i2c_status = i2c_master_receive(&hi2cx, slave_addr, rx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) { /* recv failed */
-    error_handler()
+    error_handler();
   }
   /* FIXME: check recved buffer */
   return 0;
 }
 
-int32_t cmd_motor_speed_set(i2c_handle_type* hi2c, uint16_t slave_addr) { /* FIXME: working */
+int32_t cmd_motor_speed_set(i2c_handle_type* hi2c, uint16_t slave_addr, int32_t speed) { /* FIXME: working */
+  i2c_status_type i2c_status;
+
   if((i2c_status = i2c_master_transmit(&hi2cx, slave_addr, tx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) {
     error_handler();
   }
   /* delay_ms(10); */
   /* if((i2c_status = i2c_master_receive(&hi2cx, slave_addr, rx_buf, BUF_SIZE, I2C_TIMEOUT)) != I2C_OK) { /\* recv failed *\/ */
-  /*   error_handler() */
+  /*   error_handler(); */
   /* } */
   /* FIXME: check recved buffer */
   return 0;
@@ -135,7 +145,6 @@ int32_t cmd_motor_speed_set(i2c_handle_type* hi2c, uint16_t slave_addr) { /* FIX
 /* exported interfaces */
 
 void init_slavestation_model_3(){
-  gpio_init_type gpio_initstructure;
   uint8_t i;
 
   hi2cx.i2cx = I2Cx_PORT;
@@ -178,8 +187,8 @@ void motor_speed_set(uint16_t slave_addr, int32_t speed){
 OD_extension_t OD_650X_extension[MAX_STACKABLE_MODULES];
 
 static ODR_t my_OD_read_650X(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
-  uint8_t index = (uint8_t) stream->object;
-  printf("read 650%d, subidx:%d\n", stream->subIndex);
+  uint8_t index = (uint8_t)(uintptr_t)(stream->object);
+  printf("read 650%d, subidx:%u\n", index, stream->subIndex);
 
   switch (stream->subIndex) {
   case 0:                // highestSub_indexSupported
@@ -217,7 +226,7 @@ static ODR_t my_OD_read_650X(OD_stream_t *stream, void *buf, OD_size_t count, OD
     *countRead = sizeof(uint8_t);
     break;
   default:
-    return ODR_SUB_IDX_NOT_EXIST;
+    return ODR_SUB_NOT_EXIST;
   }
 
   return ODR_OK;
@@ -225,9 +234,7 @@ static ODR_t my_OD_read_650X(OD_stream_t *stream, void *buf, OD_size_t count, OD
 
 static ODR_t my_OD_write_650X(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten)
 {
-  uint8_t module_idx =
-      (uint8_t)(stream->extension
-                    ->object); // extract the module index from the object
+  uint8_t module_idx = (uint8_t)(uintptr_t)(stream->object); // extract the module index from the object
   printf("write 650%d, subidx:%d\n", module_idx, stream->subIndex);
 
   switch (stream->subIndex) {
@@ -248,7 +255,7 @@ static ODR_t my_OD_write_650X(OD_stream_t *stream, const void *buf, OD_size_t co
     // write_HBridgeMotor(module_idx, CO_getUint32(buf));
     break;
   default:
-    return ODR_SUB_IDX_NOT_EXIST;
+    return ODR_SUB_NOT_EXIST;
   }
 
   return ODR_OK;
@@ -256,9 +263,39 @@ static ODR_t my_OD_write_650X(OD_stream_t *stream, const void *buf, OD_size_t co
 
 CO_ReturnError_t app_stackable_module_init() {
   for (uint8_t i = 0; i < MAX_STACKABLE_MODULES; i++) {
-    /* OD_entry_t *param_650X = */
-    /*     NULL; // TODO: Get the actual object dictionary entry based on i */
-    OD_650X_extension[i].object = (OD_entry_t *)i;
+    OD_entry_t *param_650X = NULL;
+    switch (i) {
+    case 0:
+      param_650X = OD_ENTRY_H6500_stackableModule0;
+      break;
+    case 1:
+      param_650X = OD_ENTRY_H6501_stackableModule1;
+      break;
+    case 2:
+      param_650X = OD_ENTRY_H6502_stackableModule2;
+      break;
+    case 3:
+      param_650X = OD_ENTRY_H6503_stackableModule3;
+      break;
+    case 4:
+      param_650X = OD_ENTRY_H6504_stackableModule4;
+      break;
+    case 5:
+      param_650X = OD_ENTRY_H6505_stackableModule5;
+      break;
+    case 6:
+      param_650X = OD_ENTRY_H6506_stackableModule6;
+      break;
+    case 7:
+      param_650X = OD_ENTRY_H6507_stackableModule7;
+      break;
+    default:
+      param_650X = NULL; // Or some other error handling
+      break;
+    }
+    ASSERT(param_650X != NULL);
+
+    OD_650X_extension[i].object = (OD_entry_t *)(intptr_t)i; /* FIXME */
     OD_650X_extension[i].read = my_OD_read_650X;
     OD_650X_extension[i].write = my_OD_write_650X;
 

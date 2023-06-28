@@ -19,10 +19,6 @@
  * PB5 -> camera1.trigger
  */
 
-#include "at32f403a.h"
-#include "at32f4xx_gpio.h"
-#include "at32f4xx_crm.h"
-
 void camera_gpios_init(void) {
   gpio_init_type gpio_init_struct;
 
@@ -70,7 +66,7 @@ static ODR_t my_OD_read_620X(OD_stream_t *stream, void *buf,
 
   if(stream->subIndex == 1 || stream->subIndex == 2) { 
     // strobe, trigger are bool_t type
-    bool_t v = /* read from your data structure */;
+    bool_t v = 123 /* FIXME:read from your data structure */;
     CO_setUint8(buf, v);
     *countRead = sizeof(bool_t);
     return ODR_OK;
@@ -78,22 +74,22 @@ static ODR_t my_OD_read_620X(OD_stream_t *stream, void *buf,
 
   if(stream->subIndex >= 3 && stream->subIndex <= 11) { 
     // XMove, YMove, ZMove, XTilt, YTilt, ZTilt, zoom, iris, focus are int32_t type
-    int32_t v = /* read from your data structure */;
+    int32_t v = 123 /* FIXME:read from your data structure */;
     CO_setInt32(buf, v);
     *countRead = sizeof(int32_t);
     return ODR_OK;
   }
 
-  return ODR_SUB_UNKNOWN; // unknown subIndex
+  return ODR_SUB_NOT_EXIST; // unknown subIndex
 }
 
 static ODR_t my_OD_write_620X(OD_stream_t *stream, const void *buf,
-			      OD_size_t count) {
+			      OD_size_t count, OD_size_t *countWritten) {
   uint8_t offset = stream->object == OD_ENTRY_H6200_cameraModule0? 0 : 1;
   printf("write 620%d, subidx:%d\n", offset, stream->subIndex);
 
   if (stream->subIndex == 0) {
-    return ODR_RO;
+    return ODR_READONLY;
   }
 
   if(stream->subIndex == 1 || stream->subIndex == 2) { 
@@ -110,30 +106,32 @@ static ODR_t my_OD_write_620X(OD_stream_t *stream, const void *buf,
     return ODR_OK;
   }
 
-  return ODR_SUB_UNKNOWN; // unknown subIndex
+  return ODR_SUB_NOT_EXIST; // unknown subIndex
 }
 
 CO_ReturnError_t dual_camera_module_init() {
-    OD_entry_t *param_6200 = OD_ENTRY_H6200_cameraModule0;
-    OD_entry_t *param_6201 = OD_ENTRY_H6201_cameraModule1;
+  OD_entry_t *param_6200 = OD_ENTRY_H6200_cameraModule0;
+  OD_entry_t *param_6201 = OD_ENTRY_H6201_cameraModule1;
 
-    OD_6200_extension.object = param_6200;
-    OD_6200_extension.read = my_OD_read_620X;
-    OD_6200_extension.write = my_OD_write_620X;
+  OD_6200_extension.object = param_6200;
+  OD_6200_extension.read = my_OD_read_620X;
+  OD_6200_extension.write = my_OD_write_620X;
 
-    OD_6201_extension.object = param_6201;
-    OD_6201_extension.read = my_OD_read_620X; // Replace with the correct function name
-    OD_6201_extension.write = my_OD_write_620X; // Replace with the correct function name
+  OD_6201_extension.object = param_6201;
+  OD_6201_extension.read =
+      my_OD_read_620X; // Replace with the correct function name
+  OD_6201_extension.write =
+      my_OD_write_620X; // Replace with the correct function name
 
-    if (OD_extension_init(param_6200, &OD_6200_extension) != CO_ERROR_NO) {
-        log_printf("ERROR, unable to extend OD object 6200\n");
-        return CO_ERROR_OD;
-    }
-  
-    if (OD_extension_init(param_6201, &OD_6201_extension) != CO_ERROR_NO) {
-        log_printf("ERROR, unable to extend OD object 6201\n");
-        return CO_ERROR_OD;
-    }
-  
-    return CO_ERROR_NO;
+  if (OD_extension_init(param_6200, &OD_6200_extension) != ODR_OK) {
+    log_printf("ERROR, unable to extend OD object 6200\n");
+    return CO_ERROR_OD_PARAMETERS;
+  }
+
+  if (OD_extension_init(param_6201, &OD_6201_extension) != ODR_OK) {
+    log_printf("ERROR, unable to extend OD object 6201\n");
+    return CO_ERROR_OD_PARAMETERS;
+  }
+
+  return CO_ERROR_NO;
 }

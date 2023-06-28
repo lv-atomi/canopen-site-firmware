@@ -30,7 +30,7 @@ WeightSensorPort Channels[MAX_PORTS] = {
   {GPIOA, GPIO_PINS_2, GPIO_PINS_3},
   {GPIOB, GPIO_PINS_0, GPIO_PINS_1},
   {GPIOB, GPIO_PINS_10, GPIO_PINS_11},
-}
+};
 
 
 void init_slavestation_model_4(){
@@ -42,28 +42,29 @@ void init_slavestation_model_4(){
 
   for (i=0; i<MAX_PORTS; i++){
     /* gpio configuration */
-    gpio_default_para_init(&gpio_init_struct);
+    gpio_default_para_init(&gpio_initstructure);
     gpio_initstructure.gpio_out_type       = GPIO_OUTPUT_PUSH_PULL;
     gpio_initstructure.gpio_pull           = GPIO_PULL_UP;
     gpio_initstructure.gpio_mode           = GPIO_MODE_OUTPUT;
     gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-    gpio_init_struct.gpio_pins = Channels[i].pin_clk;
-    gpio_init(Channels[i].port, &gpio_init_struct);
+    gpio_initstructure.gpio_pins = Channels[i].pin_clk;
+    gpio_init(Channels[i].port, &gpio_initstructure);
     
-    gpio_default_para_init(&gpio_init_struct);
+    gpio_default_para_init(&gpio_initstructure);
     gpio_initstructure.gpio_out_type       = GPIO_OUTPUT_OPEN_DRAIN;
     gpio_initstructure.gpio_pull           = GPIO_PULL_NONE;
     gpio_initstructure.gpio_mode           = GPIO_MODE_INPUT;
     gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_MODERATE;
-    gpio_init_struct.gpio_pins = Channels[i].pin_data;
-    gpio_init(Channels[i].port, &gpio_init_struct);
+    gpio_initstructure.gpio_pins = Channels[i].pin_data;
+    gpio_init(Channels[i].port, &gpio_initstructure);
   }
 }
 
 uint32_t weight_read(uint8_t ch){
   uint8_t i;
   uint32_t result = 0;
-  ASSERT(channel < 4);
+  
+  ASSERT(ch < 4);
   /* set clk to low */
   Channels[ch].port->clr = Channels[ch].pin_clk;
   /* waiting for data ready */
@@ -74,7 +75,7 @@ uint32_t weight_read(uint8_t ch){
     delay_us(1);
     /* read data */
     result = result << 1;
-    result |= (Channel[ch].port->idt & Channel[ch].pin_data) != 0;
+    result |= (Channels[ch].port->idt & Channels[ch].pin_data) != 0;
     /* set clk to low */
     Channels[ch].port->clr = Channels[ch].pin_clk;
     delay_us(1);
@@ -110,7 +111,7 @@ static ODR_t my_OD_read_6600(OD_stream_t *stream, void *buf, OD_size_t count,
     CO_setUint32(buf, value);
     *countRead = sizeof(uint32_t);
   } else {
-    return ODR_SUB_IDX_NOT_EXIST;
+    return ODR_SUB_NOT_EXIST;
   }
 
   return ODR_OK;

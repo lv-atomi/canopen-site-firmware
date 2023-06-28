@@ -1,4 +1,4 @@
-#includes "slavestation_model_5_ihplate.h"
+#include "slavestation_model_5_ihplate.h"
 
 /*
  * Slaveboard model 5, IHPlate:
@@ -45,33 +45,45 @@ void fan_gpio_init(void) {
 }
 
 void fan_timer_init(void) {
-  tmr_baseinit_type tmr_base_init_structure;
-  tmr_ocinit_type tmr_oc_init_structure;
+  tmr_output_config_type tmr_oc_init_structure;
+  tmr_input_config_type tmr_ic_init_structure;
+
+  uint16_t prescaler_value;
+  prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1;
 
   /* Enable clock for TIMER2 and TIMER3 */
   crm_periph_clock_enable(CRM_TMR2_PERIPH_CLOCK, TRUE);
   crm_periph_clock_enable(CRM_TMR3_PERIPH_CLOCK, TRUE);
 
-  /* Initialize structures for PWM output */
-  tmr_output_default_para_init(&tmr_oc_init_structure);
-  tmr_oc_init_structure.oc_mode = TMR_OC_MODE_PWM_1;
-  tmr_oc_init_structure.oc_polarity = TMR_OUTPUT_ACTIVE_HIGH;
-  tmr_oc_init_structure.oc_output_state = ENABLE;
-
   /* TIMER2 for FAN_Sense */
-  tmr_base_init_structure.period = 1000; // Frequency = 1kHz
-  tmr_base_init_structure.prescaler =
-      (SystemCoreClock / 1000000) - 1; // To have a 1us resolution
-  tmr_base_init_structure.repetition_counter = 0;
-  tmr_base_init(TMR2, &tmr_base_init_structure);
+  tmr_input_default_para_init(&tmr_ic_init_structure);
+  tmr_ic_init_structure.input_filter_value = 0;
+  tmr_ic_init_structure.input_channel_select = TMR_SELECT_CHANNEL_2;
+  tmr_ic_init_structure.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
+  tmr_ic_init_structure.input_polarity_select = TMR_INPUT_RISING_EDGE;
+
+  tmr_pwm_input_config(TMR2, &tmr_ic_init_structure, TMR_CHANNEL_INPUT_DIV_1);
+  tmr_trigger_input_select(TMR2, TMR_SUB_INPUT_SEL_C2DF2);
+  tmr_sub_mode_select(TMR2, TMR_SUB_RESET_MODE);
+  tmr_sub_sync_mode_set(TMR2, TRUE);
+  tmr_counter_enable(TMR2, TRUE);
+  tmr_interrupt_enable(TMR2, TMR_C2_INT, TRUE);
 
   /* TIMER3 for FAN_PWM */
-  tmr_base_init(TMR3, &tmr_base_init_structure);
-  tmr_oc_init_structure.pulse = 500; // Duty cycle = 50%
-  tmr_oc_config(TMR3, TMR_CHANNEL_1, &tmr_oc_init_structure);
+  tmr_output_default_para_init(&tmr_oc_init_structure);
+  tmr_oc_init_structure.oc_mode = TMR_OUTPUT_CONTROL_PWM_MODE_A;
+  tmr_oc_init_structure.oc_idle_state = FALSE;
+  tmr_oc_init_structure.oc_polarity = TMR_OUTPUT_ACTIVE_HIGH;
+  tmr_oc_init_structure.oc_output_state = TRUE;
 
-  /* Enable timer counter for TIMER2 and TIMER3 */
-  tmr_counter_enable(TMR2, TRUE);
+  tmr_base_init(TMR3, 665, prescaler_value);
+  tmr_cnt_dir_set(TMR3, TMR_COUNT_UP);
+  tmr_clock_source_div_set(TMR3, TMR_CLOCK_DIV1);
+
+  tmr_output_channel_config(TMR3, TMR_SELECT_CHANNEL_1, &tmr_oc_init_structure);
+  tmr_channel_value_set(TMR3, TMR_SELECT_CHANNEL_1, 500); // Set the pulse width
+  tmr_output_channel_buffer_enable(TMR3, TMR_SELECT_CHANNEL_1, TRUE);
+  tmr_period_buffer_enable(TMR3, TRUE);
   tmr_counter_enable(TMR3, TRUE);
 }
 
@@ -104,20 +116,14 @@ void system_init(void) {
   gpio_init(GPIOA, &GPIO_InitStructure);
 }
 
-void usart_init(void) {
-  usart_init_type USART_InitStructure;
-
+void ih_usart_init(void) {
   /* Enable USART2 clock */
   crm_periph_clock_enable(CRM_USART2_PERIPH_CLOCK, TRUE);
 
   /* Configure USART2 parameters */
-  USART_InitStructure.baud_rate = 9600;
-  USART_InitStructure.data_length = USART_DATA_8BITS;
-  USART_InitStructure.stop_bits = USART_STOP_1_BIT;
-  USART_InitStructure.parity = USART_PARITY_NONE;
-  USART_InitStructure.mode = USART_MODE_TX_RX;
-  USART_InitStructure.flow_control = USART_FLOW_CONTROL_NONE;
-  usart_init(USART2, &USART_InitStructure);
+  usart_init(USART2, 9600, USART_DATA_8BITS, USART_STOP_1_BIT);
+  usart_transmitter_enable(USART2, TRUE);
+  usart_receiver_enable(USART2, TRUE);
 
   /* Enable USART2 */
   usart_enable(USART2, TRUE);
@@ -126,7 +132,7 @@ void usart_init(void) {
 void init_slavestation_model_5_ihplate(){
   fan_gpio_init();
   fan_timer_init();
-  usart_init();
+  ih_usart_init();
 }
 
 OD_extension_t OD_6700_extension;
@@ -136,64 +142,49 @@ OD_extension_t OD_6703_extension;
 OD_extension_t OD_6704_extension;
 OD_extension_t OD_6705_extension;
 
-OD_size_t my_OD_read_6700_to_6703(OD_stream_t *stream, void *buf,
+static ODR_t my_OD_read_6700_to_6703(OD_stream_t *stream, void *buf,
                                   OD_size_t count, OD_size_t *countRead) {
-  uint32_t *object = (uint32_t *)stream->attribute;
+  uint32_t *object = (uint32_t *)stream->object; /* FIXME */
   *countRead = sizeof(*object);
   if (count < *countRead) {
-    return CO_ERROR_NO;
+    return ODR_OK;
   }
   memcpy(buf, object, *countRead);
-  return CO_ERROR_NO;
+  return ODR_OK;
 }
 
-OD_size_t my_OD_read_6705(OD_stream_t *stream, void *buf, OD_size_t count,
+static ODR_t my_OD_read_6705(OD_stream_t *stream, void *buf, OD_size_t count,
                           OD_size_t *countRead) {
-  struct {
-    uint8_t highestSub_indexSupported;
-    uint32_t currentSpeed;
-    uint32_t targetSpeed;
-  } *object = (struct {
-                uint8_t highestSub_indexSupported;
-                uint32_t currentSpeed;
-                uint32_t targetSpeed;
-              } *)stream->attribute;
-  *countRead = sizeof(*object);
+  /* FIXME */
+  *countRead = 2;
   if (count < *countRead) {
-    return CO_ERROR_NO;
+    return ODR_OK;
   }
-  memcpy(buf, object, *countRead);
-  return CO_ERROR_NO;
+  //memcpy(buf, object, *countRead);
+  return ODR_OK;
 }
 
-OD_size_t my_OD_write_6704(OD_stream_t *stream, const void *buf,
+static ODR_t my_OD_write_6704(OD_stream_t *stream, const void *buf,
                            OD_size_t count, OD_size_t *countWritten) {
-  uint32_t *object = (uint32_t *)stream->attribute;
+  /* FIXME */
+  uint32_t *object = (uint32_t *)stream->object;
   if (count < sizeof(*object)) {
-    return CO_ERROR_NO;
+    return ODR_OK;
   }
-  memcpy(object, buf, count);
+  //memcpy(object, buf, count);
   *countWritten = count;
-  return CO_ERROR_NO;
+  return ODR_OK;
 }
 
-OD_size_t my_OD_write_6705(OD_stream_t *stream, const void *buf,
+static ODR_t my_OD_write_6705(OD_stream_t *stream, const void *buf,
                            OD_size_t count, OD_size_t *countWritten) {
-  struct {
-    uint8_t highestSub_indexSupported;
-    uint32_t currentSpeed;
-    uint32_t targetSpeed;
-  } *object = (struct {
-                uint8_t highestSub_indexSupported;
-                uint32_t currentSpeed;
-                uint32_t targetSpeed;
-              } *)stream->attribute;
-  if (count < sizeof(object->targetSpeed)) {
-    return CO_ERROR_NO;
-  }
-  memcpy(&(object->targetSpeed), buf, count);
+  /* FIXME */
+  /* if (count < sizeof(object->targetSpeed)) { */
+  /*   return CO_ERROR_NO; */
+  /* } */
+  //memcpy(&(object->targetSpeed), buf, count);
   *countWritten = count;
-  return CO_ERROR_NO;
+  return ODR_OK;
 }
 
 CO_ReturnError_t line_module_init() {
@@ -202,9 +193,9 @@ CO_ReturnError_t line_module_init() {
   OD_6700_extension.read = my_OD_read_6700_to_6703;
   OD_6700_extension.write = NULL;
   if (OD_extension_init(OD_ENTRY_H6700_lineCurrent, &OD_6700_extension) !=
-      CO_ERROR_NO) {
+      ODR_OK) {
     log_printf("ERROR, unable to extend OD object 6700\n");
-    return CO_ERROR_OD;
+    return CO_ERROR_OD_PARAMETERS;
   }
 
   // Line Voltage
@@ -212,9 +203,9 @@ CO_ReturnError_t line_module_init() {
   OD_6701_extension.read = my_OD_read_6700_to_6703;
   OD_6701_extension.write = NULL;
   if (OD_extension_init(OD_ENTRY_H6701_lineVoltage, &OD_6701_extension) !=
-      CO_ERROR_NO) {
+      ODR_OK) {
     log_printf("ERROR, unable to extend OD object 6701\n");
-    return CO_ERROR_OD;
+    return CO_ERROR_OD_PARAMETERS;
   }
 
   // IGBT Temperature
@@ -222,9 +213,9 @@ CO_ReturnError_t line_module_init() {
   OD_6702_extension.read = my_OD_read_6700_to_6703;
   OD_6702_extension.write = NULL;
   if (OD_extension_init(OD_ENTRY_H6702_IGBT_Temperature, &OD_6702_extension) !=
-      CO_ERROR_NO) {
+      ODR_OK) {
     log_printf("ERROR, unable to extend OD object 6702\n");
-    return CO_ERROR_OD;
+    return CO_ERROR_OD_PARAMETERS;
   }
 
   // Plate Temperature
@@ -232,9 +223,9 @@ CO_ReturnError_t line_module_init() {
   OD_6703_extension.read = my_OD_read_6700_to_6703;
   OD_6703_extension.write = NULL;
   if (OD_extension_init(OD_ENTRY_H6703_plateTemperature, &OD_6703_extension) !=
-      CO_ERROR_NO) {
+      ODR_OK) {
     log_printf("ERROR, unable to extend OD object 6703\n");
-    return CO_ERROR_OD;
+    return CO_ERROR_OD_PARAMETERS;
   }
 
   // System Load
@@ -242,9 +233,9 @@ CO_ReturnError_t line_module_init() {
   OD_6704_extension.read = my_OD_read_6700_to_6703;
   OD_6704_extension.write = my_OD_write_6704;
   if (OD_extension_init(OD_ENTRY_H6704_systemLoad, &OD_6704_extension) !=
-      CO_ERROR_NO) {
+      ODR_OK) {
     log_printf("ERROR, unable to extend OD object 6704\n");
-    return CO_ERROR_OD;
+    return CO_ERROR_OD_PARAMETERS;
   }
 
   // FAN0
@@ -252,9 +243,9 @@ CO_ReturnError_t line_module_init() {
   OD_6705_extension.read = my_OD_read_6705;
   OD_6705_extension.write = my_OD_write_6705;
   if (OD_extension_init(OD_ENTRY_H6705_FAN0, &OD_6705_extension) !=
-      CO_ERROR_NO) {
+      ODR_OK) {
     log_printf("ERROR, unable to extend OD object 6705\n");
-    return CO_ERROR_OD;
+    return CO_ERROR_OD_PARAMETERS;
   }
 
   return CO_ERROR_NO;

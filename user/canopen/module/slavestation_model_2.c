@@ -1,4 +1,4 @@
-#includes "slavestation_model_2.h"
+#include "slavestation_model_2.h"
 
 /*
  * Slaveboard model 2, can station 1,4,5,6,7:
@@ -46,86 +46,83 @@
 #define SDATA_PIN GPIO_PINS_14
 
 void AD7705_WriteToReg(uint8_t byteWord);
-void AD7705_Read(uint16_t amount, uint8_t regLength);
+uint16_t * AD7705_ReadDualChannel();
 
 
 void init_motor_timer_brush(){
   /* init timer */
-  tmr_base_init_type tmr_base_init_structure;
-  tmr_oc_init_type tmr_oc_init_structure;
+  tmr_output_config_type tmr_oc_init_structure;
+  uint16_t prescaler_value = 0;
 
+  /* compute the prescaler value */
+  prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1;
+  
   crm_periph_clock_enable(CRM_TMR1_PERIPH_CLOCK, TRUE);
 
   /* Timer base configuration for TMR1 */
-  tmr_base_default_para_init(&tmr_base_init_structure);
-  tmr_base_init_structure.period = 0xFFFF; // Depending on your PWM frequency
-  tmr_base_init_structure.prescaler = 0;
-  tmr_base_init_structure.clock_division = TMR_CLK_DIV1;
-  tmr_base_init_structure.counter_mode = TMR_COUNTER_MODE_UP;
-  tmr_base_init(TMR1, &tmr_base_init_structure);
+  tmr_base_init(TMR1, 0xFFFF, prescaler_value); // set period depending on your PWM frequency
+  tmr_cnt_dir_set(TMR1, TMR_COUNT_UP);
+  tmr_clock_source_div_set(TMR1, TMR_CLOCK_DIV1);
 
   /* PWM configuration for TMR1 channel 2 */
-  tmr_oc_default_para_init(&tmr_oc_init_structure);
-  tmr_oc_init_structure.oc_output_state = TMR_OUTPUT_STATE_ENABLE;
-  tmr_oc_init_structure.pulse = 0; // The pulse should be set according to the duty cycle
-  tmr_oc_init_structure.oc_polarity = TMR_OC_POLARITY_HIGH;
-  tmr_oc_init_structure.oc_mode = TMR_OC_MODE_PWM1;
-  tmr_oc_init_structure.oc_idle_state = TMR_OC_IDLE_STATE_RESET;
-  
-  tmr_oc_init_structure.occ_output_state = TMR_OUTPUT_STATE_ENABLE; // Enable complementary output
-  tmr_oc_init_structure.occ_polarity = TMR_OC_POLARITY_HIGH; // Set complementary output polarity
-  tmr_oc_init_structure.occ_idle_state = TMR_OC_IDLE_STATE_RESET; // Set complementary output idle state
-  
-  tmr_oc_init(TMR1, &tmr_oc_init_structure, TMR_CHANNEL_2);
+  tmr_output_default_para_init(&tmr_oc_init_structure);
+  tmr_oc_init_structure.oc_mode = TMR_OUTPUT_CONTROL_PWM_MODE_A;
+  tmr_oc_init_structure.oc_idle_state = FALSE;
+  tmr_oc_init_structure.oc_polarity = TMR_OUTPUT_ACTIVE_HIGH;
+  tmr_oc_init_structure.oc_output_state = TRUE;
+  tmr_output_channel_config(TMR1, TMR_SELECT_CHANNEL_2, &tmr_oc_init_structure);
+  tmr_channel_value_set(
+      TMR1, TMR_SELECT_CHANNEL_2,
+      0); // The pulse should be set according to the duty cycle
+  tmr_output_channel_buffer_enable(TMR1, TMR_SELECT_CHANNEL_2, TRUE);
 
   /* Enable TMR1 counter */
   tmr_counter_enable(TMR1, TRUE);
 }
 
 void init_motor_timer_brushless(){
-  // Declare structures
-  tmr_baseinit_type tmr_base_init_structure;
-  tmr_ocinit_type tmr_oc_init_structure;
-  tmr_icinit_type tmr_ic_init_structure;
+  tmr_output_config_type tmr_oc_init_structure;
+  uint16_t prescaler_value = 0;
 
-  // Enable clocks for TMR3, TMR1
-  crm_periph_clock_enable(CRM_TMR1_PERIPH_CLOCK, TRUE);
-  crm_periph_clock_enable(CRM_TMR3_PERIPH_CLOCK, TRUE);
+  /* Compute the prescaler value */
+  prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1;
 
-  // Init structure for PWM output
+  /* TMR3 time base configuration */
+  tmr_base_init(TMR3, 1000, prescaler_value);
+  tmr_cnt_dir_set(TMR3, TMR_COUNT_UP);
+  tmr_clock_source_div_set(TMR3, TMR_CLOCK_DIV1);
+
   tmr_output_default_para_init(&tmr_oc_init_structure);
-  tmr_oc_init_structure.oc_mode = TMR_OC_MODE_PWM_1;
+  tmr_oc_init_structure.oc_mode = TMR_OUTPUT_CONTROL_PWM_MODE_A;
+  tmr_oc_init_structure.oc_idle_state = FALSE;
   tmr_oc_init_structure.oc_polarity = TMR_OUTPUT_ACTIVE_HIGH;
-  tmr_oc_init_structure.oc_output_state = ENABLE;
+  tmr_oc_init_structure.oc_output_state = TRUE;
+  tmr_output_channel_config(TMR3, TMR_SELECT_CHANNEL_3, &tmr_oc_init_structure);
+  tmr_channel_value_set(TMR3, TMR_SELECT_CHANNEL_3, 500); // 50% Duty cycle
+  tmr_output_channel_buffer_enable(TMR3, TMR_SELECT_CHANNEL_3, TRUE);
 
-  tmr_base_init_structure.period = 1000; // Frequency = 20kHz
-  tmr_base_init_structure.prescaler =
-      (SystemCoreClock / 20000000) - 1; // To have a 1us resolution
-  tmr_base_init_structure.repetition_counter = 0;
-  tmr_base_init(TMR3, &tmr_base_init_structure);
+  tmr_period_buffer_enable(TMR3, TRUE);
 
-  tmr_oc_init_structure.pulse = 500; // Duty cycle = 50%
-  tmr_oc_config(TMR3, TMR_CHANNEL_3, &tmr_oc_init_structure);
-
-  // Enable timer counter for TMR3
+  /* TMR enable counter */
   tmr_counter_enable(TMR3, TRUE);
 
-  // Init structure for PWM input
+  /* Enable clocks for TMR1 */
+  crm_periph_clock_enable(CRM_TMR1_PERIPH_CLOCK, TRUE);
+
+  /* TMR1 time base configuration */
+  tmr_base_init(TMR1, 0xFFFF, prescaler_value); // As big as possible
+  tmr_cnt_dir_set(TMR1, TMR_COUNT_UP);
+  tmr_clock_source_div_set(TMR1, TMR_CLOCK_DIV1);
+
+  tmr_input_config_type tmr_ic_init_structure;
   tmr_input_default_para_init(&tmr_ic_init_structure);
   tmr_ic_init_structure.input_filter_value = 0;
   tmr_ic_init_structure.input_channel_select = TMR_SELECT_CHANNEL_2;
   tmr_ic_init_structure.input_mapped_select = TMR_CC_CHANNEL_MAPPED_DIRECT;
   tmr_ic_init_structure.input_polarity_select = TMR_INPUT_RISING_EDGE;
+  tmr_pwm_input_config(TMR1, &tmr_ic_init_structure, TMR_CHANNEL_INPUT_DIV_1);
 
-  tmr_base_init_structure.period = 0xFFFF; // As big as possible
-  tmr_base_init_structure.prescaler =
-      (SystemCoreClock / 20000000) - 1; // To have a 1us resolution
-  tmr_base_init_structure.repetition_counter = 0;
-  tmr_base_init(TMR1, &tmr_base_init_structure);
-
-  tmr_input_config(TMR1, &tmr_ic_init_structure, TMR_CHANNEL_INPUT_DIV_1);
-
-  // Enable timer counter for TMR1
+  /* TMR enable counter */
   tmr_counter_enable(TMR1, TRUE);
 }
 
@@ -146,29 +143,29 @@ void init_motor(bool_t is_brushless) {
   crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
 
   /* gpio configuration for DIR, PWMA and PWMB */
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_out_type       = GPIO_OUTPUT_PUSH_PULL;
   gpio_initstructure.gpio_pull           = GPIO_PULL_UP;
   gpio_initstructure.gpio_mode           = GPIO_MODE_OUTPUT;
   gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-  gpio_init_struct.gpio_pins = GPIO_PINS_0 | GPIO_PINS_1;  // PWMB on GPIOB, DIR on GPIOB
-  gpio_init(GPIOB, &gpio_init_struct);
+  gpio_initstructure.gpio_pins = GPIO_PINS_0 | GPIO_PINS_1;  // PWMB on GPIOB, DIR on GPIOB
+  gpio_init(GPIOB, &gpio_initstructure);
 
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   if (is_brushless){
     gpio_initstructure.gpio_out_type       = GPIO_OUTPUT_PUSH_PULL;
     gpio_initstructure.gpio_pull           = GPIO_PULL_UP;
     gpio_initstructure.gpio_mode           = GPIO_MODE_OUTPUT;
     gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-    gpio_init_struct.gpio_pins = GPIO_PINS_9;  // speed sense
-    gpio_init(GPIOA, &gpio_init_struct);
+    gpio_initstructure.gpio_pins = GPIO_PINS_9;  // speed sense
+    gpio_init(GPIOA, &gpio_initstructure);
   } else {
     gpio_initstructure.gpio_out_type       = GPIO_OUTPUT_OPEN_DRAIN;
     gpio_initstructure.gpio_pull           = GPIO_PULL_NONE;
     gpio_initstructure.gpio_mode           = GPIO_MODE_INPUT;
     gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_MODERATE;
-    gpio_init_struct.gpio_pins = GPIO_PINS_9;  // PWMA on GPIOA
-    gpio_init(GPIOA, &gpio_init_struct);
+    gpio_initstructure.gpio_pins = GPIO_PINS_9;  // PWMA on GPIOA
+    gpio_init(GPIOA, &gpio_initstructure);
   }
 
   if (is_brushless){
@@ -187,32 +184,32 @@ void init_ad7705_gpio() {
 
   /* gpio configuration for output pins: AD7705_RST, AD7705_nCS, AD7705_SCLK,
    * AD7705_DIN */
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_out_type = GPIO_OUTPUT_PUSH_PULL;
   gpio_initstructure.gpio_pull = GPIO_PULL_UP;
   gpio_initstructure.gpio_mode = GPIO_MODE_OUTPUT;
   gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-  gpio_init_struct.gpio_pins =
+  gpio_initstructure.gpio_pins =
       GPIO_PINS_3 | GPIO_PINS_8; // RST and nCS on GPIOA
-  gpio_init(GPIOA, &gpio_init_struct);
+  gpio_init(GPIOA, &gpio_initstructure);
 
   //gpio_default_para_init(&gpio_init_struct);
-  gpio_init_struct.gpio_pins =
+  gpio_initstructure.gpio_pins =
       GPIO_PINS_3 | GPIO_PINS_5; // SCLK and DIN on GPIOB
-  gpio_init(GPIOB, &gpio_init_struct);
+  gpio_init(GPIOB, &gpio_initstructure);
 
   /* gpio configuration for input pins: AD7705_DOUT, AD7705_nDRDY */
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_out_type = GPIO_OUTPUT_OPEN_DRAIN;
   gpio_initstructure.gpio_pull = GPIO_PULL_NONE;
   gpio_initstructure.gpio_mode = GPIO_MODE_INPUT;
   gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_MODERATE;
-  gpio_init_struct.gpio_pins = GPIO_PINS_4; // DOUT on GPIOB
-  gpio_init(GPIOB, &gpio_init_struct);
+  gpio_initstructure.gpio_pins = GPIO_PINS_4; // DOUT on GPIOB
+  gpio_init(GPIOB, &gpio_initstructure);
 
   //gpio_default_para_init(&gpio_init_struct);
-  gpio_init_struct.gpio_pins = GPIO_PINS_10; // nDRDY on GPIOA
-  gpio_init(GPIOA, &gpio_init_struct);
+  gpio_initstructure.gpio_pins = GPIO_PINS_10; // nDRDY on GPIOA
+  gpio_init(GPIOA, &gpio_initstructure);
 
   /* spi init */
   crm_periph_clock_enable(CRM_SPI3_PERIPH_CLOCK, TRUE);
@@ -234,10 +231,10 @@ void init_ad7705_gpio() {
   AD7705_WriteToReg(0x40);
   /* 等待/DRDY线低 */
   while(gpio_input_data_bit_read(GPIOA, AD7705_nDRDY) == RESET);
-  for (uint16_t a = 0; a < NUM_SAMPLES; a++) {
-    AD7705_WriteToReg(0x38);
-    AD7705_Read(NUM_SAMPLES, 2);
-  }
+  /* for (uint16_t a = 0; a < NUM_SAMPLES; a++) { */
+  /*   AD7705_WriteToReg(0x38); */
+  /*   AD7705_Read(NUM_SAMPLES, 2); */
+  /* } */
 }
 
 void init_model2_gpio() {
@@ -247,27 +244,27 @@ void init_model2_gpio() {
   crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
 
   /* gpio configuration for input pins: GPIn0 */
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_out_type = GPIO_OUTPUT_OPEN_DRAIN;
   gpio_initstructure.gpio_pull = GPIO_PULL_NONE;
   gpio_initstructure.gpio_mode = GPIO_MODE_INPUT;
   gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_MODERATE;
-  gpio_init_struct.gpio_pins = GPIO_PINS_0 | GPIO_PINS_1; // GPIn0 on GPIOA
-  gpio_init(GPIOA, &gpio_init_struct);
+  gpio_initstructure.gpio_pins = GPIO_PINS_0 | GPIO_PINS_1; // GPIn0 on GPIOA
+  gpio_init(GPIOA, &gpio_initstructure);
 
   /* gpio configuration for output pins: GPOut0 */
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_out_type = GPIO_OUTPUT_PUSH_PULL;
   gpio_initstructure.gpio_pull = GPIO_PULL_UP;
   gpio_initstructure.gpio_mode = GPIO_MODE_OUTPUT;
   gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-  gpio_init_struct.gpio_pins = GPIO_PINS_2; // GPOut0 on GPIOA
-  gpio_init(GPIOA, &gpio_init_struct);
+  gpio_initstructure.gpio_pins = GPIO_PINS_2; // GPOut0 on GPIOA
+  gpio_init(GPIOA, &gpio_initstructure);
 
   /* gpio configuration for output pins: GPOut1 */
   //gpio_default_para_init(&gpio_init_struct);
-  gpio_init_struct.gpio_pins = GPIO_PINS_6; // GPOut1 on GPIOB
-  gpio_init(GPIOB, &gpio_init_struct);
+  gpio_initstructure.gpio_pins = GPIO_PINS_6; // GPOut1 on GPIOB
+  gpio_init(GPIOB, &gpio_initstructure);
 }
 
 void init_capacitor_displacement_measurement() {
@@ -276,14 +273,14 @@ void init_capacitor_displacement_measurement() {
   crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
 
   /* gpio configuration for input pins: SDATA, SCLK */
-  gpio_default_para_init(&gpio_init_struct);
+  gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_out_type = GPIO_OUTPUT_OPEN_DRAIN;
   gpio_initstructure.gpio_pull = GPIO_PULL_NONE;
   gpio_initstructure.gpio_mode = GPIO_MODE_INPUT;
   gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_MODERATE;
-  gpio_init_struct.gpio_pins =
+  gpio_initstructure.gpio_pins =
       GPIO_PINS_14 | GPIO_PINS_13; // SDATA and SCLK on GPIOB
-  gpio_init(GPIOB, &gpio_init_struct);
+  gpio_init(GPIOB, &gpio_initstructure);
 }
 
 void init_slavestation_model_2() {
@@ -300,27 +297,40 @@ void AD7705_WriteToReg(uint8_t byteWord) {
   /* 发送字节 */
   while (spi_i2s_flag_get(SPI3, SPI_I2S_TDBE_FLAG) == RESET)
     ;
-  spi_i2s_data_transmit(SPI3, reg);
+  spi_i2s_data_transmit(SPI3, byteWord);
   /* 设置/CS线高 */
   gpio_bits_set(GPIOA, AD7705_nCS);
 }
 
-uint16_t * AD7705_Read() {
-  static uint16_t buffer[2];
+uint16_t AD7705_ReadOne() {
   /* 等待/DRDY线低 */
   while (gpio_input_data_bit_read(GPIOA, AD7705_nDRDY) == RESET)
     ;
   /* 设置/CS线低 */
   gpio_bits_reset(GPIOA, AD7705_nCS);
-  for (uint8_t i = 0; i < 2; i++) {
-    buffer[i] = 0;
-    for (uint8_t b = 0; b < 2; b++) {
-      while(spi_i2s_flag_get(SPI3, SPI_I2S_RDBF_FLAG) == RESET);
-      buffer[i] = (buffer[i] << 8) | spi_i2s_data_receive(SPI3);
-    }
+  uint16_t buffer = 0;
+  for (uint8_t b = 0; b < 2; b++) {
+    while(spi_i2s_flag_get(SPI3, SPI_I2S_RDBF_FLAG) == RESET);
+    buffer = (buffer << 8) | spi_i2s_data_receive(SPI3);
   }
+  
   /* 设置/CS线高 */
   gpio_bits_set(GPIOA, AD7705_nCS);
+  
+  /* 等待/DRAY高 */
+  while (gpio_input_data_bit_read(GPIOA, AD7705_nDRDY) == SET)
+    ;
+
+  return buffer;
+}
+
+uint16_t * AD7705_ReadDualChannel() {
+  static uint16_t buffer[2];
+  uint8_t i;
+  for (i=0; i<2; i++){
+    AD7705_WriteToReg(0x38 + i);
+    buffer[i] = AD7705_ReadOne();
+  }
   return buffer;
 }
 
@@ -339,9 +349,9 @@ uint32_t measure(void) {
   uint32_t minStartTime = 100000;
   uint32_t maxStartTime = 500000;
 
-  uint32_t startDuration = pulse_in(GPIOB, SCLK_PIN, GPIO_PIN_SET);
+  uint32_t startDuration = pulse_in(GPIOB, SCLK_PIN, SET);
   while ((startDuration < minStartTime) || (startDuration > maxStartTime)) {
-    startDuration = pulse_in(GPIOB, SCLK_PIN, GPIO_PIN_SET);
+    startDuration = pulse_in(GPIOB, SCLK_PIN, SET);
   }
   for (uint8_t i = 0; i < 24; i++) {
     rawData = rawData >> 1;
@@ -386,11 +396,12 @@ static ODR_t my_OD_read_6400(OD_stream_t *stream, void *buf, OD_size_t count,
   case 2:
     // handle the reading of the actual trigger inputs here
     // let's assume they are stored in an array named trigger_inputs
-    CO_setUint32(buf, trigger_inputs[stream->subIndex - 1]);
+    /* FIXME */
+    //CO_setUint32(buf, trigger_inputs[stream->subIndex - 1]);
     *countRead = sizeof(uint32_t);
     return ODR_OK;
   default:
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
 }
 
@@ -406,11 +417,12 @@ static ODR_t my_OD_read_6401(OD_stream_t *stream, void *buf, OD_size_t count,
   case 2:
     // handle the reading of the actual trigger inputs here
     // let's assume they are stored in an array named trigger_inputs
-    CO_setUint32(buf, trigger_inputs[stream->subIndex - 1]);
+    /* FIXME */
+    //CO_setUint32(buf, trigger_inputs[stream->subIndex - 1]);
     *countRead = sizeof(uint32_t);
     return ODR_OK;
   default:
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
 }
 
@@ -419,15 +431,16 @@ static ODR_t my_OD_write_6401(OD_stream_t *stream, const void *buf,
                               OD_size_t count, OD_size_t *countWritten) {
   switch (stream->subIndex) {
   case 0:
-    return ODR_RO_NOT_ALLOW; // subIndex 0 is read-only
+    return ODR_READONLY; // subIndex 0 is read-only
   case 1:
   case 2:
     // handle the writing of the actual trigger outputs here
     // let's assume they are stored in an array named trigger_outputs
-    trigger_outputs[stream->subIndex - 1] = CO_getUint32(buf);
+    /* FIXME */
+    //trigger_outputs[stream->subIndex - 1] = CO_getUint32(buf);
     return ODR_OK;
   default:
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
 }
 
@@ -435,11 +448,12 @@ static ODR_t my_OD_write_6401(OD_stream_t *stream, const void *buf,
 static ODR_t my_OD_read_6402(OD_stream_t *stream, void *buf, OD_size_t count,
                              OD_size_t *countRead) {
   if (stream->subIndex != 0) {
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
   // handle the reading of the capacitor displacement here
   // let's assume it's stored in a variable named capacitor_displacement
-  CO_setUint32(buf, capacitor_displacement);
+  /* FIXME */
+  //CO_setUint32(buf, capacitor_displacement);
   *countRead = sizeof(uint32_t);
   return ODR_OK;
 }
@@ -456,11 +470,12 @@ static ODR_t my_OD_read_6403(OD_stream_t *stream, void *buf, OD_size_t count,
   case 2:
     // handle the reading of the actual thermocouples here
     // let's assume they are stored in an array named thermocouples
-    CO_setUint32(buf, thermocouples[stream->subIndex - 1]);
+    /* FIXME */
+    //CO_setUint32(buf, thermocouples[stream->subIndex - 1]);
     *countRead = sizeof(uint32_t);
     return ODR_OK;
   default:
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
 }
 
@@ -477,19 +492,22 @@ static ODR_t my_OD_read_6404(OD_stream_t *stream, void *buf, OD_size_t count,
     *countRead = sizeof(uint8_t);
     return ODR_OK;
   case 1:
-    CO_setUint8(buf, motor.isBrushlessMotor);
+    /* FIXME */
+    //CO_setUint8(buf, motor.isBrushlessMotor);
     *countRead = sizeof(bool_t);
     return ODR_OK;
   case 2:
-    CO_setUint32(buf, motor.motorSpeedSet);
+    /* FIXME */
+    //CO_setUint32(buf, motor.motorSpeedSet);
     *countRead = sizeof(int32_t);
     return ODR_OK;
   case 3:
-    CO_setUint32(buf, motor.motorSpeedRead);
+    /* FIXME */
+    //CO_setUint32(buf, motor.motorSpeedRead);
     *countRead = sizeof(int32_t);
     return ODR_OK;
   default:
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
 }
 
@@ -498,17 +516,19 @@ static ODR_t my_OD_write_6404(OD_stream_t *stream, const void *buf,
                               OD_size_t count, OD_size_t *countWritten) {
   switch (stream->subIndex) {
   case 0:
-    return ODR_RO_NOT_ALLOW; // subIndex 0 is read-only
+    return ODR_READONLY; // subIndex 0 is read-only
   case 1:
-    motor.isBrushlessMotor = CO_getUint8(buf);
+    /* FIXME */
+    //motor.isBrushlessMotor = CO_getUint8(buf);
     return ODR_OK;
   case 2:
-    motor.motorSpeedSet = CO_getUint32(buf);
+    /* FIXME */
+    //motor.motorSpeedSet = CO_getUint32(buf);
     return ODR_OK;
   case 3:
-    return ODR_RO_NOT_ALLOW; // motorSpeedRead is read-only
+    return ODR_READONLY; // motorSpeedRead is read-only
   default:
-    return ODR_IDX_RANGE;
+    return ODR_IDX_NOT_EXIST;
   }
 }
 
@@ -541,7 +561,7 @@ CO_ReturnError_t bipolar_io_thermo_motor_module_init() {
 
   OD_6404_extension.object = param_6404;
   OD_6404_extension.read = my_OD_read_6404;
-  OD_6404_extension.write = NULL;
+  OD_6404_extension.write = my_OD_write_6404;
   OD_extension_init(param_6404, &OD_6404_extension);
 
   return CO_ERROR_NO;

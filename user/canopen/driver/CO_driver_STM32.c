@@ -444,7 +444,7 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
   /* if (HAL_CAN_GetTxMailboxesFreeLevel( */
   /*         ((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle) > 0) { */
   /* at32 */
-  log_printf("CAN1 tsts_bit dumps: %d tm0ef:%d tm1ef:%d tm2ef:%d\n",
+  log_printf("CAN1 tsts_bit dumps: %ld tm0ef:%d tm1ef:%d tm2ef:%d\n",
 	     CAN1->tsts,
 	     CAN1->tsts_bit.tm0ef,
 	     CAN1->tsts_bit.tm1ef,
@@ -482,7 +482,7 @@ static uint8_t prv_send_can_message(CO_CANmodule_t *CANmodule,
 					&tx_hdr);
     success = TxMailboxNum != CAN_TX_STATUS_NO_EMPTY;
     //snprintf(debug, 16, "tx:%d", TxMailboxNum);
-    log_printf("tx: id:%d, dlc:%d, mailbox:%d, success:%d\n",
+    log_printf("tx: id:%ld, dlc:%d, mailbox:%ld, success:%d\n",
 	       tx_hdr.standard_id,
 	       tx_hdr.dlc,
 	       TxMailboxNum,
@@ -558,7 +558,7 @@ void CO_CANclearPendingSyncPDOs(CO_CANmodule_t *CANmodule) {
 /******************************************************************************/
 /* Get error counters from the module. If necessary, function may use
  * different way to determine errors. */
-static uint16_t rxErrors = 0, txErrors = 0, overflow = 0;
+//static uint16_t rxErrors = 0, txErrors = 0, overflow = 0;
 
 void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
   uint32_t err = 0;
@@ -621,7 +621,7 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
     uint16_t status = CANmodule->CANerrorStatus;
 
     CANmodule->errOld = err;
-    log_printf("error status changed, let's find out what happened..., errOld update:%d\n", CANmodule->errOld);
+    log_printf("error status changed, let's find out what happened..., errOld update:%ld\n", CANmodule->errOld);
 
     if (can_flag_get(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, CAN_BOF_FLAG)) {
       can_flag_clear(((CANopenNodeSTM32 *)CANmodule->CANptr)->CANHandle, CAN_BOF_FLAG);
@@ -748,7 +748,7 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
   rcvMsgIdent = rcvMsg.ident;
   memcpy(rcvMsg.data, rx_hdr.data, min(8, rx_hdr.dlc));
   //  snprintf(debug, 16, "rx:%d %d", rcvMsg.ident, rcvMsg.dlc);
-  log_printf("rx: id:%d, len:%d\n", rcvMsg.ident, rcvMsg.dlc);
+  log_printf("rx: id:%ld, len:%d\n", rcvMsg.ident, rcvMsg.dlc);
 #endif
 
   /*
@@ -765,7 +765,7 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
     
     buffer = CANModule_local->rxArray;
     for (index = CANModule_local->rxSize; index > 0U; --index, ++buffer) {
-      log_printf("filter: idx:%d, rcvid:%d, ident:%d, mask:%d, found:%d\n",
+      log_printf("filter: idx:%d, rcvid:%ld, ident:%d, mask:%d, found:%d\n",
 		 index, rcvMsgIdent,
 		 buffer->ident, buffer->mask,
 		 (((rcvMsgIdent ^ buffer->ident) & buffer->mask) == 0U)
@@ -944,7 +944,7 @@ void CAN1_SE_IRQHandler(void) {
   if (can_flag_get(CAN1, CAN_ETR_FLAG) != RESET) {
     err_index = CAN1->ests & 0x70;
     can_flag_clear(CAN1, CAN_ETR_FLAG);
-    log_printf("clear etr, ERC:%d, tec:%d, rec:%d\n",
+    log_printf("clear etr, ERC:%ld, tec:%d, rec:%d\n",
 	       err_index >> 4, CAN1->ests_bit.tec, CAN1->ests_bit.rec);
     /* error type is stuff error */
     if (err_index == 0x00000010) {
@@ -962,7 +962,7 @@ void CAN1_SE_IRQHandler(void) {
     can_flag_clear(CAN1, CAN_EOIF_FLAG);
   }
   if (err_index == 0){
-    log_printf("unknown err set, can1.msts:%d can1.ests:%d eaf:%d, epf:%d, bof:%d, etr:%d, tec:%d, rec:%d\n",
+    log_printf("unknown err set, can1.msts:%ld can1.ests:%ld eaf:%d, epf:%d, bof:%d, etr:%d, tec:%d, rec:%d\n",
 	       CAN1->msts, CAN1->ests,
 	       CAN1->ests_bit.eaf, CAN1->ests_bit.epf, CAN1->ests_bit.bof,
 	       CAN1->ests_bit.etr, CAN1->ests_bit.tec, CAN1->ests_bit.rec);

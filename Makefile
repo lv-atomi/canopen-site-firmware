@@ -2,7 +2,7 @@ PROJ_NAME=main
 
 DEBUG=1
 
-CC=arm-none-eabi-gcc --specs=nosys.specs
+CC=arm-none-eabi-gcc --specs=nosys.specs -Werror -Wno-unused-variable
 #GDB=arm-none-eabi-gdb
 GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy

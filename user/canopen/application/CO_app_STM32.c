@@ -27,24 +27,17 @@
 #include "CO_app_STM32.h"
 #include "CANopen.h"
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "CO_storageBlank.h"
 #include "OD.h"
 #include "timer1.h"
 
 #include "psu.h"
-#include "brushless.h"
-#include "gpio.h"
-#include "aircondition.h"
-#include "stackable_module_food_dispenser.h"
-#include "camera.h"
-#include "hbridge.h"
-#include "weight_sensor.h"
-#include "thermal_7705.h"
-#include "capacitor_displacement.h"
 
-#define DBG_OD_ENTRY              "(%s) Error in Object Dictionary entry: 0x%X", __func__
-#define DBG_CAN_OPEN              "(%s) CANopen error in %s, err=%d", __func__
+
+#define DBG_OD_ENTRY              "(%s) Error in Object Dictionary entry: 0x%" PRIx32 "\n", __func__
+#define DBG_CAN_OPEN              "(%s) CANopen error in %s, err=%d\n", __func__
 
 
 CANopenNodeSTM32
@@ -73,16 +66,15 @@ CO_ReturnError_t err;
 
 CO_ReturnError_t app_programStart() {
   ASSERT(app_psu_init() != CO_ERROR_NO);
-  ASSERT(app_brushless_init() != CO_ERROR_NO);
-  ASSERT(app_hbridge_init() != CO_ERROR_NO);
-  ASSERT(app_thermal_7705_init() != CO_ERROR_NO);
-  ASSERT(app_aircondition_init() != CO_ERROR_NO);
-  ASSERT(app_gpio_init() != CO_ERROR_NO);
-  ASSERT(app_stackable_module_food_dispenser_init() != CO_ERROR_NO);
-  ASSERT(app_camera_init() != CO_ERROR_NO);
-  ASSERT(app_weight_sensor_init() != CO_ERROR_NO);
-  
-  
+  /* ASSERT(app_brushless_init() != CO_ERROR_NO); */
+  /* ASSERT(app_hbridge_init() != CO_ERROR_NO); */
+  /* ASSERT(app_thermal_7705_init() != CO_ERROR_NO); */
+  /* ASSERT(app_aircondition_init() != CO_ERROR_NO); */
+  /* ASSERT(app_gpio_init() != CO_ERROR_NO); */
+  /* ASSERT(app_stackable_module_food_dispenser_init() != CO_ERROR_NO); */
+  /* ASSERT(app_camera_init() != CO_ERROR_NO); */
+  /* ASSERT(app_weight_sensor_init() != CO_ERROR_NO); */
+  return CO_ERROR_NO;
 }
 
 void app_programAsync(CO_t *co, uint32_t timer1usDiff) {
@@ -129,7 +121,7 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
     log_printf("Error: Can't allocate memory\n");
     return 1;
   } else {
-    log_printf("Allocated %u bytes for CANopen objects\n", heapMemoryUsed);
+    log_printf("Allocated %lu bytes for CANopen objects\n", heapMemoryUsed);
   }
 
   canopenNodeSTM32->canOpenStack = CO;
@@ -216,7 +208,7 @@ int canopen_app_resetCommunication() {
                        canopenNodeSTM32->activeNodeID, &errInfo);
   if (err != CO_ERROR_NO && err != CO_ERROR_NODE_ID_UNCONFIGURED_LSS) {
     if (err == CO_ERROR_OD_PARAMETERS) {
-      log_printf("Error: Object Dictionary entry 0x%X\n", errInfo);
+      log_printf("Error: Object Dictionary entry 0x%" PRIx32 "\n", errInfo);
     } else {
       log_printf("Error: CANopen initialization failed: %d\n", err);
     }
@@ -227,7 +219,7 @@ int canopen_app_resetCommunication() {
                           &errInfo);
   if (err != CO_ERROR_NO) {
     if (err == CO_ERROR_OD_PARAMETERS) {
-      log_printf("Error: Object Dictionary entry 0x%X\n", errInfo);
+      log_printf("Error: Object Dictionary entry 0x%" PRIx32 "\n", errInfo);
     } else {
       log_printf("Error: PDO initialization failed: %d\n", err);
     }

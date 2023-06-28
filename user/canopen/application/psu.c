@@ -14,121 +14,131 @@
  *   and IN16 to monitor chip temperature
  * USE DAC, 12bit, for voltage * current control
  */
-__IO uint16_t adc_valuetab[3] = {0}; /* voltage, current, temperature */
+// 该数组将存储ADC读取的电压、电流和温度值
+__IO uint16_t adc_valuetable[3] = {0}; /* voltage, current, temperature */
+// 该数组将存储DAC设置的电压和电流值
 uint16_t dac_valuetable[2] = {0};    /* voltage, current */
 
+// 为每个OD对象创建一个扩展
+OD_extension_t OD_6000_extension;
+OD_extension_t OD_6001_extension;
+OD_extension_t OD_6002_extension;
 OD_extension_t OD_6003_extension;
-OD_extension_t OD_6412_extension;
-OD_extension_t OD_6413_extension;
-OD_extension_t OD_6414_extension;
-OD_extension_t OD_6415_extension;
+OD_extension_t OD_6004_extension;
+OD_extension_t OD_6005_extension;
 
 void psu_peripheral_init();
 
+
+// 读取板子类型
+static ODR_t my_OD_read_6000(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  printf("read 6000, new read only type\n");
+  // 这里添加你读取新的只读类型的代码，然后将结果存储在buf中
+  // 注意，你需要将读取到的字节数存储在*countRead中
+  return ODR_OK;
+}
+
 /* BaseModule temperature */
-static ODR_t my_OD_read_6003(OD_stream_t *stream, void *buf,
+// 读取模块温度
+static ODR_t my_OD_read_6005(OD_stream_t *stream, void *buf,
 			     OD_size_t count, OD_size_t *countRead) {
   
-  printf("read 6003, internal temperature\n");
-  *((uint16_t *)buf) = adc_valuetab[2];
+  printf("read 6005, internal temperature\n");
+  CO_setUint16(buf, adc_valuetable[2]);
   *countRead = 2;
   return ODR_OK;
 }
 
-
-/* PSU current read */
-static ODR_t my_OD_read_6412(OD_stream_t *stream, void *buf,
-			     OD_size_t count, OD_size_t *countRead) {
-  
-  printf("read 6412, psu current\n");
-  *((uint16_t *)buf) = adc_valuetab[1];
+// 读取PSU电流
+static ODR_t my_OD_read_6001(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  printf("read 6001, psu current\n");
+  CO_setUint16(buf, adc_valuetable[1]);
   *countRead = 2;
   return ODR_OK;
 }
 
-/* PSU voltage read */
-static ODR_t my_OD_read_6413(OD_stream_t *stream, void *buf,
-			     OD_size_t count, OD_size_t *countRead) {
-  printf("read 6413, psu voltage\n");
-  *((uint16_t *)buf) = adc_valuetab[0];
-  *countRead = 2;
-
-  return ODR_OK;
-}
-
-/* PSU current set read */
-static ODR_t my_OD_read_6414(OD_stream_t *stream, void *buf,
-			     OD_size_t count, OD_size_t *countRead) {
-  printf("read 6414, psu current set\n");
-  *((uint16_t *)buf) = dac_valuetable[1];
+// 读取PSU电压
+static ODR_t my_OD_read_6002(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  printf("read 6002, psu voltage\n");
+  CO_setUint16(buf, adc_valuetable[0]);
   *countRead = 2;
   return ODR_OK;
 }
 
-/* PSU voltage set read */
-static ODR_t my_OD_read_6415(OD_stream_t *stream, void *buf,
-			     OD_size_t count, OD_size_t *countRead) {
-  printf("read 6415, psu voltage set\n");
-  *((uint16_t *)buf) = dac_valuetable[0];
+// 读取PSU电流设定值
+static ODR_t my_OD_read_6003(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  printf("read 6003, psu current set\n");
+  CO_setUint16(buf, dac_valuetable[1]);
   *countRead = 2;
   return ODR_OK;
 }
 
-/* PSU current set write */
-static ODR_t my_OD_write_6414(OD_stream_t *stream, const void *buf,
-			      OD_size_t count, OD_size_t *countWritten){
-  printf("write 6414, psu voltage set\n");
-  dac_valuetable[1] = *((uint16_t *)buf);
+// 读取PSU电压设定值
+static ODR_t my_OD_read_6004(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
+  printf("read 6004, psu voltage set\n");
+  CO_setUint16(buf, dac_valuetable[0]);
+  *countRead = 2;
+  return ODR_OK;
+}
+
+// 写PSU电流设定值
+static ODR_t my_OD_write_6003(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten){
+  printf("write 6003, psu current set\n");
+  dac_valuetable[1] = CO_getUint16(buf);
   dac_2_data_set(DAC_DUAL_12BIT_RIGHT, dac_valuetable[1]);
   return ODR_OK;
 }
 
-/* PSU voltage set write */
-static ODR_t my_OD_write_6415(OD_stream_t *stream, const void *buf,
-			      OD_size_t count, OD_size_t *countWritten){
-  printf("write 6415, psu current set\n");
-  dac_valuetable[0] = *((uint16_t *)buf);
+// 写PSU电压设定值
+static ODR_t my_OD_write_6004(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten){
+  printf("write 6004, psu voltage set\n");
+  dac_valuetable[0] = CO_getUint16(buf);
   dac_1_data_set(DAC_DUAL_12BIT_RIGHT, dac_valuetable[0]);
   return ODR_OK;
 }
 
 CO_ReturnError_t app_psu_init() {
-  OD_entry_t * param_6003 = OD_ENTRY_H6003_moduleTemperature;
+  // 在app_psu_init()函数中，添加初始化新的OD扩展的代码
+  OD_entry_t * param_6000 = OD_ENTRY_H6000_boardType;
+  OD_6000_extension.object = NULL;
+  OD_6000_extension.read = my_OD_read_6000;
+  OD_6000_extension.write = NULL;
+  OD_extension_init(param_6000, &OD_6000_extension);
+ 
+  // 初始化每个OD扩展，并设置读写回调函数
+  OD_entry_t * param_6005 = OD_ENTRY_H6005_PSUModuleTemperature;
+  OD_6005_extension.object = NULL;
+  OD_6005_extension.read = my_OD_read_6005;
+  OD_6005_extension.write = NULL;
+  OD_extension_init(param_6005, &OD_6005_extension);
+
+  OD_entry_t * param_6001 = OD_ENTRY_H6001_PSU_CurrentRead;
+  OD_6001_extension.object = NULL;
+  OD_6001_extension.read = my_OD_read_6001;
+  OD_6001_extension.write = NULL;
+  OD_extension_init(param_6001, &OD_6001_extension);
+
+  OD_entry_t * param_6002 = OD_ENTRY_H6002_PSU_VoltageRead;
+  OD_6002_extension.object = NULL;
+  OD_6002_extension.read = my_OD_read_6002;
+  OD_6002_extension.write = NULL;
+  OD_extension_init(param_6002, &OD_6002_extension);
+
+  OD_entry_t * param_6003 = OD_ENTRY_H6003_PSU_CurentSet;
   OD_6003_extension.object = NULL;
   OD_6003_extension.read = my_OD_read_6003;
-  OD_6003_extension.write = NULL;
-
+  OD_6003_extension.write = my_OD_write_6003;
   OD_extension_init(param_6003, &OD_6003_extension);
 
-  OD_entry_t * param_6412 = OD_ENTRY_H6412_PSU_CurrentRead;
-  OD_6412_extension.object = NULL;
-  OD_6412_extension.read = my_OD_read_6412;
-  OD_6412_extension.write = NULL;
+  OD_entry_t * param_6004 = OD_ENTRY_H6004_PSU_VoltageSet;
+  OD_6004_extension.object = NULL;
+  OD_6004_extension.read = my_OD_read_6004;
+  OD_6004_extension.write = my_OD_write_6004;
+  OD_extension_init(param_6004, &OD_6004_extension);
 
-  OD_extension_init(param_6412, &OD_6412_extension);
-
-  OD_entry_t * param_6413 = OD_ENTRY_H6413_PSU_VoltageRead;
-  OD_6413_extension.object = NULL;
-  OD_6413_extension.read = my_OD_read_6413;
-  OD_6413_extension.write = NULL;
-
-  OD_extension_init(param_6413, &OD_6413_extension);
-
-  OD_entry_t * param_6414 = OD_ENTRY_H6414_PSU_CurentSet;
-  OD_6414_extension.object = NULL;
-  OD_6414_extension.read = my_OD_read_6414;
-  OD_6414_extension.write = my_OD_write_6414;
-
-  OD_extension_init(param_6414, &OD_6414_extension);
-
-  OD_entry_t * param_6415 = OD_ENTRY_H6415_PSU_VoltageSet;
-  OD_6415_extension.object = NULL;
-  OD_6415_extension.read = my_OD_read_6415;
-  OD_6415_extension.write = my_OD_write_6415;
-
-  OD_extension_init(param_6415, &OD_6415_extension);
-
+  // 初始化外设
   psu_peripheral_init();
+  return CO_ERROR_NO;
 }
 
 void psu_adc_init(){
@@ -148,7 +158,7 @@ void psu_adc_init(){
   dma_default_para_init(&dma_init_struct);
   dma_init_struct.buffer_size = 3;
   dma_init_struct.direction = DMA_DIR_PERIPHERAL_TO_MEMORY;
-  dma_init_struct.memory_base_addr = (uint32_t)adc_valuetab;
+  dma_init_struct.memory_base_addr = (uint32_t)adc_valuetable;
   dma_init_struct.memory_data_width = DMA_MEMORY_DATA_WIDTH_HALFWORD;
   dma_init_struct.memory_inc_enable = TRUE;
   dma_init_struct.peripheral_base_addr = (uint32_t)&(ADC1->odt);
