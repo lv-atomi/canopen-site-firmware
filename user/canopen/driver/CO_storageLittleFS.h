@@ -26,6 +26,7 @@
 #define CO_STORAGE_BLANK_H
 
 #include "storage/CO_storage.h"
+#include "lfs.h"
 
 #if ((CO_CONFIG_STORAGE)&CO_CONFIG_STORAGE_ENABLE) || defined CO_DOXYGEN
 
@@ -43,23 +44,15 @@ extern "C" {
  *   CANopenLinux/CO_storageLinux.h files.
  */
 
-<<<<<<< HEAD
-CO_ReturnError_t CO_storageBlank_init(CO_storage_t* storage, CO_CANmodule_t* CANmodule,
-                                      OD_entry_t* OD_1010_StoreParameters, OD_entry_t* OD_1011_RestoreDefaultParam,
-                                      CO_storage_entry_t* entries, uint8_t entriesCount, uint32_t* storageInitError);
-
-uint32_t CO_storageBlank_auto_process(CO_storage_t* storage, bool_t closeFiles);
-=======
-CO_ReturnError_t CO_storageBlank_init(CO_storage_t *storage,
-                                      CO_CANmodule_t *CANmodule,
-                                      OD_entry_t *OD_1010_StoreParameters,
-                                      OD_entry_t *OD_1011_RestoreDefaultParam,
-                                      CO_storage_entry_t *entries,
+CO_ReturnError_t CO_storageLittleFS_init(CO_storage_t *storage,
+					 CO_CANmodule_t *CANmodule,
+					 OD_entry_t *OD_1010_StoreParameters,
+					 OD_entry_t *OD_1011_RestoreDefaultParam,
+					 CO_storage_entry_t *entries,
                                       uint8_t entriesCount,
                                       uint32_t *storageInitError);
 
-uint32_t CO_storageBlank_auto_process(CO_storage_t *storage, bool_t closeFiles);
->>>>>>> canopen-integration
+uint32_t CO_storageLittleFS_auto_process(CO_storage_t *storage, bool_t closeFiles);
 
 #ifdef __cplusplus
 }

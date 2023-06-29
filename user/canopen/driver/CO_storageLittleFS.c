@@ -22,7 +22,7 @@
  * limitations under the License.
  */
 
-#include "CO_storageBlank.h"
+#include "CO_storageLittleFS.h"
 
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
 
@@ -31,19 +31,7 @@
  *
  * For more information see file CO_storage.h, CO_storage_entry_t.
  */
-<<<<<<< HEAD
-static ODR_t
-storeBlank(CO_storage_entry_t* entry, CO_CANmodule_t* CANmodule) {
-
-    /* Open a file and write data to it */
-    /* file = open(entry->pathToFileOrPointerToMemory); */
-    CO_LOCK_OD(CANmodule);
-    /* write(entry->addr, entry->len, file); */
-    CO_UNLOCK_OD(CANmodule);
-
-    return ODR_OK;
-=======
-static ODR_t storeBlank(CO_storage_entry_t *entry, CO_CANmodule_t *CANmodule) {
+static ODR_t storeLittleFS(CO_storage_entry_t *entry, CO_CANmodule_t *CANmodule) {
 
   /* Open a file and write data to it */
   /* file = open(entry->pathToFileOrPointerToMemory); */
@@ -52,7 +40,6 @@ static ODR_t storeBlank(CO_storage_entry_t *entry, CO_CANmodule_t *CANmodule) {
   CO_UNLOCK_OD(CANmodule);
 
   return ODR_OK;
->>>>>>> canopen-integration
 }
 
 /*
@@ -60,66 +47,21 @@ static ODR_t storeBlank(CO_storage_entry_t *entry, CO_CANmodule_t *CANmodule) {
  *
  * For more information see file CO_storage.h, CO_storage_entry_t.
  */
-<<<<<<< HEAD
-static ODR_t
-restoreBlank(CO_storage_entry_t* entry, CO_CANmodule_t* CANmodule) {
-
-    /* disable (delete) the file, so default values will stay after startup */
-
-    return ODR_OK;
-}
-
-CO_ReturnError_t
-CO_storageBlank_init(CO_storage_t* storage, CO_CANmodule_t* CANmodule, OD_entry_t* OD_1010_StoreParameters,
-                     OD_entry_t* OD_1011_RestoreDefaultParam, CO_storage_entry_t* entries, uint8_t entriesCount,
-                     uint32_t* storageInitError) {
-    CO_ReturnError_t ret;
-
-    /* verify arguments */
-    if (storage == NULL || entries == NULL || entriesCount == 0 || storageInitError == NULL) {
-        return CO_ERROR_ILLEGAL_ARGUMENT;
-    }
-
-    /* initialize storage and OD extensions */
-    ret = CO_storage_init(storage, CANmodule, OD_1010_StoreParameters, OD_1011_RestoreDefaultParam, storeBlank,
-                          restoreBlank, entries, entriesCount);
-    if (ret != CO_ERROR_NO) {
-        return ret;
-    }
-
-    /* initialize entries */
-    *storageInitError = 0;
-    for (uint8_t i = 0; i < entriesCount; i++) {
-        CO_storage_entry_t* entry = &entries[i];
-
-        /* verify arguments */
-        if (entry->addr == NULL || entry->len == 0 || entry->subIndexOD < 2) {
-            *storageInitError = i;
-            return CO_ERROR_ILLEGAL_ARGUMENT;
-        }
-
-        /* Open a file and read data from file to entry->addr */
-        /* file = open(entry->pathToFileOrPointerToMemory); */
-        /* read(entry->addr, entry->len, file); */
-    }
-
-    return ret;
-=======
-static ODR_t restoreBlank(CO_storage_entry_t *entry,
-                          CO_CANmodule_t *CANmodule) {
+static ODR_t restoreLittleFS(CO_storage_entry_t *entry,
+			     CO_CANmodule_t *CANmodule) {
 
   /* disable (delete) the file, so default values will stay after startup */
 
   return ODR_OK;
 }
 
-CO_ReturnError_t CO_storageBlank_init(CO_storage_t *storage,
-                                      CO_CANmodule_t *CANmodule,
-                                      OD_entry_t *OD_1010_StoreParameters,
-                                      OD_entry_t *OD_1011_RestoreDefaultParam,
-                                      CO_storage_entry_t *entries,
-                                      uint8_t entriesCount,
-                                      uint32_t *storageInitError) {
+CO_ReturnError_t CO_storageLittleFS_init(CO_storage_t *storage,
+					 CO_CANmodule_t *CANmodule,
+					 OD_entry_t *OD_1010_StoreParameters,
+					 OD_entry_t *OD_1011_RestoreDefaultParam,
+					 CO_storage_entry_t *entries,
+					 uint8_t entriesCount,
+					 uint32_t *storageInitError) {
   CO_ReturnError_t ret;
 
   /* verify arguments */
@@ -153,7 +95,6 @@ CO_ReturnError_t CO_storageBlank_init(CO_storage_t *storage,
   }
 
   return ret;
->>>>>>> canopen-integration
 }
 
 #endif /* (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE */
