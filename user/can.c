@@ -69,15 +69,15 @@ void can_configuration(void) {
 #endif
 
 #ifdef BAUD_500K // sample point = 80%
-  /* can_baudrate_struct.baudrate_div = 12; /\* AHB clock = 120M BRDIV=10*\/ */
-  /* can_baudrate_struct.rsaw_size = CAN_RSAW_1TQ; */
-  /* can_baudrate_struct.bts1_size = CAN_BTS1_15TQ;  */
-  /* can_baudrate_struct.bts2_size = CAN_BTS2_2TQ; */
-  /* can_baudrate_set(CAN1, &can_baudrate_struct); */
-  can_baudrate_struct.baudrate_div = 15; /* AHB clock = 120M BRDIV=8*/
+  can_baudrate_struct.baudrate_div = 12; /* AHB clock = 120M BRDIV=10*/
   can_baudrate_struct.rsaw_size = CAN_RSAW_2TQ;
-  can_baudrate_struct.bts1_size = CAN_BTS1_13TQ; 
+  can_baudrate_struct.bts1_size = CAN_BTS1_15TQ;
   can_baudrate_struct.bts2_size = CAN_BTS2_2TQ;
+
+  /* can_baudrate_struct.baudrate_div = 15; /\* AHB clock = 120M BRDIV=8*\/ */
+  /* can_baudrate_struct.rsaw_size = CAN_RSAW_2TQ; */
+  /* can_baudrate_struct.bts1_size = CAN_BTS1_13TQ;  */
+  /* can_baudrate_struct.bts2_size = CAN_BTS2_2TQ; */
   can_baudrate_set(CAN1, &can_baudrate_struct);
 #endif
 
