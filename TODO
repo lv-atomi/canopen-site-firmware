@@ -1,0 +1,15 @@
+firmware:  at32
+1. 限位开关   GPIO Input
+2. 8574        I2C   GPIO
+2.1 stm8       address
+3. PWM input duty cycle    FAN
+3.1 PWM output             FAN
+4. DS18B20     procotol   thermal
+5. AD7705                 thermal
+6. weight sensor
+7. PID
+8. 485   motor 
+9. 485         modbus  inverter
+
+host:
+motion    klipper

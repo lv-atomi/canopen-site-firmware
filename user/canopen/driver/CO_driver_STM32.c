@@ -978,12 +978,16 @@ void CAN1_SE_IRQHandler(void) {
 }
 
 void USBFS_H_CAN1_TX_IRQHandler(void){
-  if (can_flag_get(CAN1, CAN_TM0TCF_FLAG) != RESET)
+  if (can_flag_get(CAN1, CAN_TM0TCF_FLAG) != RESET) {
+    can_flag_clear(CAN1, CAN_TM0TCF_FLAG);
     HAL_CAN_TxMailbox0CompleteCallback(CAN1); /* Mailbox number is irrelevant in at32 */
-  else if (can_flag_get(CAN1, CAN_TM1TCF_FLAG) != RESET)
+  } else if (can_flag_get(CAN1, CAN_TM1TCF_FLAG) != RESET) {
+    can_flag_clear(CAN1, CAN_TM1TCF_FLAG);
     HAL_CAN_TxMailbox1CompleteCallback(CAN1); /* Mailbox number is irrelevant in at32 */
-  else if (can_flag_get(CAN1, CAN_TM2TCF_FLAG) != RESET)
+  } else if (can_flag_get(CAN1, CAN_TM2TCF_FLAG) != RESET) {
+    can_flag_clear(CAN1, CAN_TM2TCF_FLAG);
     HAL_CAN_TxMailbox2CompleteCallback(CAN1); /* Mailbox number is irrelevant in at32 */
+  }
 }
 
 void USBFS_L_CAN1_RX0_IRQHandler(void) // CAN Receive interrupt handle function

@@ -75,13 +75,13 @@ def dump(node, *names):
 def test_simple(nid=1):
     cos = CanOpenStack()
     node = cos.add_node(nid, EDS_PATH)
-    # node.sdo[0x6000].write(3)
+    #node.sdo[0x6000].write(3)
     dump(node, 0x6000)
             
 if __name__ == '__main__':
-    test_discovery()
+    #test_discovery()
     #test_list_objectdict(nid=1, show_value=True)
-    #test_simple()
+    test_simple()
     
 
 
