@@ -93,7 +93,10 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
        .len = sizeof(OD_PERSIST_COMM),
        .subIndexOD = 2,
        .attr = CO_storage_cmd | CO_storage_restore,
-       .addrNV = NULL}};
+       .filename = {'o','d','_','c','o','m','m',
+	            '.','p','e','r','s','i','s','t','\0'}
+      }
+  };
   uint8_t storageEntriesCount =
       sizeof(storageEntries) / sizeof(storageEntries[0]);
   uint32_t storageInitError = 0;
@@ -122,13 +125,14 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
   canopenNodeSTM32->canOpenStack = CO;
 
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
-  err = CO_storageBlank_init(
+  log_printf("init storage\n");
+  err = CO_storageLittleFS_init(
     &storage, CO->CANmodule, OD_ENTRY_H1010_storeParameters,
     OD_ENTRY_H1011_restoreDefaultParameters, storageEntries,
     storageEntriesCount, &storageInitError);
 
   if (err != CO_ERROR_NO && err != CO_ERROR_DATA_CORRUPT) {
-    log_printf("Error: Storage %d\n", storageInitError);
+    log_printf("Error: Storage %ld\n", storageInitError);
     return 2;
   }
 #endif
@@ -154,6 +158,7 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
 }
 
 int canopen_app_resetCommunication() {
+  uint32_t storageInitError = 0;
   /* CANopen communication reset - initialize CANopen objects
    * *******************/
   log_printf("CANopenNode - Reset communication...\n");
@@ -284,7 +289,7 @@ void canopen_app_process() {
 /* Thread function executes in constant intervals, this function can be called
  * from FreeRTOS tasks or Timers ********/
 void canopen_app_interrupt(void) {
-  //log_printf("enter app_interrupt\n");
+  /* log_printf("enter app_interrupt\n"); */
   CO_LOCK_OD(CO->CANmodule);
   if (!CO->nodeIdUnconfigured && CO->CANmodule->CANnormal) {
     bool_t syncWas = false;
@@ -292,21 +297,21 @@ void canopen_app_interrupt(void) {
     uint32_t timeDifference_us = 1000; // 1ms second
 
 #if (CO_CONFIG_SYNC) & CO_CONFIG_SYNC_ENABLE
-    //log_printf("process sync\n");
+    /* log_printf("process sync\n"); */
     syncWas = CO_process_SYNC(CO, timeDifference_us, NULL);
 #endif
 #if (CO_CONFIG_PDO) & CO_CONFIG_RPDO_ENABLE
-    //log_printf("process rpdo\n");
+    /* log_printf("process rpdo\n"); */
     CO_process_RPDO(CO, syncWas, timeDifference_us, NULL);
 #endif
 #if (CO_CONFIG_PDO) & CO_CONFIG_TPDO_ENABLE
-    //log_printf("process tpdo\n");
+    /* log_printf("process tpdo\n"); */
     CO_process_TPDO(CO, syncWas, timeDifference_us, NULL);
 #endif
 
     /* Further I/O or nonblocking application code may go here. */
   }
   CO_UNLOCK_OD(CO->CANmodule);
-  //log_printf("leave app_interrupt\n");
+  /* log_printf("leave app_interrupt\n"); */
 
 }

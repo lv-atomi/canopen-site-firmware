@@ -34,6 +34,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "lfs.h"
 
 // Determining the CANOpen Driver
 
@@ -45,7 +46,11 @@
 #error This STM32 Do not support CAN or FDCAN
 #endif
 
-#undef CO_CONFIG_STORAGE_ENABLE // We don't need Storage option, implement based on your use case and remove this line from here
+#ifndef CO_STORAGE_PATH_MAX
+#define CO_STORAGE_PATH_MAX 255
+#endif
+
+/* #undef CO_CONFIG_STORAGE_ENABLE // We don't need Storage option, implement based on your use case and remove this line from here */
 
 #ifdef CO_DRIVER_CUSTOM
 #include "CO_driver_custom.h"
@@ -138,7 +143,12 @@ typedef struct {
   uint8_t subIndexOD;
   uint8_t attr;
   /* Additional variables (target specific) */
-  void *addrNV;
+  char filename[CO_STORAGE_PATH_MAX];
+  /* CRC checksum of the data stored previously, for auto storage */
+  uint16_t crc;
+  /* Pointer to opened file, for auto storage */
+  lfs_file_t file;
+  //  void *addrNV;
 } CO_storage_entry_t;
 
 /* (un)lock critical section in CO_CANsend() */

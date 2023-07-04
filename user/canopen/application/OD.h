@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/6/27 17:03:43
+        Modified:     2023/7/3 17:43:52
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -254,7 +254,6 @@ typedef struct {
     uint8_t x2100_errorStatusBits[1];
     uint8_t x2110_variableInt32_sub0;
     int32_t x2110_variableInt32[OD_CNT_ARR_2110];
-    uint8_t x6000_boardType;
     uint32_t x6001_PSU_CurrentRead;
     uint32_t x6002_PSU_VoltageRead;
     uint32_t x6003_PSU_CurentSet;
@@ -437,6 +436,7 @@ typedef struct {
         char stringLong[111];
         uint8_t octetString[3];
     } x2121_demoStrings;
+    uint8_t x6000_boardType;
 } OD_PERSIST_APP_t;
 
 #ifndef OD_ATTR_PERSIST_COMM

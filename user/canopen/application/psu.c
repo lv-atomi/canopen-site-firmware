@@ -1,5 +1,6 @@
 #include <stdio.h>
 //#include "CO_app_STM32.h"
+#include "app_common.h"
 #include "psu.h"
 //#include "at32f403a_407_board.h"
 
@@ -31,12 +32,14 @@ void psu_peripheral_init();
 
 
 // 读取板子类型
-static ODR_t my_OD_read_6000(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
-  printf("read 6000, new read only type\n");
-  // 这里添加你读取新的只读类型的代码，然后将结果存储在buf中
-  // 注意，你需要将读取到的字节数存储在*countRead中
-  return ODR_OK;
-}
+/* static ODR_t my_OD_read_6000(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) { */
+/*   printf("read 6000,  read only type\n"); */
+/*   // 这里添加你读取新的只读类型的代码，然后将结果存储在buf中 */
+/*   // 注意，你需要将读取到的字节数存储在*countRead中 */
+/*   CO_setInt8(buf, 5); */
+/*   *countRead = 1; */
+/*   return ODR_OK; */
+/* } */
 
 /* BaseModule temperature */
 // 读取模块温度
@@ -99,11 +102,11 @@ static ODR_t my_OD_write_6004(OD_stream_t *stream, const void *buf, OD_size_t co
 
 CO_ReturnError_t app_psu_init() {
   // 在app_psu_init()函数中，添加初始化新的OD扩展的代码
-  OD_entry_t * param_6000 = OD_ENTRY_H6000_boardType;
-  OD_6000_extension.object = NULL;
-  OD_6000_extension.read = my_OD_read_6000;
-  OD_6000_extension.write = NULL;
-  OD_extension_init(param_6000, &OD_6000_extension);
+  /* OD_entry_t * param_6000 = OD_ENTRY_H6000_boardType; */
+  /* OD_6000_extension.object = NULL; */
+  /* OD_6000_extension.read = my_OD_read_6000; */
+  /* OD_6000_extension.write = NULL; */
+  /* OD_extension_init(param_6000, &OD_6000_extension); */
  
   // 初始化每个OD扩展，并设置读写回调函数
   OD_entry_t * param_6001 = OD_ENTRY_H6001_PSU_CurrentRead;

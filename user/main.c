@@ -15,13 +15,18 @@
 //extern SysParm_TypeDef gSysParm;
 /* extern KeyPressMode keySta; */
 extern char debug[];
-uint8_t need_reconfigure_can;    
+extern unsigned int system_core_clock; /*!< system clock frequency (core clock) */
+__IO uint8_t need_reconfigure_can;    
 
 //uint16_t VolShowTest = DEFAULTVOL;
 int main(void) {
   system_clock_config(); // 8M HSE
   at32_board_init();
   uart_print_init(115200);	/* init debug uart */
+
+  printf("System clock: %d\n", system_core_clock);
+  printf("AHBDIV: %d apb1div:%d apb2div:%d\n",
+	 CRM->cfg_bit.ahbdiv, CRM->cfg_bit.apb1div, CRM->cfg_bit.apb2div);
 
   can_gpio_config();
   canopen_init();
@@ -52,7 +57,9 @@ int main(void) {
   printf("%s\n", debug);
   while (1) {
     if (need_reconfigure_can){
+      printf("reconfigure can\n");
       can_configuration();
+      need_reconfigure_can = 0;
     }
     /* OLED_ShowString(0, 0, debug, 16, 1); */
     /* OLED_Refresh(); */

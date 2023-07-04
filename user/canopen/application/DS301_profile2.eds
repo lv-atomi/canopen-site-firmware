@@ -8,8 +8,8 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=1:17PM
-ModificationDate=06-23-2023
+ModificationTime=5:43PM
+ModificationDate=07-03-2023
 ModifiedBy=Janez Paternoster
 
 [DeviceInfo]
@@ -124,7 +124,7 @@ DefaultValue=0x00000000
 PDOMapping=0
 
 [OptionalObjects]
-SupportedObjects=68
+SupportedObjects=69
 1=0x1003
 2=0x1005
 3=0x1006
@@ -165,34 +165,35 @@ SupportedObjects=68
 38=0x6004
 39=0x6005
 40=0x6100
-41=0x6200
-42=0x6201
-43=0x6300
-44=0x6301
-45=0x6302
-46=0x6303
-47=0x6304
-48=0x6305
-49=0x6400
-50=0x6401
-51=0x6402
-52=0x6403
-53=0x6404
-54=0x6500
-55=0x6501
-56=0x6502
-57=0x6503
-58=0x6504
-59=0x6505
-60=0x6506
-61=0x6507
-62=0x6600
-63=0x6700
-64=0x6701
-65=0x6702
-66=0x6703
-67=0x6704
-68=0x6705
+41=0x6101
+42=0x6200
+43=0x6201
+44=0x6300
+45=0x6301
+46=0x6302
+47=0x6303
+48=0x6304
+49=0x6305
+50=0x6400
+51=0x6401
+52=0x6402
+53=0x6403
+54=0x6404
+55=0x6500
+56=0x6501
+57=0x6502
+58=0x6503
+59=0x6504
+60=0x6505
+61=0x6506
+62=0x6507
+63=0x6600
+64=0x6700
+65=0x6701
+66=0x6702
+67=0x6703
+68=0x6704
+69=0x6705
 
 [1003]
 ParameterName=Pre-defined error field
@@ -773,7 +774,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00000200+$NODEID
+DefaultValue=0x80000200+$NODEID
 PDOMapping=0
 
 [1400sub2]
@@ -815,7 +816,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x00000300+$NODEID
+DefaultValue=0x80000300+$NODEID
 PDOMapping=0
 
 [1401sub2]
@@ -932,7 +933,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
+DefaultValue=0
 PDOMapping=0
 
 [1600sub1]
@@ -1019,7 +1020,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=4
+DefaultValue=0
 PDOMapping=0
 
 [1601sub1]
@@ -1289,7 +1290,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x40000180+$NODEID
+DefaultValue=0xC0000180+$NODEID
 PDOMapping=0
 
 [1800sub2]
@@ -1349,7 +1350,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x40000280+$NODEID
+DefaultValue=0xC0000280+$NODEID
 PDOMapping=0
 
 [1801sub2]
@@ -1520,7 +1521,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=2
+DefaultValue=0
 PDOMapping=0
 
 [1A00sub1]
@@ -1607,7 +1608,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0005
 AccessType=rw
-DefaultValue=4
+DefaultValue=0
 PDOMapping=0
 
 [1A01sub1]
@@ -1616,7 +1617,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x64010110
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub2]
@@ -1625,7 +1626,7 @@ ObjectType=0x7
 ;StorageLocation=RAM
 DataType=0x0007
 AccessType=rw
-DefaultValue=0x64010210
+DefaultValue=0x00000000
 PDOMapping=0
 
 [1A01sub3]
@@ -1859,9 +1860,9 @@ PDOMapping=0
 [6000]
 ParameterName=BoardType
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_APP
 DataType=0x0005
-AccessType=ro
+AccessType=rw
 DefaultValue=0
 PDOMapping=0
 
@@ -1996,6 +1997,48 @@ DataType=0x0001
 AccessType=ro
 DefaultValue=0x00
 PDOMapping=1
+
+[6101]
+ParameterName=Motor
+ObjectType=0x9
+;StorageLocation=RAM
+SubNumber=0x4
+
+[6101sub0]
+ParameterName=Highest sub-index supported
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0005
+AccessType=ro
+DefaultValue=0x03
+PDOMapping=0
+
+[6101sub1]
+ParameterName=is brushless motor
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0001
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[6101sub2]
+ParameterName=motor speed set
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0004
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[6101sub3]
+ParameterName=motor speed read
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0004
+AccessType=ro
+DefaultValue=0
+PDOMapping=0
 
 [6200]
 ParameterName=Camera Module0

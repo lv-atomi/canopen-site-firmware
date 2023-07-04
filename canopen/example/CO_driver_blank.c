@@ -302,6 +302,7 @@ void CO_CANmodule_process(CO_CANmodule_t *CANmodule) {
 
         if (overflow != 0) {
             /* CAN RX bus overflow */
+	  log_printf("overflow detected\n");
             status |= CO_CAN_ERRRX_OVERFLOW;
         }
 

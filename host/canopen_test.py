@@ -75,7 +75,8 @@ def dump(node, *names):
 def test_simple(nid=1):
     cos = CanOpenStack()
     node = cos.add_node(nid, EDS_PATH)
-    dump(node, 0x6415)
+    # node.sdo[0x6000].write(3)
+    dump(node, 0x6000)
             
 if __name__ == '__main__':
     test_discovery()

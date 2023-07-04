@@ -25,6 +25,7 @@
 
 #include <string.h>
 
+#include "log.h"
 #include "301/CO_PDO.h"
 
 #if (CO_CONFIG_PDO) & (CO_CONFIG_RPDO_ENABLE | CO_CONFIG_TPDO_ENABLE)
@@ -172,12 +173,61 @@ static CO_ReturnError_t PDO_initMapping(CO_PDO_common_t *PDO,
     size_t pdoDataLength = 0;
     uint8_t mappedObjectsCount = 0;
 
-    /* number of mapped application objects in PDO */
+    /* /\* number of mapped application objects in PDO *\/ */
+    /* odRet = OD_get_u8(OD_PDOMapPar, 0, &mappedObjectsCount, true); */
+    /* if (odRet != ODR_OK) { */
+    /*     if (errInfo != NULL) { */
+    /*         *errInfo = ((uint32_t)OD_getIndex(OD_PDOMapPar)) << 8; */
+    /*     } */
+    /*     return CO_ERROR_OD_PARAMETERS; */
+    /* } */
+
+    /* for (uint8_t i = 0; i < CO_PDO_MAX_MAPPED_ENTRIES; i++) { */
+    /*     OD_IO_t *OD_IO = &PDO->OD_IO[i]; */
+    /*     uint32_t map = 0; */
+
+    /*     odRet = OD_get_u32(OD_PDOMapPar, i + 1, &map, true); */
+    /*     if (odRet == ODR_SUB_NOT_EXIST) { */
+    /*         continue; */
+    /*     } */
+    /*     if (odRet != ODR_OK) { */
+    /*         if (errInfo != NULL) { */
+    /*             *errInfo = (((uint32_t)OD_getIndex(OD_PDOMapPar))<<8) | i; */
+    /*         } */
+    /*         return CO_ERROR_OD_PARAMETERS; */
+    /*     } */
+
+    /*     odRet = PDOconfigMap(PDO, map, i, isRPDO, OD); */
+    /*     if (odRet != ODR_OK) { */
+    /*         /\* indicate erroneous mapping in initialization phase *\/ */
+    /*         OD_IO->stream.dataLength = 0; */
+    /*         OD_IO->stream.dataOffset = 0xFF; */
+    /*         if (*erroneousMap == 0) *erroneousMap = map; */
+    /*     } */
+
+    /*     if (i < mappedObjectsCount) { */
+    /*         pdoDataLength += OD_IO->stream.dataOffset; */
+    /*     } */
+    /* } */
+    /* if (pdoDataLength > CO_PDO_MAX_SIZE */
+    /*     || (pdoDataLength == 0 && mappedObjectsCount > 0) */
+    /* ) { */
+    /*     if (*erroneousMap == 0) *erroneousMap = 1; */
+    /* } */
+
+    /* if (*erroneousMap == 0) { */
+    /*     PDO->dataLength = (CO_PDO_size_t)pdoDataLength; */
+    /*     PDO->mappedObjectsCount = mappedObjectsCount; */
+    /* } */
+
+    /* return CO_ERROR_NO; */
+        /* number of mapped application objects in PDO */
     odRet = OD_get_u8(OD_PDOMapPar, 0, &mappedObjectsCount, true);
     if (odRet != ODR_OK) {
         if (errInfo != NULL) {
             *errInfo = ((uint32_t)OD_getIndex(OD_PDOMapPar)) << 8;
         }
+        log_printf("Error: Failed to get the number of mapped application objects in PDO, error code: %d\n", odRet);
         return CO_ERROR_OD_PARAMETERS;
     }
 
@@ -193,6 +243,7 @@ static CO_ReturnError_t PDO_initMapping(CO_PDO_common_t *PDO,
             if (errInfo != NULL) {
                 *errInfo = (((uint32_t)OD_getIndex(OD_PDOMapPar))<<8) | i;
             }
+            log_printf("Error: Failed to get mapped object, error code: %d, i: %d\n", odRet, i);
             return CO_ERROR_OD_PARAMETERS;
         }
 
@@ -201,7 +252,10 @@ static CO_ReturnError_t PDO_initMapping(CO_PDO_common_t *PDO,
             /* indicate erroneous mapping in initialization phase */
             OD_IO->stream.dataLength = 0;
             OD_IO->stream.dataOffset = 0xFF;
-            if (*erroneousMap == 0) *erroneousMap = map;
+            if (*erroneousMap == 0) {
+                *erroneousMap = map;
+                log_printf("Error: PDOconfigMap failed, error code: %d, map: %ld, i: %d\n", odRet, map, i);
+            }
         }
 
         if (i < mappedObjectsCount) {
@@ -211,7 +265,10 @@ static CO_ReturnError_t PDO_initMapping(CO_PDO_common_t *PDO,
     if (pdoDataLength > CO_PDO_MAX_SIZE
         || (pdoDataLength == 0 && mappedObjectsCount > 0)
     ) {
-        if (*erroneousMap == 0) *erroneousMap = 1;
+        if (*erroneousMap == 0) {
+            *erroneousMap = 1;
+            log_printf("Error: pdoDataLength out of range, pdoDataLength: %d, mappedObjectsCount: %d\n", pdoDataLength, mappedObjectsCount);
+        }
     }
 
     if (*erroneousMap == 0) {
@@ -220,6 +277,7 @@ static CO_ReturnError_t PDO_initMapping(CO_PDO_common_t *PDO,
     }
 
     return CO_ERROR_NO;
+
 }
 
 #if (CO_CONFIG_PDO) & CO_CONFIG_FLAG_OD_DYNAMIC
@@ -687,6 +745,7 @@ CO_ReturnError_t CO_RPDO_init(CO_RPDO_t *RPDO,
     }
 
     if (erroneousMap != 0) {
+      log_printf("PDO init error: WRONG mapping\n");
         CO_errorReport(PDO->em,
                        CO_EM_PDO_WRONG_MAPPING, CO_EMC_PROTOCOL_ERROR,
                        erroneousMap != 1 ? erroneousMap : COB_ID);

@@ -99,6 +99,9 @@ clean:
 flash: $(OBJDIR)/$(PROJ_NAME).elf
 	$(OPENOCD) -f program.cfg
 
+reset: $(OBJDIR)/$(PROJ_NAME).elf
+	$(OPENOCD) -f program_reset.cfg
+
 flash-pyocd: $(OBJDIR)/$(PROJ_NAME).elf
 	pyocd flash -v --config programmer_pyocd/pyocd_at32.yaml -t _at32f403acgu7 $<
 
@@ -110,7 +113,7 @@ openocd:
 	$(OPENOCD)
 
 gdb: $(OBJDIR)/$(PROJ_NAME).elf
-	$(GDB) --tui $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"
+	$(GDB) $(OBJDIR)/$(PROJ_NAME).elf -ex "target remote :3333"
 
 # Dependdencies
 $(OBJDIR)/$(PROJ_NAME).elf: $(OBJS) | $(OBJDIR)

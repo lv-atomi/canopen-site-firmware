@@ -25,6 +25,8 @@
 
 #include <string.h>
 
+#include "log.h"
+
 #include "301/CO_Emergency.h"
 
 /* verify configuration */
@@ -408,6 +410,7 @@ CO_ReturnError_t CO_EM_init(CO_EM_t *em,
 #if (CO_CONFIG_EM) & (CO_CONFIG_EM_PRODUCER | CO_CONFIG_EM_HISTORY)
     em->fifo = fifo;
     em->fifoSize = fifoSize;
+    log_printf("init fifo size:%d\n", fifoSize);
 #endif
 #if (CO_CONFIG_EM) & CO_CONFIG_EM_PRODUCER
     /* get initial and verify "COB-ID EMCY" from Object Dictionary */
@@ -564,34 +567,100 @@ void CO_EM_process(CO_EM_t *em,
         uint16_t CANerrStChanged = CANerrSt ^ em->CANerrorStatusOld;
         em->CANerrorStatusOld = CANerrSt;
 
-        if (CANerrStChanged & (CO_CAN_ERRTX_WARNING | CO_CAN_ERRRX_WARNING))
-            CO_error(em,
+        /* if (CANerrStChanged & (CO_CAN_ERRTX_WARNING | CO_CAN_ERRRX_WARNING)) */
+        /*     CO_error(em, */
+        /*         (CANerrSt & (CO_CAN_ERRTX_WARNING | CO_CAN_ERRRX_WARNING)) != 0, */
+        /*         CO_EM_CAN_BUS_WARNING, CO_EMC_NO_ERROR, 0); */
+
+        /* if (CANerrStChanged & CO_CAN_ERRTX_PASSIVE) */
+        /*     CO_error(em, (CANerrSt & CO_CAN_ERRTX_PASSIVE) != 0, */
+        /*              CO_EM_CAN_TX_BUS_PASSIVE, CO_EMC_CAN_PASSIVE, 0); */
+
+        /* if (CANerrStChanged & CO_CAN_ERRTX_BUS_OFF) */
+        /*     CO_error(em, (CANerrSt & CO_CAN_ERRTX_BUS_OFF) != 0, */
+        /*              CO_EM_CAN_TX_BUS_OFF, CO_EMC_BUS_OFF_RECOVERED, 0); */
+
+        /* if (CANerrStChanged & CO_CAN_ERRTX_OVERFLOW) */
+        /*     CO_error(em, (CANerrSt & CO_CAN_ERRTX_OVERFLOW) != 0, */
+        /*              CO_EM_CAN_TX_OVERFLOW, CO_EMC_CAN_OVERRUN, 0); */
+
+        /* if (CANerrStChanged & CO_CAN_ERRTX_PDO_LATE) */
+        /*     CO_error(em, (CANerrSt & CO_CAN_ERRTX_PDO_LATE) != 0, */
+        /*              CO_EM_TPDO_OUTSIDE_WINDOW, CO_EMC_COMMUNICATION, 0); */
+
+        /* if (CANerrStChanged & CO_CAN_ERRRX_PASSIVE) */
+        /*     CO_error(em, (CANerrSt & CO_CAN_ERRRX_PASSIVE) != 0, */
+        /*              CO_EM_CAN_RX_BUS_PASSIVE, CO_EMC_CAN_PASSIVE, 0); */
+
+        /* if (CANerrStChanged & CO_CAN_ERRRX_OVERFLOW){ */
+	/*   log_printf("CANerrStChanged -> overflow!\n"); */
+        /*     CO_error(em, (CANerrSt & CO_CAN_ERRRX_OVERFLOW) != 0, */
+        /*              CO_EM_CAN_RXB_OVERFLOW, CO_EM_CAN_RXB_OVERFLOW, 0); */
+	/* } */
+
+        if (CANerrStChanged & (CO_CAN_ERRTX_WARNING | CO_CAN_ERRRX_WARNING)) {
+            log_printf("CANerrStChanged -> WARNING!\n");
+            CO_error(
+                em,
                 (CANerrSt & (CO_CAN_ERRTX_WARNING | CO_CAN_ERRRX_WARNING)) != 0,
-                CO_EM_CAN_BUS_WARNING, CO_EMC_NO_ERROR, 0);
+                CO_EM_CAN_BUS_WARNING,
+                CO_EMC_NO_ERROR,
+                0);
+        }
 
-        if (CANerrStChanged & CO_CAN_ERRTX_PASSIVE)
-            CO_error(em, (CANerrSt & CO_CAN_ERRTX_PASSIVE) != 0,
-                     CO_EM_CAN_TX_BUS_PASSIVE, CO_EMC_CAN_PASSIVE, 0);
+        if (CANerrStChanged & CO_CAN_ERRTX_PASSIVE) {
+            log_printf("CANerrStChanged -> TX_PASSIVE!\n");
+            CO_error(em,
+                     (CANerrSt & CO_CAN_ERRTX_PASSIVE) != 0,
+                     CO_EM_CAN_TX_BUS_PASSIVE,
+                     CO_EMC_CAN_PASSIVE,
+                     0);
+        }
 
-        if (CANerrStChanged & CO_CAN_ERRTX_BUS_OFF)
-            CO_error(em, (CANerrSt & CO_CAN_ERRTX_BUS_OFF) != 0,
-                     CO_EM_CAN_TX_BUS_OFF, CO_EMC_BUS_OFF_RECOVERED, 0);
+        if (CANerrStChanged & CO_CAN_ERRTX_BUS_OFF) {
+            log_printf("CANerrStChanged -> BUS_OFF!\n");
+            CO_error(em,
+                     (CANerrSt & CO_CAN_ERRTX_BUS_OFF) != 0,
+                     CO_EM_CAN_TX_BUS_OFF,
+                     CO_EMC_BUS_OFF_RECOVERED,
+                     0);
+        }
 
-        if (CANerrStChanged & CO_CAN_ERRTX_OVERFLOW)
-            CO_error(em, (CANerrSt & CO_CAN_ERRTX_OVERFLOW) != 0,
-                     CO_EM_CAN_TX_OVERFLOW, CO_EMC_CAN_OVERRUN, 0);
+        if (CANerrStChanged & CO_CAN_ERRTX_OVERFLOW) {
+            log_printf("CANerrStChanged -> TX_OVERFLOW!\n");
+            CO_error(em,
+                     (CANerrSt & CO_CAN_ERRTX_OVERFLOW) != 0,
+                     CO_EM_CAN_TX_OVERFLOW,
+                     CO_EMC_CAN_OVERRUN,
+                     0);
+        }
 
-        if (CANerrStChanged & CO_CAN_ERRTX_PDO_LATE)
-            CO_error(em, (CANerrSt & CO_CAN_ERRTX_PDO_LATE) != 0,
-                     CO_EM_TPDO_OUTSIDE_WINDOW, CO_EMC_COMMUNICATION, 0);
+        if (CANerrStChanged & CO_CAN_ERRTX_PDO_LATE) {
+            log_printf("CANerrStChanged -> PDO_LATE!\n");
+            CO_error(em,
+                     (CANerrSt & CO_CAN_ERRTX_PDO_LATE) != 0,
+                     CO_EM_TPDO_OUTSIDE_WINDOW,
+                     CO_EMC_COMMUNICATION,
+                     0);
+        }
 
-        if (CANerrStChanged & CO_CAN_ERRRX_PASSIVE)
-            CO_error(em, (CANerrSt & CO_CAN_ERRRX_PASSIVE) != 0,
-                     CO_EM_CAN_RX_BUS_PASSIVE, CO_EMC_CAN_PASSIVE, 0);
+        if (CANerrStChanged & CO_CAN_ERRRX_PASSIVE) {
+            log_printf("CANerrStChanged -> RX_PASSIVE!\n");
+            CO_error(em,
+                     (CANerrSt & CO_CAN_ERRRX_PASSIVE) != 0,
+                     CO_EM_CAN_RX_BUS_PASSIVE,
+                     CO_EMC_CAN_PASSIVE,
+                     0);
+        }
 
-        if (CANerrStChanged & CO_CAN_ERRRX_OVERFLOW)
-            CO_error(em, (CANerrSt & CO_CAN_ERRRX_OVERFLOW) != 0,
-                     CO_EM_CAN_RXB_OVERFLOW, CO_EM_CAN_RXB_OVERFLOW, 0);
+        if (CANerrStChanged & CO_CAN_ERRRX_OVERFLOW) {
+            log_printf("CANerrStChanged -> RX_OVERFLOW!\n");
+            CO_error(em,
+                     (CANerrSt & CO_CAN_ERRRX_OVERFLOW) != 0,
+                     CO_EM_CAN_RXB_OVERFLOW,
+                     CO_EM_CAN_RXB_OVERFLOW,
+                     0);
+        }
     }
 
     /* calculate Error register */
@@ -647,7 +716,9 @@ void CO_EM_process(CO_EM_t *em,
             /* send emergency message */
             memcpy(em->CANtxBuff->data, &em->fifo[fifoPpPtr].msg,
                 sizeof(em->CANtxBuff->data));
+	    log_printf("emergency, fifosize:%d, msg: %0lx, info: %0lx bufferfull:%d\n", em->fifoSize, em->fifo[fifoPpPtr].msg, em->fifo[fifoPpPtr].info, em->CANtxBuff->bufferFull);
             CO_CANsend(em->CANdevTx, em->CANtxBuff);
+            log_printf("xfguo: sent.\n");
 
  #if (CO_CONFIG_EM) & CO_CONFIG_EM_CONSUMER
             /* report also own emergency messages */
@@ -715,6 +786,9 @@ void CO_error(CO_EM_t *em, bool_t setError, const uint8_t errorBit,
 {
     if (em == NULL) return;
 
+    log_printf("co_error called, setError:%d, errorBit:%u, errorCode:%u, infoCode:%ld",
+	       setError, errorBit, errorCode, infoCode);
+
     uint8_t index = errorBit >> 3;
     uint8_t bitmask = 1 << (errorBit & 0x7);
 
@@ -768,6 +842,7 @@ void CO_error(CO_EM_t *em, bool_t setError, const uint8_t errorBit,
             em->fifoOverflow = 1;
         }
         else {
+            log_printf("xfguo: push emergency msg: %0lx, info: %0lx\n", errMsg, infoCodeSwapped);
             em->fifo[fifoWrPtr].msg = errMsg;
  #if (CO_CONFIG_EM) & CO_CONFIG_EM_PRODUCER
             em->fifo[fifoWrPtr].info = infoCodeSwapped;

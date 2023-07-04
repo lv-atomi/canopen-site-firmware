@@ -60,18 +60,23 @@ void can_configuration(void) {
   /* can baudrate, set baudrate = pclk/(baudrate_div *(1 + bts1_size +
    * bts2_size)) */
 
-#ifdef BAUD_1M // sample point = 80%
-  can_baudrate_struct.baudrate_div = 8;
-  can_baudrate_struct.rsaw_size = CAN_RSAW_3TQ;
-  can_baudrate_struct.bts1_size = CAN_BTS1_11TQ;
+#ifdef BAUD_1M // sample point = 75%
+  can_baudrate_struct.baudrate_div = 10; /* AHB clock = 120M BRDIV=12*/
+  can_baudrate_struct.rsaw_size = CAN_RSAW_1TQ;
+  can_baudrate_struct.bts1_size = CAN_BTS1_8TQ;
   can_baudrate_struct.bts2_size = CAN_BTS2_3TQ;
   can_baudrate_set(CAN1, &can_baudrate_struct);
 #endif
 
-#ifdef BAUD_500K // sample point = 87.5%
-  can_baudrate_struct.baudrate_div = 15;
+#ifdef BAUD_500K // sample point = 80%
+  /* can_baudrate_struct.baudrate_div = 12; /\* AHB clock = 120M BRDIV=10*\/ */
+  /* can_baudrate_struct.rsaw_size = CAN_RSAW_1TQ; */
+  /* can_baudrate_struct.bts1_size = CAN_BTS1_15TQ;  */
+  /* can_baudrate_struct.bts2_size = CAN_BTS2_2TQ; */
+  /* can_baudrate_set(CAN1, &can_baudrate_struct); */
+  can_baudrate_struct.baudrate_div = 15; /* AHB clock = 120M BRDIV=8*/
   can_baudrate_struct.rsaw_size = CAN_RSAW_2TQ;
-  can_baudrate_struct.bts1_size = CAN_BTS1_13TQ;
+  can_baudrate_struct.bts1_size = CAN_BTS1_13TQ; 
   can_baudrate_struct.bts2_size = CAN_BTS2_2TQ;
   can_baudrate_set(CAN1, &can_baudrate_struct);
 #endif

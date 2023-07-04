@@ -47,13 +47,13 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
     },
     .x1400_RPDOCommunicationParameter = {
         .highestSub_indexSupported = 0x05,
-        .COB_IDUsedByRPDO = 0x00000200,
+        .COB_IDUsedByRPDO = 0x80000200,
         .transmissionType = 0xFF,
         .eventTimer = 0x0000
     },
     .x1401_RPDOCommunicationParameter = {
         .highestSub_indexSupported = 0x05,
-        .COB_IDUsedByRPDO = 0x00000300,
+        .COB_IDUsedByRPDO = 0x80000300,
         .transmissionType = 0xFF,
         .eventTimer = 0x0000
     },
@@ -70,7 +70,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .eventTimer = 0x0000
     },
     .x1600_RPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x02,
+        .numberOfMappedApplicationObjectsInPDO = 0x00,
         .applicationObject1 = 0x00000000,
         .applicationObject2 = 0x00000000,
         .applicationObject3 = 0x00000000,
@@ -81,7 +81,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .applicationObject8 = 0x00000000
     },
     .x1601_RPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x04,
+        .numberOfMappedApplicationObjectsInPDO = 0x00,
         .applicationObject1 = 0x00000000,
         .applicationObject2 = 0x00000000,
         .applicationObject3 = 0x00000000,
@@ -115,7 +115,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
     },
     .x1800_TPDOCommunicationParameter = {
         .highestSub_indexSupported = 0x06,
-        .COB_IDUsedByTPDO = 0x40000180,
+        .COB_IDUsedByTPDO = 0xC0000180,
         .transmissionType = 0xFF,
         .inhibitTime = 0x0000,
         .eventTimer = 0x0000,
@@ -123,7 +123,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
     },
     .x1801_TPDOCommunicationParameter = {
         .highestSub_indexSupported = 0x06,
-        .COB_IDUsedByTPDO = 0x40000280,
+        .COB_IDUsedByTPDO = 0xC0000280,
         .transmissionType = 0xFF,
         .inhibitTime = 0x0000,
         .eventTimer = 0x0000,
@@ -146,7 +146,7 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .SYNCStartValue = 0x00
     },
     .x1A00_TPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x02,
+        .numberOfMappedApplicationObjectsInPDO = 0x00,
         .applicationObject1 = 0x00000000,
         .applicationObject2 = 0x00000000,
         .applicationObject3 = 0x00000000,
@@ -157,9 +157,9 @@ OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM = {
         .applicationObject8 = 0x00000000
     },
     .x1A01_TPDOMappingParameter = {
-        .numberOfMappedApplicationObjectsInPDO = 0x04,
-        .applicationObject1 = 0x64010110,
-        .applicationObject2 = 0x64010210,
+        .numberOfMappedApplicationObjectsInPDO = 0x00,
+        .applicationObject1 = 0x00000000,
+        .applicationObject2 = 0x00000000,
         .applicationObject3 = 0x00000000,
         .applicationObject4 = 0x00000000,
         .applicationObject5 = 0x00000000,
@@ -205,7 +205,6 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x2100_errorStatusBits = {0x00},
     .x2110_variableInt32_sub0 = 0x10,
     .x2110_variableInt32 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    .x6000_boardType = 0x00,
     .x6001_PSU_CurrentRead = 0x00000000,
     .x6002_PSU_VoltageRead = 0x00000000,
     .x6003_PSU_CurentSet = 0x00000000,
@@ -387,7 +386,8 @@ OD_ATTR_PERSIST_APP OD_PERSIST_APP_t OD_PERSIST_APP = {
         .stringShort = {'s', 't', 'r', 0},
         .stringLong = {'E', 'x', 'a', 'm', 'p', 'l', 'e', ' ', 's', 't', 'r', 'i', 'n', 'g', ' ', 'w', 'i', 't', 'h', ' ', '1', '0', '0', '0', ' ', 'b', 'y', 't', 'e', 's', ' ', 'c', 'a', 'p', 'a', 'c', 'i', 't', 'y', '.', ' ', 'I', 't', ' ', 'm', 'a', 'y', ' ', 'c', 'o', 'n', 't', 'a', 'i', 'n', ' ', 'U', 'T', 'F', '-', '8', ' ', 'c', 'h', 'a', 'r', 'a', 'c', 't', 'e', 'r', 's', ',', ' ', 'l', 'i', 'k', 'e', ' ', '\'', (char)0xE2, (char)0x82, (char)0xAC, '\'', ',', ' ', 't', 'a', 'b', 's', ' ', '\'', 0x09, '\'', ',', ' ', 'n', 'e', 'w', 'l', 'i', 'n', 'e', 's', ',', ' ', 'e', 't', 'c', '.', 0},
         .octetString = {0xC8, 0x3D, 0xBB}
-    }
+    },
+    .x6000_boardType = 0x00
 };
 
 
@@ -1468,8 +1468,8 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataLength = 0
     },
     .o_6000_boardType = {
-        .dataOrig = &OD_RAM.x6000_boardType,
-        .attribute = ODA_SDO_R,
+        .dataOrig = &OD_PERSIST_APP.x6000_boardType,
+        .attribute = ODA_SDO_RW,
         .dataLength = 1
     },
     .o_6001_PSU_CurrentRead = {
