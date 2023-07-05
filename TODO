@@ -1,4 +1,6 @@
 firmware:  at32
+
+0. PSU
 1. 限位开关   GPIO Input
 2. 8574        I2C   GPIO
 2.1 stm8       address

@@ -8,8 +8,8 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=5:43PM
-ModificationDate=07-03-2023
+ModificationTime=9:59PM
+ModificationDate=07-04-2023
 ModifiedBy=Janez Paternoster
 
 [DeviceInfo]
@@ -1906,7 +1906,7 @@ PDOMapping=0
 ParameterName=PSU module temperature
 ObjectType=0x7
 ;StorageLocation=RAM
-DataType=0x0007
+DataType=0x0004
 AccessType=ro
 DefaultValue=0
 PDOMapping=0

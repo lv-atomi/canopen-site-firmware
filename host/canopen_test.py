@@ -77,11 +77,19 @@ def test_simple(nid=1):
     node = cos.add_node(nid, EDS_PATH)
     #node.sdo[0x6000].write(3)
     dump(node, 0x6000)
-            
+
+def test_psu(nid=1):
+    cos = CanOpenStack()
+    node = cos.add_node(nid, EDS_PATH)
+    #node.sdo[0x6000].write(3)
+    dump(node, 0x6001)          # PSU current read
+    dump(node, 0x6002)          # PSU voltage read
+    dump(node, 0x6003)          # PSU current set read
+    dump(node, 0x6004)          # PSU voltage set read
+    dump(node, 0x6005)          # at32 temperature read
+    
 if __name__ == '__main__':
     #test_discovery()
     #test_list_objectdict(nid=1, show_value=True)
-    test_simple()
-    
-
-
+    #test_simple()
+    test_psu()

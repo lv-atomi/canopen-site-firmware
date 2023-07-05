@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/7/3 17:43:52
+        Modified:     2023/7/4 21:59:08
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -258,7 +258,7 @@ typedef struct {
     uint32_t x6002_PSU_VoltageRead;
     uint32_t x6003_PSU_CurentSet;
     uint32_t x6004_PSU_VoltageSet;
-    uint32_t x6005_PSUModuleTemperature;
+    int32_t x6005_PSUModuleTemperature;
     uint8_t x6100_triggerInputX8_sub0;
     bool_t x6100_triggerInputX8[OD_CNT_ARR_6100];
     struct {

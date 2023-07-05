@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-07-03" fileModificationTime="17:43:52.5285730+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-07-04" fileModificationTime="21:59:08.5977480+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>lv</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -2270,7 +2270,7 @@
           </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6005">
             <label lang="en">PSU module temperature</label>
-            <UDINT />
+            <DINT />
             <q1:defaultValue value="0" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_6100">
@@ -3078,7 +3078,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-07-03" fileModificationTime="17:43:52.5285730+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile2.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-07-04" fileModificationTime="21:59:08.5977480+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />

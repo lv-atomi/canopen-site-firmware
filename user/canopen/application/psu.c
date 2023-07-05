@@ -41,53 +41,80 @@ void psu_peripheral_init();
 /*   return ODR_OK; */
 /* } */
 
+/* 把ADC/DAC读到的电压值转换成真正的数值，保留3位小数。比如返回1000则表示1.000V */
+static uint32_t voltage_adda_to_numeral(uint16_t voltage_adda) {
+  return voltage_adda;
+}
+
+/* 把电压值转换成ADC/DAC读到的数值范围。注意电压值保留3位小数。比如输入1000则表示1.000V */
+static uint16_t voltage_numeral_to_adda(uint32_t voltage_numeral) {
+  return voltage_numeral;
+}
+
+/* 把ADC/DAC读到的电流值转换成真正的数值，保留3位小数。比如返回1000则表示1.000A */
+static uint32_t current_adda_to_numeral(uint16_t current_adda) {
+  return current_adda;
+}
+
+/* 把电压值转换成ADC/DAC读到的数值范围。注意电压值保留3位小数。比如输入1000则表示1.000V */
+static uint16_t current_numeral_to_adda(uint32_t current_numeral) {
+  return current_numeral;
+}
+
+/* 把ADC/DAC读到的温度值转换成真正的数值，保留3位小数。比如返回1000则表示1.000度，注意温度值有符号，可以为负 */
+static uint32_t temperature_adda_to_numeral(uint16_t temperature_adda) {
+  return temperature_adda;
+}
+
+
 /* BaseModule temperature */
 // 读取模块温度
 static ODR_t my_OD_read_6005(OD_stream_t *stream, void *buf,
 			     OD_size_t count, OD_size_t *countRead) {
   
   printf("read 6005, internal temperature\n");
-  CO_setUint16(buf, adc_valuetable[2]);
-  *countRead = 2;
+  CO_setInt32(buf, temperature_adda_to_numeral(adc_valuetable[2]));
+  *countRead = 4;
   return ODR_OK;
 }
 
 // 读取PSU电流
 static ODR_t my_OD_read_6001(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
   printf("read 6001, psu current\n");
-  CO_setUint16(buf, adc_valuetable[1]);
-  *countRead = 2;
+  CO_setUint32(buf, current_adda_to_numeral(adc_valuetable[1]));
+  *countRead = 4;
   return ODR_OK;
 }
 
 // 读取PSU电压
 static ODR_t my_OD_read_6002(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
   printf("read 6002, psu voltage\n");
-  CO_setUint16(buf, adc_valuetable[0]);
-  *countRead = 2;
+  CO_setUint32(buf, voltage_adda_to_numeral(adc_valuetable[0]));
+  *countRead = 4;
   return ODR_OK;
 }
 
 // 读取PSU电流设定值
 static ODR_t my_OD_read_6003(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
   printf("read 6003, psu current set\n");
-  CO_setUint16(buf, dac_valuetable[1]);
-  *countRead = 2;
+  CO_setUint32(buf, current_adda_to_numeral(dac_valuetable[1]));
+  *countRead = 4;
   return ODR_OK;
 }
 
 // 读取PSU电压设定值
 static ODR_t my_OD_read_6004(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
   printf("read 6004, psu voltage set\n");
-  CO_setUint16(buf, dac_valuetable[0]);
-  *countRead = 2;
+  CO_setUint32(buf, voltage_adda_to_numeral(dac_valuetable[0]));
+  *countRead = 4;
   return ODR_OK;
 }
 
 // 写PSU电流设定值
 static ODR_t my_OD_write_6003(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten){
   printf("write 6003, psu current set\n");
-  dac_valuetable[1] = CO_getUint16(buf);
+  ASSERT(*countWritten == 4);
+  dac_valuetable[1] = current_numeral_to_adda(CO_getUint32(buf));
   dac_2_data_set(DAC_DUAL_12BIT_RIGHT, dac_valuetable[1]);
   return ODR_OK;
 }
@@ -95,7 +122,8 @@ static ODR_t my_OD_write_6003(OD_stream_t *stream, const void *buf, OD_size_t co
 // 写PSU电压设定值
 static ODR_t my_OD_write_6004(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten){
   printf("write 6004, psu voltage set\n");
-  dac_valuetable[0] = CO_getUint16(buf);
+  ASSERT(*countWritten == 4);
+  dac_valuetable[0] = voltage_numeral_to_adda(CO_getUint32(buf));
   dac_1_data_set(DAC_DUAL_12BIT_RIGHT, dac_valuetable[0]);
   return ODR_OK;
 }
