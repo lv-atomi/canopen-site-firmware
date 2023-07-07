@@ -72,7 +72,7 @@ static uint32_t temperature_adda_to_numeral(uint16_t temperature_adda) {
 static ODR_t my_OD_read_6005(OD_stream_t *stream, void *buf,
 			     OD_size_t count, OD_size_t *countRead) {
   
-  printf("read 6005, internal temperature\n");
+  printf("read 6005, internal temperature, raw adc value:%u\n", adc_valuetable[2]);
   CO_setInt32(buf, temperature_adda_to_numeral(adc_valuetable[2]));
   *countRead = 4;
   return ODR_OK;
@@ -80,7 +80,7 @@ static ODR_t my_OD_read_6005(OD_stream_t *stream, void *buf,
 
 // 读取PSU电流
 static ODR_t my_OD_read_6001(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
-  printf("read 6001, psu current\n");
+  printf("read 6001, psu current, raw adc value:%u\n", adc_valuetable[1]);
   CO_setUint32(buf, current_adda_to_numeral(adc_valuetable[1]));
   *countRead = 4;
   return ODR_OK;
@@ -88,7 +88,7 @@ static ODR_t my_OD_read_6001(OD_stream_t *stream, void *buf, OD_size_t count, OD
 
 // 读取PSU电压
 static ODR_t my_OD_read_6002(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
-  printf("read 6002, psu voltage\n");
+  printf("read 6002, psu voltage, raw adc value:%u\n", adc_valuetable[0]);
   CO_setUint32(buf, voltage_adda_to_numeral(adc_valuetable[0]));
   *countRead = 4;
   return ODR_OK;
@@ -96,7 +96,7 @@ static ODR_t my_OD_read_6002(OD_stream_t *stream, void *buf, OD_size_t count, OD
 
 // 读取PSU电流设定值
 static ODR_t my_OD_read_6003(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
-  printf("read 6003, psu current set\n");
+  printf("read 6003, psu current set, raw dac value:%u\n", dac_valuetable[1]);
   CO_setUint32(buf, current_adda_to_numeral(dac_valuetable[1]));
   *countRead = 4;
   return ODR_OK;
@@ -104,7 +104,7 @@ static ODR_t my_OD_read_6003(OD_stream_t *stream, void *buf, OD_size_t count, OD
 
 // 读取PSU电压设定值
 static ODR_t my_OD_read_6004(OD_stream_t *stream, void *buf, OD_size_t count, OD_size_t *countRead) {
-  printf("read 6004, psu voltage set\n");
+  printf("read 6004, psu voltage set: raw dac value:%u\n", dac_valuetable[0]);
   CO_setUint32(buf, voltage_adda_to_numeral(dac_valuetable[0]));
   *countRead = 4;
   return ODR_OK;
@@ -112,16 +112,16 @@ static ODR_t my_OD_read_6004(OD_stream_t *stream, void *buf, OD_size_t count, OD
 
 // 写PSU电流设定值
 static ODR_t my_OD_write_6003(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten){
-  printf("write 6003, psu current set\n");
   ASSERT(*countWritten == 4);
   dac_valuetable[1] = current_numeral_to_adda(CO_getUint32(buf));
+  printf("write 6003, psu current set: raw dac value:%u\n", dac_valuetable[1]);
   dac_2_data_set(DAC_DUAL_12BIT_RIGHT, dac_valuetable[1]);
   return ODR_OK;
 }
 
 // 写PSU电压设定值
 static ODR_t my_OD_write_6004(OD_stream_t *stream, const void *buf, OD_size_t count, OD_size_t *countWritten){
-  printf("write 6004, psu voltage set\n");
+  printf("write 6004, psu voltage set: raw dac value:%u\n", dac_valuetable[0]);
   ASSERT(*countWritten == 4);
   dac_valuetable[0] = voltage_numeral_to_adda(CO_getUint32(buf));
   dac_1_data_set(DAC_DUAL_12BIT_RIGHT, dac_valuetable[0]);
@@ -181,7 +181,8 @@ void psu_adc_init(){
   gpio_initstructure.gpio_mode = GPIO_MODE_ANALOG;
   gpio_initstructure.gpio_pins = GPIO_PINS_6 | GPIO_PINS_7;
   gpio_init(GPIOA, &gpio_initstructure);
-
+  log_printf("GPIO configured for ADC.\n");
+ 
   /* DMA init */
   dma_init_type dma_init_struct;
   crm_periph_clock_enable(CRM_DMA1_PERIPH_CLOCK, TRUE);
@@ -198,9 +199,11 @@ void psu_adc_init(){
   dma_init_struct.priority = DMA_PRIORITY_HIGH;
   dma_init_struct.loop_mode_enable = TRUE;
   dma_init(DMA1_CHANNEL1, &dma_init_struct);
-
+  log_printf("DMA initialized.\n");
+  
   dma_channel_enable(DMA1_CHANNEL1, TRUE);
-
+  log_printf("DMA channel enabled.\n");
+ 
   /* ADC config */
   adc_base_config_type adc_base_struct;
   crm_periph_clock_enable(CRM_ADC1_PERIPH_CLOCK, TRUE);
@@ -211,7 +214,7 @@ void psu_adc_init(){
   adc_combine_mode_select(ADC_INDEPENDENT_MODE);
   adc_base_default_para_init(&adc_base_struct);
   adc_base_struct.sequence_mode = TRUE;
-  adc_base_struct.repeat_mode = FALSE;
+  adc_base_struct.repeat_mode = TRUE;
   adc_base_struct.data_align = ADC_RIGHT_ALIGNMENT;
   adc_base_struct.ordinary_channel_length = 3;
   adc_base_config(ADC1, &adc_base_struct);
@@ -220,17 +223,23 @@ void psu_adc_init(){
   adc_ordinary_channel_set(ADC1, ADC_CHANNEL_16, 3, ADC_SAMPLETIME_239_5); /* ch16 for temperature sensor */
   adc_ordinary_conversion_trigger_set(ADC1, ADC12_ORDINARY_TRIG_SOFTWARE, TRUE);
   adc_dma_mode_enable(ADC1, TRUE);
+  
   adc_tempersensor_vintrv_enable(TRUE); /* enable internal temperature sensor */
-  adc_voltage_monitor_enable(ADC1, ADC_VMONITOR_SINGLE_ORDINARY);
-  adc_voltage_monitor_threshold_value_set(ADC1, 0xBBB, 0xAAA);
-  adc_voltage_monitor_single_channel_select(ADC1, ADC_CHANNEL_5);
-  adc_interrupt_enable(ADC1, ADC_VMOR_INT, TRUE);
+  /* adc_voltage_monitor_enable(ADC1, ADC_VMONITOR_SINGLE_ORDINARY); */
+  /* adc_voltage_monitor_threshold_value_set(ADC1, 0xBBB, 0xAAA); */
+  /* adc_voltage_monitor_single_channel_select(ADC1, ADC_CHANNEL_5); */
+  /* adc_interrupt_enable(ADC1, ADC_VMOR_INT, TRUE); */
 
   adc_enable(ADC1, TRUE);
+  log_printf("ADC enabled.\n");
   adc_calibration_init(ADC1);
+  log_printf("ADC calibration initialized.\n");
   while(adc_calibration_init_status_get(ADC1));
+  log_printf("ADC calibration init status checked.\n");
   adc_calibration_start(ADC1);
+  log_printf("ADC calibration started.\n");
   while(adc_calibration_status_get(ADC1));
+  log_printf("ADC calibration completed.\n");
 }
 
 void psu_dac_init(){

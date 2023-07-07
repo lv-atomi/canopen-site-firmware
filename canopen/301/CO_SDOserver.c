@@ -66,7 +66,7 @@ static void CO_SDO_receive(void *object, void *msg) {
             SDO->state = CO_SDO_ST_IDLE;
         }
         else if (CO_FLAG_READ(SDO->CANrxNew)) {
-	  log_printf("ignore message due to previous message was not processed yet\n");
+	  /* log_printf("ignore message due to previous message was not processed yet\n"); */
             /* ignore message if previous message was not processed yet */
         }
 #if (CO_CONFIG_SDO_SRV) & CO_CONFIG_SDO_SRV_BLOCK
@@ -133,7 +133,7 @@ static void CO_SDO_receive(void *object, void *msg) {
                      * another thread. Make memory barrier here with
                      * CO_FLAG_CLEAR() call. */
                     CO_FLAG_CLEAR(SDO->CANrxNew);
-		    log_printf("clear CANrxNew 1, state has changed and processing will continue in another thread\n");
+		    /* log_printf("clear CANrxNew 1, state has changed and processing will continue in another thread\n"); */
                     SDO->state = state;
 #if (CO_CONFIG_SDO_SRV) & CO_CONFIG_FLAG_CALLBACK_PRE
                     /* Optional signal to RTOS, which can resume task, which
@@ -154,7 +154,7 @@ static void CO_SDO_receive(void *object, void *msg) {
              * CO_SDOserver_process() */
             memcpy(SDO->CANrxData, data, DLC);
             CO_FLAG_SET(SDO->CANrxNew);
-	    log_printf("clear CANrxNew 2, data will be processed in CO_SDOserver_process\n");
+	    /* log_printf("clear CANrxNew 2, data will be processed in CO_SDOserver_process\n"); */
 #if (CO_CONFIG_SDO_SRV) & CO_CONFIG_FLAG_CALLBACK_PRE
             /* Optional signal to RTOS, which can resume task, which handles
             * SDO server processing. */
@@ -416,7 +416,7 @@ CO_ReturnError_t CO_SDOserver_init(CO_SDOserver_t *SDO,
             return CO_ERROR_ILLEGAL_ARGUMENT;
         }
     }
-    log_printf("clear CANrxNew 3, init.\n");
+    /* log_printf("clear CANrxNew 3, init.\n"); */
     CO_FLAG_CLEAR(SDO->CANrxNew);
 
     /* store the parameters and configure CANrx and CANtx */
@@ -710,15 +710,15 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
          * and must be valid */
         SDO->state = CO_SDO_ST_IDLE;
         CO_FLAG_CLEAR(SDO->CANrxNew);
-	log_printf("clear CANrxNew 4, is allowed only in operational or pre-operational NMT state\n");
+	/* log_printf("clear CANrxNew 4, is allowed only in operational or pre-operational NMT state\n"); */
         ret = CO_SDO_RT_ok_communicationEnd;
     }
     /* CAN data received ******************************************************/
     else if (isNew) {
-      log_printf("can data recved: sdo->state:%d data[0]:%d\n",
-		 SDO->state,
-		 SDO->CANrxData[0]
-		 );
+      log_printf("can data recved: sdo->state:%d\n",
+		 SDO->state);
+      DumpHex(SDO->CANrxData, SDO->OD_IO.stream.dataLength);
+
         if (SDO->state == CO_SDO_ST_IDLE) { /* new SDO communication? */
             bool_t upload = false;
 
@@ -728,7 +728,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
             else if (SDO->CANrxData[0] == 0x40) {
                 upload = true;
                 SDO->state = CO_SDO_ST_UPLOAD_INITIATE_REQ;
-		log_printf("state -> CO_SDO_ST_UPLOAD_INITIATE_REQ\n");
+		/* log_printf("state -> CO_SDO_ST_UPLOAD_INITIATE_REQ\n"); */
             }
 #if (CO_CONFIG_SDO_SRV) & CO_CONFIG_SDO_SRV_BLOCK
             else if ((SDO->CANrxData[0] & 0xF9) == 0xC0) {
@@ -964,7 +964,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
 #endif /* (CO_CONFIG_SDO_SRV) & CO_CONFIG_SDO_SRV_SEGMENTED */
 
         case CO_SDO_ST_UPLOAD_INITIATE_REQ: {
-	  log_printf("state -> CO_SDO_ST_UPLOAD_INITIATE_RSP\n");
+	  /* log_printf("state -> CO_SDO_ST_UPLOAD_INITIATE_RSP\n"); */
             SDO->state = CO_SDO_ST_UPLOAD_INITIATE_RSP;
             break;
         }
@@ -1170,7 +1170,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
 #endif
         timeDifference_us = 0;
         CO_FLAG_CLEAR(SDO->CANrxNew);
-	log_printf("clear CANrxNew 5, in CO_SDOserver_process/isNew\n");
+	/* log_printf("clear CANrxNew 5, in CO_SDOserver_process/isNew\n"); */
     } /* if (isNew) */
 
     /* Timeout timers and transmit bufferFull flag ****************************/
@@ -1204,7 +1204,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
                  * thread. Make memory barrier here with CO_FLAG_CLEAR() call.*/
                 SDO->state = CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_RSP;
                 CO_FLAG_CLEAR(SDO->CANrxNew);
-		log_printf("clear CANrxNew 6, state == CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_REQ,state will change, processing will continue in this thread\n");
+		/* log_printf("clear CANrxNew 6, state == CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_REQ,state will change, processing will continue in this thread\n"); */
             }
 #if (CO_CONFIG_SDO_SRV) & CO_CONFIG_FLAG_TIMERNEXT
             else if (timerNext_us != NULL) {
@@ -1281,7 +1281,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
 #endif
 
         case CO_SDO_ST_UPLOAD_INITIATE_RSP: {
-	  log_printf("state -> CO_SDO_ST_UPLOAD_INITIATE_RSP\n");
+	  /* log_printf("state -> CO_SDO_ST_UPLOAD_INITIATE_RSP\n"); */
 
 #if (CO_CONFIG_SDO_SRV) & CO_CONFIG_SDO_SRV_SEGMENTED
             /* data were already loaded from OD variable */
@@ -1289,8 +1289,8 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
                 /* expedited transfer */
                 SDO->CANtxBuff->data[0] = (uint8_t)(0x43|((4-SDO->sizeInd)<<2));
                 memcpy(&SDO->CANtxBuff->data[4], &SDO->buf, SDO->sizeInd);
-		log_printf("state-> CO_SDO_ST_IDLE, txbuff.data ->\n");
-		DumpHex(SDO->CANtxBuff->data, 8);
+		/* log_printf("state-> CO_SDO_ST_IDLE, txbuff.data ->\n"); */
+		/* DumpHex(SDO->CANtxBuff->data, 8); */
                 SDO->state = CO_SDO_ST_IDLE;
                 ret = CO_SDO_RT_ok_communicationEnd;
             }
@@ -1310,7 +1310,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
                 SDO->toggle = 0x00;
                 SDO->timeoutTimer = 0;
                 SDO->state = CO_SDO_ST_UPLOAD_SEGMENT_REQ;
-		log_printf("state-> CO_SDO_ST_UPLOAD_SEGMENT_REQ\n");
+		/* log_printf("state-> CO_SDO_ST_UPLOAD_SEGMENT_REQ\n"); */
             }
 #else /* Expedited transfer only */
             /* load data from OD variable */
@@ -1346,7 +1346,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
             ret = CO_SDO_RT_ok_communicationEnd;
 #endif /* (CO_CONFIG_SDO_SRV) & CO_CONFIG_SDO_SRV_SEGMENTED */
 
-	    log_printf("send msg...\n");
+	    /* log_printf("send msg...\n"); */
 	    DumpHex(SDO->CANtxBuff->data, 8);
             /* send message */
             SDO->CANtxBuff->data[1] = (uint8_t)SDO->index;
@@ -1439,7 +1439,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
              * barrier here with CO_FLAG_CLEAR() call. */
             SDO->state = CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_REQ;
             CO_FLAG_CLEAR(SDO->CANrxNew);
-	    log_printf("clear CANrxNew 7, in case CO_SDO_ST_DOWNLOAD_BLK_INITIATE_RSP, Block segments will be received in different thread.\n");
+	    /* log_printf("clear CANrxNew 7, in case CO_SDO_ST_DOWNLOAD_BLK_INITIATE_RSP, Block segments will be received in different thread.\n"); */
             CO_CANsend(SDO->CANdevTx, SDO->CANtxBuff);
             break;
         }
@@ -1480,7 +1480,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
                  * memory barrier here with CO_FLAG_CLEAR() call. */
                 SDO->state = CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_REQ;
                 CO_FLAG_CLEAR(SDO->CANrxNew);
-		log_printf("clear CANrxNew 8, in case CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_RSP, Block segments will be received in different thread.\n");
+		/* log_printf("clear CANrxNew 8, in case CO_SDO_ST_DOWNLOAD_BLK_SUBBLOCK_RSP, Block segments will be received in different thread.\n"); */
             }
 
             SDO->CANtxBuff->data[2] = SDO->block_blksize;

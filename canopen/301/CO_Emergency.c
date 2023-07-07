@@ -410,7 +410,7 @@ CO_ReturnError_t CO_EM_init(CO_EM_t *em,
 #if (CO_CONFIG_EM) & (CO_CONFIG_EM_PRODUCER | CO_CONFIG_EM_HISTORY)
     em->fifo = fifo;
     em->fifoSize = fifoSize;
-    log_printf("init fifo size:%d\n", fifoSize);
+    /* log_printf("init fifo size:%d\n", fifoSize); */
 #endif
 #if (CO_CONFIG_EM) & CO_CONFIG_EM_PRODUCER
     /* get initial and verify "COB-ID EMCY" from Object Dictionary */
@@ -716,9 +716,9 @@ void CO_EM_process(CO_EM_t *em,
             /* send emergency message */
             memcpy(em->CANtxBuff->data, &em->fifo[fifoPpPtr].msg,
                 sizeof(em->CANtxBuff->data));
-	    log_printf("emergency, fifosize:%d, msg: %0lx, info: %0lx bufferfull:%d\n", em->fifoSize, em->fifo[fifoPpPtr].msg, em->fifo[fifoPpPtr].info, em->CANtxBuff->bufferFull);
+	    /* log_printf("emergency, fifosize:%d, msg: %0lx, info: %0lx bufferfull:%d\n", em->fifoSize, em->fifo[fifoPpPtr].msg, em->fifo[fifoPpPtr].info, em->CANtxBuff->bufferFull); */
             CO_CANsend(em->CANdevTx, em->CANtxBuff);
-            log_printf("xfguo: sent.\n");
+            /* log_printf("xfguo: sent.\n"); */
 
  #if (CO_CONFIG_EM) & CO_CONFIG_EM_CONSUMER
             /* report also own emergency messages */
@@ -786,8 +786,8 @@ void CO_error(CO_EM_t *em, bool_t setError, const uint8_t errorBit,
 {
     if (em == NULL) return;
 
-    log_printf("co_error called, setError:%d, errorBit:%u, errorCode:%u, infoCode:%ld",
-	       setError, errorBit, errorCode, infoCode);
+    /* log_printf("co_error called, setError:%d, errorBit:%u, errorCode:%u, infoCode:%ld", */
+    /* 	       setError, errorBit, errorCode, infoCode); */
 
     uint8_t index = errorBit >> 3;
     uint8_t bitmask = 1 << (errorBit & 0x7);
@@ -842,7 +842,7 @@ void CO_error(CO_EM_t *em, bool_t setError, const uint8_t errorBit,
             em->fifoOverflow = 1;
         }
         else {
-            log_printf("xfguo: push emergency msg: %0lx, info: %0lx\n", errMsg, infoCodeSwapped);
+            /* log_printf("xfguo: push emergency msg: %0lx, info: %0lx\n", errMsg, infoCodeSwapped); */
             em->fifo[fifoWrPtr].msg = errMsg;
  #if (CO_CONFIG_EM) & CO_CONFIG_EM_PRODUCER
             em->fifo[fifoWrPtr].info = infoCodeSwapped;

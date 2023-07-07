@@ -81,7 +81,8 @@ def test_simple(nid=1):
 def test_psu(nid=1):
     cos = CanOpenStack()
     node = cos.add_node(nid, EDS_PATH)
-    #node.sdo[0x6000].write(3)
+    # node.sdo[0x6004].write(100) # set voltage to 100
+    
     dump(node, 0x6001)          # PSU current read
     dump(node, 0x6002)          # PSU voltage read
     dump(node, 0x6003)          # PSU current set read
