@@ -17,13 +17,15 @@ firmware:  at32
 
 6.[done] weight sensor
 
-7. PID
+7. capacitor displacement measure
 
-8. 485   motor 
+8. PID
 
-9. 485   modbus  inverter
+9. 485   motor 
 
-10. IHplate
+10. 485   modbus  inverter
+
+11. IHplate
 
 host:
 motion    klipper
