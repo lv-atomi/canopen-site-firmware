@@ -1,12 +1,12 @@
 firmware:  at32
 
-0. PSU          done (skip, push it to next stage)
+0.[skip] PSU
 1. 限位开关   GPIO Input
 
-2. 8574        I2C   GPIO  done
-2.1 stm8       address     done
-2.2 slave board sequence discovery     done
-2.2 board rework          done (new pcb layout done, waiting for verify)
+2.[done] 8574        I2C   GPIO
+2.1[done] stm8       address
+2.2[done] slave board sequence discovery
+2.2[done] board rework
 
 3. PWM input duty cycle    FAN
 3.1 PWM output             FAN
@@ -15,13 +15,15 @@ firmware:  at32
 
 5. AD7705                 thermal       working by lamuguo
 
-6. weight sensor
+6.[done] weight sensor
 
 7. PID
 
 8. 485   motor 
 
-9. 485         modbus  inverter
+9. 485   modbus  inverter
+
+10. IHplate
 
 host:
 motion    klipper
