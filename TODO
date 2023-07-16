@@ -13,7 +13,7 @@ firmware:  at32
 
 4.[done] DS18B20    1wire procotol   thermal     must add external 4.7k pull-up resistor
 
-5. AD7705                 thermal       working by lamuguo
+5.[done] AD7705                 thermal       firmware done, but still need to debug hardware
 
 6.[done] weight sensor
 
