@@ -11,7 +11,7 @@ firmware:  at32
 3. PWM input duty cycle    FAN
 3.1 PWM output             FAN
 
-4. DS18B20    1wire procotol   thermal     working by lv
+4.[done] DS18B20    1wire procotol   thermal     must add external 4.7k pull-up resistor
 
 5. AD7705                 thermal       working by lamuguo
 
