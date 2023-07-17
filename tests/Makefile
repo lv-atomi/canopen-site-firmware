@@ -1,6 +1,7 @@
-PROJ_NAME=main
+PROJ_NAME=test_$(test)
 
 DEBUG=1
+FILTER_OUT = $(foreach v,$(2),$(if $(findstring $(1),$(v)),,$(v)))
 
 CC=arm-none-eabi-gcc --specs=nosys.specs -Werror -Wno-unused-variable
 #GDB=arm-none-eabi-gdb
@@ -8,21 +9,22 @@ GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy
 OBJDIR = build
 
-LIBROOT := Libraries
+LIBROOT := ../Libraries
 CMSISROOT := $(LIBROOT)/cmsis/cm4
 DRIVERROOT := $(LIBROOT)/Drivers
-CANOPENROOT := canopen
+CANOPENROOT := ../canopen
+SRCROOT := ../user
 
-OPENOCD_CMSIS := OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid"
-OPENOCD_ATLINK := OpenOCD/bin/openocd -s OpenOCD/scripts -f interface/atlink.cfg -f target/at32f403axx.cfg
+OPENOCD_CMSIS := ../OpenOCD/bin/openocd -s ../OpenOCD/scripts -f interface/cmsis-dap.cfg -f target/at32f403axx.cfg --command "adapter driver cmsis-dap; cmsis_dap_backend hid"
+OPENOCD_ATLINK := ../OpenOCD/bin/openocd -s ../OpenOCD/scripts -f interface/atlink.cfg -f target/at32f403axx.cfg
 OPENOCD := $(OPENOCD_ATLINK)
 
 ifdef DEBUG
-CFLAGS  = -O0 -g3 -MMD
+CFLAGS  = -O0 -g3 -MMD 
 else
 CFLAGS  = -O2 -finline -finline-functions-called-once
 endif
-CFLAGS += -Wall -Wno-missing-braces -std=c99 -mthumb -mcpu=cortex-m4
+CFLAGS += -Wall -Wno-missing-braces -std=c99 -mthumb -mcpu=cortex-m4 -fdata-sections -ffunction-sections -Wl,--gc-sections
 #CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
 #CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS += -mfloat-abi=soft
@@ -31,9 +33,9 @@ LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gc
 DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection, use APPLICATION
 export DEFINES
 
-LITTLEFSINC = -Iuser/littlefs
-CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application -Iuser/canopen/module
-CFLAGS += $(DEFINES) -Iuser -Iuser/subsystem -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC) $(LITTLEFSINC)
+LITTLEFSINC = -I$(SRCROOT)/littlefs
+CANOPENINC = -I$(CANOPENROOT) -I$(SRCROOT)/canopen -I$(SRCROOT)/canopen/driver -I$(SRCROOT)/canopen/application -I$(SRCROOT)/canopen/module
+CFLAGS += $(DEFINES) -I$(SRCROOT) -I$(SRCROOT)/subsystem -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC) $(LITTLEFSINC)
 
 CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
 	$(CANOPENROOT)/301/CO_NMT_Heartbeat.c \
@@ -47,30 +49,42 @@ CANOPENSRC = $(CANOPENROOT)/301/CO_ODinterface.c \
 	$(CANOPENROOT)/305/CO_LSSslave.c \
 	$(CANOPENROOT)/storage/CO_storage.c \
 	$(CANOPENROOT)/CANopen.c \
-	$(wildcard user/canopen/driver/*.c) \
-	$(wildcard user/canopen/application/*.c) \
-	$(wildcard user/canopen/module/*.c)
+	$(wildcard $(SRCROOT)/canopen/driver/*.c) \
+	$(wildcard $(SRCROOT)/canopen/application/*.c) \
+	$(wildcard $(SRCROOT)/canopen/module/*.c)
 
-SRCS = $(wildcard user/*.c) \
+SRCS = $(call FILTER_OUT,main.c,$(wildcard $(SRCROOT)/*.c)) \
 	$(CANOPENSRC) \
-	$(wildcard user/subsystem/*.c) \
-	$(wildcard user/littlefs/*.c) \
+	$(wildcard $(SRCROOT)/subsystem/*.c) \
+	$(wildcard $(SRCROOT)/littlefs/*.c) \
 	$(wildcard $(DRIVERROOT)/src/*.c) \
 	$(CMSISROOT)/devicesupport/system_at32f403a_407.c \
 	$(CMSISROOT)/devicesupport/gcc/startup_at32f403a_407.s
 
+TEST_OBJS = $(PROJ_NAME).o
+TEST2_OBJS = $(addprefix $(OBJDIR)/,$(TEST_OBJS))
 
 OBJS := $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
-OBJS := $(addprefix $(OBJDIR)/,$(OBJS))
+OBJS := $(addprefix $(OBJDIR)/lib/,$(OBJS))
+OBJS := $(OBJS) $(TEST2_OBJS)
 
+ALLTESTS = $(wildcard *.c)
+ALLTESTS2 = $(ALLTESTS:.c=)
+ALLTESTS3 = $(subst test_,,$(ALLTESTS2))
 
+ifeq ($(test),)
+$(info make test=[$(ALLTESTS3)]!)
+all:
+else
 all: proj
+endif
 
 proj: $(OBJDIR)/$(PROJ_NAME).elf $(OBJDIR)/$(PROJ_NAME).hex $(OBJDIR)/$(PROJ_NAME).bin
 
 $(OBJDIR)/%.elf: $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@echo "[LD] $<"
 
 %.hex: %.elf
 	$(OBJCOPY) -O ihex $^ $@
@@ -78,16 +92,28 @@ $(OBJDIR)/%.elf: $(OBJS)
 %.bin: %.elf
 	$(OBJCOPY) -O binary $^ $@
 
+$(OBJDIR)/lib/%.o: %.c
+	@mkdir -p $(dir $@)
+	@$(CC) -c $(CFLAGS) -o $@ $^
+	@echo "[CC] $<"
+
+$(OBJDIR)/lib/%.o: %.s
+	@mkdir -p $(dir $@)
+	@$(CC) -c $(CFLAGS) -o $@ $^
+	@echo "[AS] $<"
+
 $(OBJDIR)/%.o: %.c
-	mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) -o $@ $^
+	@mkdir -p $(dir $@)
+	@$(CC) -c $(CFLAGS) -o $@ $^
+	@echo "[CC] $<"
 
 $(OBJDIR)/%.o: %.s
-	mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) -o $@ $^
+	@mkdir -p $(dir $@)
+	@$(CC) -c $(CFLAGS) -o $@ $^
+	@echo "[AS] $<"
 
 $(OBJDIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 clean:
 	rm -f $(OBJDIR)/$(PROJ_NAME).elf
@@ -98,10 +124,11 @@ clean:
 
 
 flash: $(OBJDIR)/$(PROJ_NAME).elf
-	$(OPENOCD) -f program.cfg
+	@cp $< build/main.elf
+	$(OPENOCD) -f ../program.cfg
 
 reset: $(OBJDIR)/$(PROJ_NAME).elf
-	$(OPENOCD) -f program_reset.cfg
+	$(OPENOCD) -f ../program_reset.cfg
 
 flash-pyocd: $(OBJDIR)/$(PROJ_NAME).elf
 	pyocd flash -v --config programmer_pyocd/pyocd_at32.yaml -t _at32f403acgu7 $<

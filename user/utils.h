@@ -19,6 +19,7 @@ typedef struct{
 
 
 void tmr_clock_enable(tmr_type *tmr_x);
-
+void init_pwm_output(PWMPort *devport, uint32_t freq, uint16_t duty);
+void init_pwm_input(PWMPort * devport);
 
 #endif

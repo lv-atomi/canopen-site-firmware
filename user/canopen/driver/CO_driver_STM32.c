@@ -87,7 +87,7 @@ Organization
 #define min(a, b) (a) > (b) ? (b) : (a)
 
 extern char debug[];
-extern uint8_t need_reconfigure_can;
+/* extern uint8_t need_reconfigure_can; */
 
 /* Local CAN module object */
 static CO_CANmodule_t* CANModule_local = NULL; /* Local instance of global CAN module */
@@ -956,7 +956,7 @@ void CAN1_SE_IRQHandler(void) {
       user must restart can or send a frame of highest priority message here */
       printf("reconfigure can\n");
       can_reset(CAN1);
-      need_reconfigure_can = 1;
+      /* need_reconfigure_can = 1; */
       /* can_configuration(); */
     }
     err_index=1;

@@ -13,5 +13,7 @@ typedef struct {
   PWMPort pwm_a, pwm_b;
 } MotorBrush;
 
+void init_motor_brush(MotorBrush *mb);
+void init_motor_brushless(MotorBrushless *mbl);
 
 #endif
