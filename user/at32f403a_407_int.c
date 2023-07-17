@@ -122,13 +122,13 @@ void PendSV_Handler(void)
 {
 }
 
+extern void systick_handler(void);
 /**
   * @brief  this function handles systick handler.
   * @param  none
   * @retval none
   */
-void SysTick_Handler(void)
-{
+void SysTick_Handler(void) {
 }
 
 

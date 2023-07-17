@@ -1,7 +1,7 @@
 firmware:  at32
 
 0.[skip] PSU
-1. 限位开关   GPIO Input
+1.[done] 限位开关   GPIO Input
 
 2.[done] 8574        I2C   GPIO
 2.1[done] stm8       address

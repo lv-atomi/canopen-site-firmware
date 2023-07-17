@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "log.h"
 
 void tmr_clock_enable(tmr_type *tmr_x)
 {

@@ -6,15 +6,13 @@
 #include "flash.h"
 #include "key.h"
 #include "oled.h"
-#include "timer1.h"
+#include "timer.h"
 
 #include "CO_app_STM32.h"
 #include <stdint.h>
-//#include <cstdint>
 
 //extern SysParm_TypeDef gSysParm;
 /* extern KeyPressMode keySta; */
-extern char debug[];
 extern unsigned int system_core_clock; /*!< system clock frequency (core clock) */
 __IO uint8_t need_reconfigure_can;    
 
@@ -22,19 +20,21 @@ __IO uint8_t need_reconfigure_can;
 int main(void) {
   system_clock_config(); // 8M HSE
   at32_board_init();
+  Timer_Init();
+
   uart_print_init(115200);	/* init debug uart */
 
-  printf("System clock: %d\n", system_core_clock);
-  printf("AHBDIV: %d apb1div:%d apb2div:%d\n",
-	 CRM->cfg_bit.ahbdiv, CRM->cfg_bit.apb1div, CRM->cfg_bit.apb2div);
+  /* printf("System clock: %d\n", system_core_clock); */
+  /* printf("AHBDIV: %d apb1div:%d apb2div:%d\n", */
+  /* 	 CRM->cfg_bit.ahbdiv, CRM->cfg_bit.apb1div, CRM->cfg_bit.apb2div); */
 
-  can_gpio_config();
-  canopen_init();
+  /* can_gpio_config(); */
+  /* canopen_init(); */
 
-  Timer1_Init();
-  OLED_Init();
-  GPIO_Init();
-  nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
+  /* Timer1_Init(); */
+  /* OLED_Init(); */
+  /* GPIO_Init(); */
+  /* nvic_priority_group_config(NVIC_PRIORITY_GROUP_4); */
 
 
   /* can_gpio_config(); */
@@ -51,19 +51,19 @@ int main(void) {
   /* if ((VolShowTest > 350) || (VolShowTest == 0)) */
   /*   VolShowTest = DEFAULTVOL; */
   
-  debug[15] = 0;
-  debug[0] = 0;
-  snprintf(debug, 16, "start");
-  printf("%s\n", debug);
+  printf("start\n");
   while (1) {
-    if (need_reconfigure_can){
-      printf("reconfigure can\n");
-      can_configuration();
-      need_reconfigure_can = 0;
-    }
+    printf("tick:%ld\n", get_ticks());
+    delay_sec(1);
+    
+    /* if (need_reconfigure_can){ */
+    /*   printf("reconfigure can\n"); */
+    /*   can_configuration(); */
+    /*   need_reconfigure_can = 0; */
+    /* } */
     /* OLED_ShowString(0, 0, debug, 16, 1); */
     /* OLED_Refresh(); */
-    canopen_app_process();
+    /* canopen_app_process(); */
     //DisplayPra(keySta.Dismode); // OLED Display
     /* if (TimerCount_1ms == 1)    // Every 100ms send can frame */
     /* { */
