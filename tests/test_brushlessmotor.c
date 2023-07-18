@@ -26,7 +26,7 @@ int main(void) {
   uart_print_init(115200);	/* init debug uart */
 
   printf("start\n");
-  init_motor_brush(&motor_brush);
+  init_motor_brushless(&motor_burshless);
   
   while (1) {
     printf("tick:%ld\n", get_ticks());

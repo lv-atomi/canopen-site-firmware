@@ -1,5 +1,7 @@
-#include "utils.h"
+#include "pwm.h"
+#include "gpio.h"
 #include "log.h"
+#include <stdint.h>
 
 void tmr_clock_enable(tmr_type *tmr_x)
 {
@@ -39,21 +41,12 @@ void tmr_clock_enable(tmr_type *tmr_x)
 void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   ASSERT(devport);
   
-  gpio_init_type gpio_initstructure;
   tmr_output_config_type tmr_oc_init_structure;
-
-  crm_periph_clock_enable(CRM_GPIOA_PERIPH_CLOCK, TRUE);
-  crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
-
   /* gpio configuration for output pins */
-  gpio_default_para_init(&gpio_initstructure);
-  gpio_initstructure.gpio_out_type = GPIO_OUTPUT_PUSH_PULL;
-  gpio_initstructure.gpio_pull = GPIO_PULL_UP;
-  gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-
-  gpio_initstructure.gpio_mode = GPIO_MODE_MUX;
-  gpio_initstructure.gpio_pins = devport->port.pin;
-  gpio_init(devport->port.port, &gpio_initstructure);
+  init_gpio_output(&devport->port,
+		   GPIO_OUTPUT_PUSH_PULL,
+		   GPIO_MODE_MUX,
+		   GPIO_DRIVE_STRENGTH_STRONGER);
 
   if (devport->complementary &&
       (devport->channel == TMR_SELECT_CHANNEL_1C ||
@@ -66,13 +59,20 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   crm_clocks_freq_get(&crm_clocks_freq_struct);
   /* enable tmr1 clock */
   tmr_clock_enable(devport->tmr);
-  
-  /* compute the prescaler value */
-  uint16_t prescaler_value = 0;
-  prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1;
 
+  /* compute tmr peroid value & tmr div value according to requested frequency  */
+  /* just assume all timers are 16 bits */
+  uint32_t pr = system_core_clock / 100 / freq - 1;
+  uint16_t period = 99;
+  /* compute the prescaler value */
+  /* uint16_t prescaler_value = 0; */
+  /* prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1; */
+  if (pr > 65535){
+    pr = system_core_clock / 10000 / freq -1;
+    period = 9999;
+  }
   /* tmr time base configuration */
-  tmr_base_init(devport->tmr, freq, prescaler_value);
+  tmr_base_init(devport->tmr, period, (uint16_t)pr);
   tmr_cnt_dir_set(devport->tmr, TMR_COUNT_UP);
   tmr_clock_source_div_set(devport->tmr, TMR_CLOCK_DIV1);
 
@@ -88,7 +88,12 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   }
 
   tmr_output_channel_config(devport->tmr, devport->channel, &tmr_oc_init_structure);
-  tmr_channel_value_set(devport->tmr, devport->channel, duty);
+
+  pwm_output_update_duty(devport, duty);
+  /* uint32_t duty_32 = devport->tmr->pr * duty; */
+  /* duty_32 /= 100; */
+  /* tmr_channel_value_set(devport->tmr, devport->channel, */
+  /* 			(uint16_t)duty_32); */
 
   /* tmr enable counter */
   tmr_counter_enable(devport->tmr, TRUE);
@@ -97,19 +102,8 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
 void init_pwm_input(PWMPort * devport){
   ASSERT(devport);
   
-  gpio_init_type gpio_initstructure;
-
-  crm_periph_clock_enable(CRM_GPIOA_PERIPH_CLOCK, TRUE);
-  crm_periph_clock_enable(CRM_GPIOB_PERIPH_CLOCK, TRUE);
-
   /* gpio configuration for output pins */
-  gpio_default_para_init(&gpio_initstructure);
-  gpio_initstructure.gpio_pull = GPIO_PULL_NONE;
-  gpio_initstructure.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-
-  gpio_initstructure.gpio_mode = GPIO_MODE_INPUT;
-  gpio_initstructure.gpio_pins = devport->port.pin;
-  gpio_init(devport->port.port, &gpio_initstructure);
+  init_gpio_input(&devport->port, GPIO_PULL_NONE, GPIO_DRIVE_STRENGTH_STRONGER);
   
   crm_clocks_freq_type crm_clocks_freq_struct = {0};
   crm_clocks_freq_get(&crm_clocks_freq_struct);
@@ -137,4 +131,30 @@ void init_pwm_input(PWMPort * devport){
 
   /* tmr enable counter */
   tmr_counter_enable(devport->tmr, TRUE);
+}
+
+void pwm_output_update_duty(PWMPort * devport, uint8_t duty){
+  ASSERT(devport);
+  uint32_t duty_32 = devport->tmr->pr * duty;
+  duty_32 /= 100;
+  tmr_channel_value_set(devport->tmr, devport->channel,
+			(uint16_t)duty_32);
+}
+
+void pwm_output_update_freq(PWMPort * devport, uint32_t freq){
+  ASSERT(devport);
+
+  uint32_t duty_32 = tmr_channel_value_get(devport->tmr, devport->channel) * 100 / devport->tmr->pr;
+					
+  uint32_t pr = system_core_clock / 100 / freq - 1;
+  uint16_t period = 99;
+  /* compute the prescaler value */
+  /* uint16_t prescaler_value = 0; */
+  /* prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1; */
+  if (pr > 65535){
+    pr = system_core_clock / 10000 / freq -1;
+    period = 9999;
+  }
+  tmr_base_init(devport->tmr, period, (uint16_t)pr);
+  pwm_output_update_duty(devport, (uint8_t)duty_32);
 }

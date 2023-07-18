@@ -74,7 +74,8 @@ ALLTESTS2 = $(ALLTESTS:.c=)
 ALLTESTS3 = $(subst test_,,$(ALLTESTS2))
 
 ifeq ($(test),)
-$(info make test=[$(ALLTESTS3)]!)
+$(info usage: make test=[$(ALLTESTS3)])
+$(info Supply one of the test target in lists.)
 all:
 else
 all: proj
