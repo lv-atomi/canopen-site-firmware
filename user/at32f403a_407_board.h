@@ -58,28 +58,28 @@ extern "C" {
 #endif
 
 /******************** define led ********************/
-typedef enum
-{
-  LED2                                   = 0,
-  LED3                                   = 1,
-  LED4                                   = 2
-} led_type;
+/* typedef enum */
+/* { */
+/*   LED2                                   = 0, */
+/*   LED3                                   = 1, */
+/*   LED4                                   = 2 */
+/* } led_type; */
 
-#define LED_NUM                          3
+/* #define LED_NUM                          3 */
 
-#if defined (AT_START_F403A_V1) || defined (AT_START_F407_V1)
-#define LED2_PIN                         GPIO_PINS_13
-#define LED2_GPIO                        GPIOD
-#define LED2_GPIO_CRM_CLK                CRM_GPIOD_PERIPH_CLOCK
+/* #if defined (AT_START_F403A_V1) || defined (AT_START_F407_V1) */
+/* #define LED2_PIN                         GPIO_PINS_13 */
+/* #define LED2_GPIO                        GPIOD */
+/* #define LED2_GPIO_CRM_CLK                CRM_GPIOD_PERIPH_CLOCK */
 
-#define LED3_PIN                         GPIO_PINS_14
-#define LED3_GPIO                        GPIOD
-#define LED3_GPIO_CRM_CLK                CRM_GPIOD_PERIPH_CLOCK
+/* #define LED3_PIN                         GPIO_PINS_14 */
+/* #define LED3_GPIO                        GPIOD */
+/* #define LED3_GPIO_CRM_CLK                CRM_GPIOD_PERIPH_CLOCK */
 
-#define LED4_PIN                         GPIO_PINS_15
-#define LED4_GPIO                        GPIOD
-#define LED4_GPIO_CRM_CLK                CRM_GPIOD_PERIPH_CLOCK
-#endif
+/* #define LED4_PIN                         GPIO_PINS_15 */
+/* #define LED4_GPIO                        GPIOD */
+/* #define LED4_GPIO_CRM_CLK                CRM_GPIOD_PERIPH_CLOCK */
+/* #endif */
 
 /**************** define print uart ******************/
 #define PRINT_UART                       USART1
@@ -89,15 +89,15 @@ typedef enum
 #define PRINT_UART_TX_GPIO_CRM_CLK       CRM_GPIOA_PERIPH_CLOCK
 
 /******************* define button *******************/
-typedef enum
-{
-  USER_BUTTON                            = 0,
-  NO_BUTTON                              = 1
-} button_type;
+/* typedef enum */
+/* { */
+/*   USER_BUTTON                            = 0, */
+/*   NO_BUTTON                              = 1 */
+/* } button_type; */
 
-#define USER_BUTTON_PIN                  GPIO_PINS_0
-#define USER_BUTTON_PORT                 GPIOA
-#define USER_BUTTON_CRM_CLK              CRM_GPIOA_PERIPH_CLOCK
+/* #define USER_BUTTON_PIN                  GPIO_PINS_0 */
+/* #define USER_BUTTON_PORT                 GPIOA */
+/* #define USER_BUTTON_CRM_CLK              CRM_GPIOA_PERIPH_CLOCK */
 
 /* Private defines -----------------------------------------------------------*/
   /* FIXME: consider remove belows */
@@ -181,15 +181,15 @@ typedef enum
 void at32_board_init(void);
 
 /* led operation function */
-void at32_led_init(led_type led);
-void at32_led_on(led_type led);
-void at32_led_off(led_type led);
-void at32_led_toggle(led_type led);
+/* void at32_led_init(led_type led); */
+/* void at32_led_on(led_type led); */
+/* void at32_led_off(led_type led); */
+/* void at32_led_toggle(led_type led); */
 
 /* button operation function */
-void at32_button_init(void);
-button_type at32_button_press(void);
-uint8_t at32_button_state(void);
+/* void at32_button_init(void); */
+/* button_type at32_button_press(void); */
+/* uint8_t at32_button_state(void); */
 
 /* delay function */
 void delay_init(void);

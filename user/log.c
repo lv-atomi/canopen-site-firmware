@@ -29,3 +29,14 @@ void DumpHex(const void *data, size_t size) {
     }
   }
 }
+
+void DumpBinary(uint8_t * buf, size_t length) {
+  for (uint32_t i = 0; i < length; i++) {
+    uint8_t byte = buf[i];
+    for (int j = 7; j >= 0; j--) {
+      printf("%d", (byte >> j) & 0x1);
+    }
+    printf(" ");
+  }
+  printf("\n");
+}

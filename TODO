@@ -2,14 +2,24 @@ firmware:  at32
 
 0.[skip] PSU
 1.[done] 限位开关   GPIO Input
+1.1 GPIO output test
+1.2 GPIO input test
 
 2.[done] 8574        I2C   GPIO
 2.1[done] stm8       address
 2.2[done] slave board sequence discovery
-2.2[done] board rework
+2.3[done] board rework
+2.4 GPIO input test
+2.5 GPIO output test
+2.6 brushless motor driven
+2.7 brush motor driven
+
 
 3. PWM input duty cycle    FAN
 3.1[done] PWM output             FAN
+3.2 24v PWM FAN driven
+3.3 brushless motor driven
+3.4 brush motor driven
 
 4.[done] DS18B20    1wire procotol   thermal     must add external 4.7k pull-up resistor
 

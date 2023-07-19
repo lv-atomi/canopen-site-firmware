@@ -14,6 +14,6 @@ void tmr_clock_enable(tmr_type *tmr_x);
 void init_pwm_output(PWMPort *devport, uint32_t freq, uint16_t duty);
 void init_pwm_input(PWMPort * devport);
 void pwm_output_update_duty(PWMPort * devport, uint8_t duty);
-void pwm_output_update_freq(PWMPort * devport, uint32_t freq);
-
+void pwm_output_update_freq(PWMPort *devport, uint32_t freq);
+void pwm_input_freq_duty_sense(PWMPort * devport, uint32_t * freq, uint8_t * duty);
 #endif
