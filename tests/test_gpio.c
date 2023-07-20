@@ -21,8 +21,8 @@ IOPort ports[] = {
   {GPIOB, GPIO_PINS_11},	/* PB11 */
   {GPIOB, GPIO_PINS_12},	/* PB12 */
   {GPIOB, GPIO_PINS_13},	/* PB13 */
-  {GPIOB, GPIO_PINS_7},	/* PB7 */
-  {GPIOB, GPIO_PINS_8},	/* PB8 */
+  {GPIOB, GPIO_PINS_15},	/* PB15 */
+  {GPIOB, GPIO_PINS_14},	/* PB14 */
   {GPIOA, GPIO_PINS_8},	/* PA8 */
   /* {GPIOA, GPIO_PINS_9},	/\* PA9 *\/ */
   {GPIOA, GPIO_PINS_10},	/* PA10 */
