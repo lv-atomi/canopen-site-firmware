@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(CLK) && defined(__STM8S_CLK_H)
+#if defined(CLK) && defined(__STM8S_CLK_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_clk.h"
 

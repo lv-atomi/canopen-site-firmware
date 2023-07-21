@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(I2C) && defined(__STM8S_I2C_H)
+#if defined(I2C) && defined(__STM8S_I2C_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_i2c.h"
 

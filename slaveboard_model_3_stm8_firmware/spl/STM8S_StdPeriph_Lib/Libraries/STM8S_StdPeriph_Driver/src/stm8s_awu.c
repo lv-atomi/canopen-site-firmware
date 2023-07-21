@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(AWU) && defined(__STM8S_AWU_H)
+#if defined(AWU) && defined(__STM8S_AWU_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_awu.h"
 

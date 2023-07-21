@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(WWDG) && defined(__STM8S_WWDG_H)
+#if defined(WWDG) && defined(__STM8S_WWDG_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_wwdg.h"
 

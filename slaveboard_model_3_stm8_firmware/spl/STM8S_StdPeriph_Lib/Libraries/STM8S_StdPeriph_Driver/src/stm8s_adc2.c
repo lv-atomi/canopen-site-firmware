@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(ADC2) && defined(__STM8_ADC2_H)
+#if defined(ADC2) && defined(__STM8_ADC2_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_adc2.h"
 /** @addtogroup STM8S_StdPeriph_Driver

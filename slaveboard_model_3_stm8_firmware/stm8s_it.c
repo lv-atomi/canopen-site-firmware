@@ -28,6 +28,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_it.h"
 
+extern void on_i2c_irq(void);
+
 /** @addtogroup UART1_Printf
   * @{
   */
@@ -387,6 +389,7 @@ INTERRUPT_HANDLER(I2C_IRQHandler, 19)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  on_i2c_irq();
 }
 
 #if defined(STM8S105) || defined(STM8S005) ||  defined (STM8AF626x)

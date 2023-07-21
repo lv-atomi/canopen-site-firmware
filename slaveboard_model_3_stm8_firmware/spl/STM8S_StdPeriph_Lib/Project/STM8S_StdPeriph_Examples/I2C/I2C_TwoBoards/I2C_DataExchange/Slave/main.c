@@ -59,7 +59,7 @@ void main(void)
   
   /* Initialize LEDs mounted on STM8/128-EVAL board */
   STM_EVAL_LEDInit(LED2);
-		STM_EVAL_LEDOff(LED2);
+  STM_EVAL_LEDOff(LED2);
 	
   I2C_DeInit();
   /* Initialize I2C peripheral */

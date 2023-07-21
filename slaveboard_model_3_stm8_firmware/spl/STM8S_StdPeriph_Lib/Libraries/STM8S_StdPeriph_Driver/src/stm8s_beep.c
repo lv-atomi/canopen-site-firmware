@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(BEEP) && defined(__STM8S_BEEP_H)
+#if defined(BEEP) && defined(__STM8S_BEEP_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_beep.h"
 

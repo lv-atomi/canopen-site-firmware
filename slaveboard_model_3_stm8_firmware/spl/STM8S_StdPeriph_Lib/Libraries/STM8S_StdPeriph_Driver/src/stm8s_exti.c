@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(EXTI) && defined(__STM8S_EXTI_H)
+#if defined(EXTI) && defined(__STM8S_EXTI_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_exti.h"
 

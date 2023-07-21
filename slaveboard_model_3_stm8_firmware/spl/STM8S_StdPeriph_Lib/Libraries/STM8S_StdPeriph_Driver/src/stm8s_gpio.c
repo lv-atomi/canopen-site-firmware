@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(GPIOA) && defined(__STM8S_GPIO_H)
+#if defined(GPIOA) && defined(__STM8S_GPIO_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_gpio.h"
 

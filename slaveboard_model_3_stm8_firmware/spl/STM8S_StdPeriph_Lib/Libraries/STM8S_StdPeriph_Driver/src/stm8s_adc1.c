@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(ADC1) && defined(__STM8_ADC1_H)
+#if defined(ADC1) && defined(__STM8S_ADC1_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_adc1.h"
 

@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(ITC) && defined(__STM8S_ITC_H)
+#if defined(ITC) && defined(__STM8S_ITC_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_itc.h"
 

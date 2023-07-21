@@ -12,11 +12,11 @@ SOURCES=$(wildcard *.c $(LIBRARY)/src/*.c)
 OBJECTS=$(SOURCES:.c=.rel)
 HEADERS=$(wildcard *.h $(LIBRARY)/inc/*.h)
 
-CC = sdcc
+CC = sdcc --opt-code-size
 PROGRAMMER = stlinkv2
 
 
-DEFINES=
+DEFINES= -DNO_STDPERIPH_DRIVER
 ## Set MCU-type DEFINE
 ifeq ($(DEVICE),stm8s003f3)
     DEFINES += -DSTM8S003
@@ -26,7 +26,7 @@ ifeq ($(DEVICE),stm8s103f3)
 endif
 
 CPPFLAGS = -I. -I$(LIBRARY)/inc
-CFLAGS = --Werror --disable-warning 190 --std-sdcc99 -mstm8 $(DEFINES)
+CFLAGS = --Werror --disable-warning 190 --disable-warning 85 --std-sdcc99 -mstm8 $(DEFINES)
 LDFLAGS = -lstm8 -mstm8 --out-fmt-ihx
 
 .PHONY: all clean flash

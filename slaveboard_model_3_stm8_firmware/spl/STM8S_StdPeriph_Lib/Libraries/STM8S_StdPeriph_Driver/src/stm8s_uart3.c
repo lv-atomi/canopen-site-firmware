@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(UART3) && defined(__STM8S_UART3_H)
+#if defined(UART3) && defined(__STM8S_UART3_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_uart3.h"
 

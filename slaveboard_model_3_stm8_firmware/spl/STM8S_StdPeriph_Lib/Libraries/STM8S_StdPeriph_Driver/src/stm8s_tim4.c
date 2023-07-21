@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(TIM4) && defined(__STM8S_TIM4_H)
+#if defined(TIM4) && defined(__STM8S_TIM4_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_tim4.h"
 

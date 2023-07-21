@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s_conf.h"
-#if defined(SPI) && defined(__STM8S_SPI_H)
+#if defined(SPI) && defined(__STM8S_SPI_H) && !defined(NO_STDPERIPH_DRIVER)
 
 #include "stm8s_spi.h"
 
