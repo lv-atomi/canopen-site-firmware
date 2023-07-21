@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(GPIOA) && defined(__STM8S_GPIO_H)
+
 #include "stm8s_gpio.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -245,5 +248,5 @@ void GPIO_ExternalPullUpConfig(GPIO_TypeDef* GPIOx, GPIO_Pin_TypeDef GPIO_Pin, F
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

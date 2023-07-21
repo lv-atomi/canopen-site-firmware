@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(UART3) && defined(__STM8S_UART3_H)
+
 #include "stm8s_uart3.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -733,5 +736,5 @@ void UART3_ClearITPendingBit(UART3_IT_TypeDef UART3_IT)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

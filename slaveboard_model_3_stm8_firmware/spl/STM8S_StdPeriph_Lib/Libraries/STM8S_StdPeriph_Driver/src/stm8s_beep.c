@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(BEEP) && defined(__STM8S_BEEP_H)
+
 #include "stm8s_beep.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -149,5 +152,5 @@ void BEEP_LSICalibrationConfig(uint32_t LSIFreqHz)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

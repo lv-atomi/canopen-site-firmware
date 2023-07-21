@@ -26,8 +26,10 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm8s_adc2.h"
+#include "stm8s_conf.h"
+#if defined(ADC2) && defined(__STM8_ADC2_H)
 
+#include "stm8s_adc2.h"
 /** @addtogroup STM8S_StdPeriph_Driver
   * @{
   */
@@ -393,6 +395,10 @@ void ADC2_ClearITPendingBit(void)
 /**
   * @}
   */
-  
+#else
+#if defined(_SDCC_)
+#pragma disable_warning 190
+#endif
+#endif /* (STM8S208) || (STM8S207) || defined(STM8S007) || (STM8AF62Ax) || (STM8AF52Ax) */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

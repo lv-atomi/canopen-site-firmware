@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(TIM3) && defined(__STM8S_TIM3_H)
+
 #include "stm8s_tim3.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -1039,6 +1042,7 @@ static void TI2_Config(uint8_t TIM3_ICPolarity,
   /**
   * @}
   */
-  
+
+#endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

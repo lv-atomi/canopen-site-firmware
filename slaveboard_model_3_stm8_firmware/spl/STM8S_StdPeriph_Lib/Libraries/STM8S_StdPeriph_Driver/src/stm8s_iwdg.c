@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(IWDG) && defined(__STM8S_IWDG_H)
+
 #include "stm8s_iwdg.h"
 
 /* Private define ------------------------------------------------------------*/
@@ -102,7 +105,8 @@ void IWDG_Enable(void)
 }
 
 /**
-  * @}
-  */
+ * @}
+ */
 
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

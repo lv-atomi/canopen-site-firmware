@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(SPI) && defined(__STM8S_SPI_H)
+
 #include "stm8s_spi.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -431,5 +434,5 @@ void SPI_ClearITPendingBit(SPI_IT_TypeDef SPI_IT)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

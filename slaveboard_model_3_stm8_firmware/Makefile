@@ -3,14 +3,14 @@ DEVICE=stm8s003f3
 #DEVICE=stm8s103f3
 
 ## A directory for common include files
-COMMONDIR = .
+LIBRARY=spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver
 
 ## Get program name from enclosing directory name
 PROGRAM = $(lastword $(subst /, ,$(CURDIR)))
 
-SOURCES=$(wildcard *.c $(COMMONDIR)/*.c)
+SOURCES=$(wildcard *.c $(LIBRARY)/src/*.c)
 OBJECTS=$(SOURCES:.c=.rel)
-HEADERS=$(wildcard *.h $(COMMONDIR)/*.h)
+HEADERS=$(wildcard *.h $(LIBRARY)/inc/*.h)
 
 CC = sdcc
 PROGRAMMER = stlinkv2
@@ -25,8 +25,8 @@ ifeq ($(DEVICE),stm8s103f3)
     DEFINES += -DSTM8S103
 endif
 
-CPPFLAGS = -I$(COMMONDIR)
-CFLAGS = --Werror --std-sdcc99 -mstm8 $(DEFINES)
+CPPFLAGS = -I. -I$(LIBRARY)/inc
+CFLAGS = --Werror --disable-warning 190 --std-sdcc99 -mstm8 $(DEFINES)
 LDFLAGS = -lstm8 -mstm8 --out-fmt-ihx
 
 .PHONY: all clean flash

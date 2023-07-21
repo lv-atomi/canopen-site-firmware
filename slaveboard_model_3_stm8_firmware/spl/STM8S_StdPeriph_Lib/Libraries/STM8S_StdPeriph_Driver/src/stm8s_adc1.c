@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(ADC1) && defined(__STM8_ADC1_H)
+
 #include "stm8s_adc1.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -692,6 +695,5 @@ void ADC1_ClearITPendingBit(ADC1_IT_TypeDef ITPendingBit)
 /**
   * @}
   */
-  
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(ITC) && defined(__STM8S_ITC_H)
+
 #include "stm8s_itc.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -43,10 +46,14 @@
   */
 
 /**
-  * @brief  Utility function used to read CC register.
-  * @param  None
-  * @retval CPU CC register value
-  */
+ * @brief  Utility function used to read CC register.
+ * @param  None
+ * @retval CPU CC register value
+ */
+#if defined(_SDCC_)
+#pragma save
+#pragma disable_warning 59
+#endif
 uint8_t ITC_GetCPUCC(void)
 {
 #ifdef _COSMIC_
@@ -63,7 +70,9 @@ uint8_t ITC_GetCPUCC(void)
   asm("pop a"); /* Ignore compiler warning, the returned value is in A register */
 #endif /* _COSMIC_*/
 }
-
+#if defined(_SDCC_)
+#pragma restore
+#endif
 
 /**
   * @}
@@ -342,5 +351,5 @@ void ITC_SetSoftwarePriority(ITC_Irq_TypeDef IrqNum, ITC_PriorityLevel_TypeDef P
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

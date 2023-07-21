@@ -26,7 +26,11 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(I2C) && defined(__STM8S_I2C_H)
+
 #include "stm8s_i2c.h"
+
 
 /** @addtogroup STM8S_StdPeriph_Driver
   * @{
@@ -890,4 +894,5 @@ void I2C_ClearITPendingBit(I2C_ITPendingBit_TypeDef I2C_ITPendingBit)
   * @}
   */
 
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

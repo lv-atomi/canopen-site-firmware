@@ -26,6 +26,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(CLK) && defined(__STM8S_CLK_H)
 
 #include "stm8s_clk.h"
 
@@ -752,5 +754,5 @@ void CLK_ClearITPendingBit(CLK_IT_TypeDef CLK_IT)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

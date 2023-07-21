@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(TIM5) && defined(__STM8S_TIM5_H)
+
 #include "stm8s_tim5.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -1413,5 +1416,5 @@ void TIM5_EncoderInterfaceConfig(TIM5_EncoderMode_TypeDef TIM5_EncoderMode,
   * @}
   */
 
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

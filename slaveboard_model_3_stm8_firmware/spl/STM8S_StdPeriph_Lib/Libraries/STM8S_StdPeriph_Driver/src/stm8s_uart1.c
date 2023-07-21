@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(UART1) && defined(__STM8S_UART1_H)
+
 #include "stm8s_uart1.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -796,5 +799,5 @@ void UART1_ClearITPendingBit(UART1_IT_TypeDef UART1_IT)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

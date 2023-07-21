@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(EXTI) && defined(__STM8S_EXTI_H)
+
 #include "stm8s_exti.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -177,5 +180,5 @@ EXTI_TLISensitivity_TypeDef EXTI_GetTLISensitivity(void)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

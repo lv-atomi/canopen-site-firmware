@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(AWU) && defined(__STM8S_AWU_H)
+
 #include "stm8s_awu.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -194,5 +197,5 @@ FlagStatus AWU_GetFlagStatus(void)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -333,5 +333,4 @@ void TIM2_ClearITPendingBit(TIM2_IT_TypeDef TIM2_IT);
   */
 
 #endif /* __STM8S_TIM2_H */
-
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

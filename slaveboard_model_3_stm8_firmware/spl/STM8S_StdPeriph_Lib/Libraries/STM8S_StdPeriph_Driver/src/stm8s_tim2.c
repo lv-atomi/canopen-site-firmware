@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(TIM2)  && defined(__STM8S_TIM2_H)
+
 #include "stm8s_tim2.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -1107,7 +1110,17 @@ void TIM2_ClearFlag(TIM2_FLAG_TypeDef TIM2_FLAG)
   
   /* Clear the flags (rc_w0) clear this bit by writing 0. Writing ‘1’ has no effect*/
   TIM2->SR1 = (uint8_t)(~((uint8_t)(TIM2_FLAG)));
+#if defined(_SDCC_)  
+#pragma save
+#pragma disable_warning 116
+#endif
+  
   TIM2->SR2 = (uint8_t)(~((uint8_t)((uint8_t)TIM2_FLAG >> 8)));
+
+#if defined(_SDCC_)  
+#pragma restore
+#endif
+  
 }
 
 /**
@@ -1290,5 +1303,5 @@ static void TI3_Config(uint8_t TIM2_ICPolarity, uint8_t TIM2_ICSelection,
   * @}
   */
 
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(CAN) && defined(__STM8S_CAN_H)
+
 #include "stm8s_can.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -1444,9 +1447,10 @@ static ITStatus CheckITStatus(uint8_t CAN_Reg, uint8_t It_Bit)
 /**
   * @}
   */
-  
-/**
-  * @}
-  */
 
+/**
+ * @}
+ */
+
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

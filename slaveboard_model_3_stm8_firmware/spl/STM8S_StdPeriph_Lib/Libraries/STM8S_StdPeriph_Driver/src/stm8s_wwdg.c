@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(WWDG) && defined(__STM8S_WWDG_H)
+
 #include "stm8s_wwdg.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -121,5 +124,5 @@ void WWDG_SetWindowValue(uint8_t WindowValue)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

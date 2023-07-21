@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(TIM4) && defined(__STM8S_TIM4_H)
+
 #include "stm8s_tim4.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -405,5 +408,5 @@ void TIM4_ClearITPendingBit(TIM4_IT_TypeDef TIM4_IT)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

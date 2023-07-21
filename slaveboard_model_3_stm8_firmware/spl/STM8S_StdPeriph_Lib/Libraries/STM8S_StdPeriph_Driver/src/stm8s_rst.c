@@ -26,6 +26,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(RST) && defined(__STM8S_RST_H)
 
 #include "stm8s_rst.h"
 
@@ -82,5 +84,5 @@ void RST_ClearFlag(RST_Flag_TypeDef RST_Flag)
   * @}
   */
   
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
