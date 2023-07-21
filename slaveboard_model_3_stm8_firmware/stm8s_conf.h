@@ -32,7 +32,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 
-#include "stm8s_adc1.h" 
+/* #include "stm8s_adc1.h"  */
 /* #include "stm8s_adc2.h" */
 /* #include "stm8s_awu.h" */
 /* #include "stm8s_beep.h" */
