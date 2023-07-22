@@ -29,9 +29,19 @@ void board_init();
 uint16_t ADC_readonce(ADCPort *devport);
 void adc_config(ADCPort *devport);
 void gpoutput_config(IOPort *devport, uint8_t default_status);
-void gpinput_config(IOPort *devport);
-void pwm_output_config(IOPort *devport, uint32_t freq, uint8_t duty);
-void pwm_input_config(IOPort *devport);
+void gpinput_config(IOPort *devport, GPIO_Mode_TypeDef mode);
+void gpio_set(IOPort *devport, uint8_t bit);
+uint8_t gpio_read(IOPort *devport);
+
+void tmr2_ch1_output(uint32_t freq, uint8_t duty);
+void tmr1_ch1_sense();
+void tmr1_ch1_ch1n_output(uint32_t freq, uint8_t duty);
+
+void tmr1_duty_update(uint8_t duty);
+void tmr2_duty_update(uint8_t duty);
+
+/* void pwm_output_config(IOPort *devport, uint32_t freq, uint8_t duty); */
+/* void pwm_input_config(IOPort *devport); */
 
 void delay_ms(uint16_t count);
 uint32_t my_round(uint32_t val);

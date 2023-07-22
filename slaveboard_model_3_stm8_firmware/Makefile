@@ -12,10 +12,11 @@ SOURCES=$(wildcard *.c $(LIBRARY)/src/*.c)
 OBJECTS=$(SOURCES:.c=.rel)
 HEADERS=$(wildcard *.h $(LIBRARY)/inc/*.h)
 
-CC = sdcc --opt-code-size
+CC = sdcc
 PROGRAMMER = stlinkv2
 
 
+# DEFINES=
 DEFINES= -DNO_STDPERIPH_DRIVER
 ## Set MCU-type DEFINE
 ifeq ($(DEVICE),stm8s003f3)

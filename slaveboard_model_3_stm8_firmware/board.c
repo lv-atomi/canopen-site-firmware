@@ -1,8 +1,12 @@
 #include "board.h"
+/* #include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s.h" */
+/* #include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_gpio.h" */
 #include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_gpio.h"
+#include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_tim1.h"
 #include "stm8s_conf.h"
 #include "stdio.h"
 #include <stdint.h>
+#include "tiny_periph.h"
 
 /*
  Sense:
@@ -18,18 +22,37 @@
 
  Motor:
  PA2: DIR
- PC6: PhaseA/Speed Sense     TIM1_ CH1
- PC3: [PhaseB]/Speed Control   TIM1_CH3/TIM1_CH1N
- PD4: PhaseB/[Speed Control]   TIM2_CH1
+ PC6: PhaseA/Speed Sense     TIM1_CH1(AF)
+ PC3: [PhaseB]/Speed Control   TIM1_CH3 / TIM1_CH1N(AF)
+ PC5: PhaseB/[Speed Control]   TIM2_CH1
  PD6: Disable HBridge driver
 
  GPInput:
- PC5: In0
+ PD4: In0
  PC7: In1
 
  GPOutput:
  PA3: Out0
  PC4: Out1
+*/
+
+/*
+  motor brushless mode:
+  PC6:TIM1_CH1(AF)       OPT2.AFR0 = 1
+  PC5:TIM2_CH1(AF)       OPT2.AFR0 = 1
+
+  motor brush mode:
+  PC6: TIM1_CH1(AF)      OPT2.AFR0 = 1
+  PC3: TIM1_CH1N(AF)     OPT2.AFR7 = 1
+
+  OPT2.AFR0 = 1:
+  PC5->TIM2_CH1
+  PC6->TIM1_CH1
+  PC7->TIM1_CH2
+
+  OPT2.AFR7 = 1:
+  PC3->TIM1_CH1N
+  PC4->TIM1_CH2N
 */
 
 /**
@@ -150,7 +173,7 @@ uint16_t ADC_readonce(ADCPort * port) {
 
 void adc_config(ADCPort * port){
   /*  Init GPIO for ADC1 */
-  gpinput_config(&port->port);
+  gpinput_config(&port->port, GPIO_MODE_IN_FL_NO_IT);
   
   /* De-Init ADC peripheral*/
   ADC1_DeInit();
@@ -161,7 +184,7 @@ void adc_config(ADCPort * port){
 void board_init(){
   /*High speed internal clock prescaler: 1*/
   CLK_HSIPrescalerConfig(CLK_PRESCALER_HSIDIV1);
-
+  
   UART1_DeInit();
   /* UART1 configuration ------------------------------------------------------*/
   /* UART1 configured as follow:
@@ -177,6 +200,12 @@ void board_init(){
 
   /* Output a message on Hyperterminal using printf function */
   printf("\nUART1 inited.\n");
+
+  uint8_t opt2 = OPT->OPT2;
+  uint8_t *opt2_ptr = &OPT->OPT2;
+  opt2 |= 0b10000001;		/* set afr0 & afr7 to 1 */
+  if(opt2 != *opt2_ptr)
+    FLASH_ProgramOptionByte((uint16_t)opt2_ptr, opt2);
 }
 
 uint32_t my_round(uint32_t val){
@@ -209,8 +238,8 @@ uint16_t sense_position(ADCPort * sense0, ADCPort * sense1){
   return curr_board_num;
 }
 
-void gpinput_config(IOPort *devport){
-  GPIO_Init(GPIOD, GPIO_PIN_6, GPIO_MODE_IN_FL_NO_IT);
+void gpinput_config(IOPort *devport, GPIO_Mode_TypeDef mode){
+  GPIO_Init(devport->port, devport->pins, mode);
 }
 
 void gpoutput_config(IOPort *devport, uint8_t default_status){
@@ -222,12 +251,37 @@ void gpoutput_config(IOPort *devport, uint8_t default_status){
     GPIO_WriteLow(devport->port, devport->pins);
 }
 
+void gpio_set(IOPort * devport, uint8_t bit) {
+  /* ASSERT(devport); */
+  if (bit)
+    GPIO_WriteHigh(devport->port, devport->pins);
+  else
+    GPIO_WriteLow(devport->port, devport->pins);
+}
 
-void pwm_output_config(IOPort *devport, uint32_t freq, uint8_t duty) {
+uint8_t gpio_read(IOPort *devport) {
+  return GPIO_ReadInputPin(devport->port, devport->pins);
+}
+
+void calc_period(uint32_t freq, uint16_t * period, uint16_t * cycle){
+  uint32_t clock = CLK_GetClockFreq();
+  uint32_t _period = clock / 100 / freq - 1;
+  printf("clock:%ld freq:%ld period:%d\n", clock, freq, period);
+  if(_period > 65535){
+    *period = clock / 1000 / freq - 1;
+    *cycle = 999;
+  } else {
+    *period = _period;
+    *cycle = 99;
+  }
+}
+void tmr1_ch1_ch1n_output(uint32_t freq, uint8_t duty) {
+  uint16_t period = 0, cycle=0;
+  calc_period(freq, &period, &cycle);
   TIM1_DeInit();
-  TIM1_TimeBaseInit(0, TIM1_COUNTERMODE_UP, 4095, 0);
+  TIM1_TimeBaseInit(period, TIM1_COUNTERMODE_UP, cycle, 0);
   TIM1_OC1Init(TIM1_OCMODE_PWM2, TIM1_OUTPUTSTATE_ENABLE, TIM1_OUTPUTNSTATE_ENABLE,
-               2048, TIM1_OCPOLARITY_LOW, TIM1_OCNPOLARITY_HIGH, TIM1_OCIDLESTATE_SET,
+               cycle / 2, TIM1_OCPOLARITY_LOW, TIM1_OCNPOLARITY_LOW, TIM1_OCIDLESTATE_SET,
                TIM1_OCNIDLESTATE_RESET);
   /* TIM1 counter enable */
   TIM1_Cmd(ENABLE);
@@ -236,6 +290,101 @@ void pwm_output_config(IOPort *devport, uint32_t freq, uint8_t duty) {
   TIM1_CtrlPWMOutputs(ENABLE);
 }
 
-void pwm_input_config(IOPort *devport){
+void tmr2_ch1_output(uint32_t freq, uint8_t duty) {
+  uint16_t period = 0, cycle=0;
+  calc_period(freq, &period, &cycle);
+  uint32_t v = 2, clock = CLK_GetClockFreq();
   
+  TIM2_DeInit();
+  
+  for (uint8_t i=0; i<=TIM2_PRESCALER_32768; i++){
+    printf("i:%u v:%ld period:%d\n", i, v, period);
+    if (period < v) {
+      period = i;
+      cycle = clock / (v/2) / freq;
+      break;
+    }
+    v*=2;
+  }
+  printf("v:%ld cycle:%d period:%d\n", v, cycle, period);
+  TIM2_TimeBaseInit(period, cycle);
+  /* TIM2_TimeBaseInit(TIM2_PRESCALER_1, 999); */
+  
+  TIM2_OC1Init(TIM2_OCMODE_PWM1, TIM2_OUTPUTSTATE_ENABLE, 
+               cycle / 2, TIM2_OCPOLARITY_LOW);
+  TIM2_OC1PreloadConfig(ENABLE);
+  TIM2_ARRPreloadConfig(ENABLE);
+  /* TIM2 enable counter */
+  TIM2_Cmd(ENABLE);
+}
+
+void tmr1_duty_update(uint8_t duty) {
+  uint32_t period = TIM1->ARRH;
+  period = period << 8;
+  period |= TIM1->ARRL;
+
+  period = period * duty / 100;
+  
+  TIM1->CCR1H = (uint8_t)(period >> 8);
+  TIM1->CCR1L = (uint8_t)(period);
+}
+
+void tmr2_duty_update(uint8_t duty) {
+  uint32_t period = TIM2->ARRH;
+  period = period << 8;
+  period |= TIM2->ARRL;
+
+  period = period * duty / 100;
+  
+  TIM2->CCR1H = (uint8_t)(period >> 8);
+  TIM2->CCR1L = (uint8_t)(period);
+}
+
+void tmr1_ch1_sense(){
+  uint32_t TIM1ClockFreq = 2000000;
+  __IO uint32_t LSIClockFreq = 0;
+  uint16_t ICValue1 =0, ICValue2 =0, ICValue3=0;
+  uint16_t counter = 0;
+
+  TIM1_DeInit();
+  TIM1_TimeBaseInit(0, TIM1_COUNTERMODE_UP, 65000, 0);
+  TIM1_ICInit( TIM1_CHANNEL_1, TIM1_ICPOLARITY_RISING, TIM1_ICSELECTION_DIRECTTI,
+               TIM1_ICPSC_DIV1, 0x0);
+  TIM1_ICInit( TIM1_CHANNEL_2, TIM1_ICPOLARITY_FALLING, TIM1_ICSELECTION_INDIRECTTI,
+               TIM1_ICPSC_DIV1, 0x0);
+
+  /* Clear CC1 Flag*/
+  TIM1_ClearFlag(TIM1_FLAG_CC1);
+  TIM1_ClearFlag(TIM1_FLAG_CC2);
+
+  /* Enable TIM1 */
+  TIM1_Cmd(ENABLE);
+  
+  /* /\* wait a capture on CC1 *\/ */
+  /* while((TIM1->SR1 & TIM1_FLAG_CC1) != TIM1_FLAG_CC1); */
+  /* /\* Get CCR1 value*\/ */
+  /* ICValue1 = TIM1_GetCapture1(); */
+  /* /\* TIM1_ClearFlag(TIM1_FLAG_CC1); *\/ */
+
+  /* wait a capture on cc2 */
+  counter = 0;
+  while (((TIM1->SR1 & TIM1_FLAG_CC2) != TIM1_FLAG_CC2)&&(counter > 65000)) counter++;
+  /* Get CCR2 value*/
+  ICValue1 = TIM1_GetCapture1();
+  ICValue2 = TIM1_GetCapture2();
+  TIM1_ClearFlag(TIM1_FLAG_CC1);
+  /* TIM1_ClearFlag(TIM1_FLAG_CC2); */
+
+  /* wait a capture on CC1 */
+  counter = 0;
+  while (((TIM1->SR1 & TIM1_FLAG_CC1) != TIM1_FLAG_CC1)&&(counter < 65000)) counter++;
+  /* Get CCR1 value*/
+  ICValue3 = TIM1_GetCapture1();
+  TIM1_ClearFlag(TIM1_FLAG_CC1);
+
+  /* Compute LSI clock frequency */
+  LSIClockFreq = CLK_GetClockFreq() / (ICValue3 - ICValue1);
+  uint32_t duty = (ICValue2-ICValue1);
+  duty = duty * 100 / (ICValue3 - ICValue1);
+  printf("freq:%ld duty:%ld %u %u %u\n", LSIClockFreq, duty, ICValue1, ICValue2, ICValue3);
 }

@@ -1,3 +1,4 @@
+#include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_gpio.h"
 #include "stm8s_conf.h"
 #include "stdio.h"
 #include "board.h"
@@ -7,7 +8,7 @@ MotorPort motor = {
     .disable_driver = {GPIOD, GPIO_PIN_6},
     .phase_a_speedsense = {GPIOC, GPIO_PIN_6},
     .phase_b = {GPIOC, GPIO_PIN_3},
-    .speed_control = {GPIOD, GPIO_PIN_4},
+    .speed_control = {GPIOC, GPIO_PIN_5},
 };
 
 I2CPort i2c = {
@@ -26,13 +27,13 @@ ADCPort sense1 = {
 };
 
 IOPort led = {GPIOA, GPIO_PIN_1};
-IOPort gpin[2] = {{GPIOC, GPIO_PIN_5}, {GPIOC, GPIO_PIN_7}};
+IOPort gpin[2] = {{GPIOD, GPIO_PIN_4}, {GPIOC, GPIO_PIN_7}};
 IOPort gpout[2] = {{GPIOA, GPIO_PIN_3}, {GPIOC, GPIO_PIN_4}};
 
 /* i2c declaration */
 #define I2C_ADDR_BASE 0x20
 uint8_t i2c_addr = 0; /* slave addr */
-__IO uint8_t Slave_Buffer_Rx[255];
+__IO uint8_t Slave_Buffer_Rx[2];
 __IO uint8_t Tx_Idx = 0, Rx_Idx = 0;
 __IO uint16_t Event = 0x00;
 
@@ -83,18 +84,20 @@ void on_i2c_irq(void){
 }
   
 void motor_config(uint8_t is_brushless, MotorPort * devport){
+  uint8_t *opt2_ptr = &OPT->OPT2;
   if (is_brushless){
+    //FLASH_ProgramOptionByte((uint16_t)opt2_ptr, 0b10000001);
     gpoutput_config(&devport->dir, 0);
     gpoutput_config(&devport->disable_driver, 1);
-    pwm_output_config(&devport->speed_control, 25000, 0);
-    gpinput_config(&devport->phase_b);
-    pwm_input_config(&devport->phase_a_speedsense);
+    gpinput_config(&devport->phase_b, GPIO_MODE_IN_FL_NO_IT); /* disable pc3 */
+    tmr1_ch1_sense();		/* pc6 as pwm in */
+    tmr2_ch1_output(25000, 50);	/* pd4 as pwm out */
   } else {
+    //    FLASH_ProgramOptionByte((uint16_t)opt2_ptr, 0b10000001);
     gpoutput_config(&devport->dir, 0);
     gpoutput_config(&devport->disable_driver, 0);
-    pwm_output_config(&devport->speed_control, 0, 25000);
-    gpinput_config(&devport->phase_b);
-    pwm_output_config(&devport->phase_a_speedsense, 0, 25000);
+    gpinput_config(&devport->speed_control, GPIO_MODE_IN_FL_NO_IT); /* disable pd4 */
+    tmr1_ch1_ch1n_output(25000, 50); /* pc6 & pc3 as pwm out */
   }
 }
 
@@ -103,7 +106,7 @@ int main(void) {
   board_init();
   gpoutput_config(&led, 0);
   for (i=0; i<2; i++){
-    gpinput_config(&gpin[i]);
+    gpinput_config(&gpin[i], GPIO_MODE_IN_PU_NO_IT);
     gpoutput_config(&gpout[i], 1);
   }
   adc_config(&sense0);
@@ -116,6 +119,17 @@ int main(void) {
   i2c_config(i2c_addr, &i2c);
 
   motor_config(1, &motor);
-  
-  while (1);
+
+  uint8_t tag = 0;
+  while (1){
+    //tmr1_ch1_sense();
+    gpio_set(&gpout[0], tag);
+    gpio_set(&gpout[1], !tag);
+    printf("tag:%u in0:%u in1:%u\n",
+	   tag,
+	   gpio_read(&gpin[0]),
+	   gpio_read(&gpin[1]));
+    delay_ms(1000);
+    tag = !tag;
+  }
 }

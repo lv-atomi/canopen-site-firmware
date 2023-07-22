@@ -26,6 +26,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm8s_conf.h"
+#if defined(FLASH) && defined(__STM8S_I2C_H) && !defined(NO_STDPERIPH_DRIVER)
+
 #include "stm8s_flash.h"
 
 /** @addtogroup STM8S_StdPeriph_Driver
@@ -821,4 +824,5 @@ IN_RAM(void FLASH_ProgramBlock(uint16_t BlockNum, FLASH_MemType_TypeDef FLASH_Me
   * @}
   */
 
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
