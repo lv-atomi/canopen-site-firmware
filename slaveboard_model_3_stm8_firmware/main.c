@@ -83,7 +83,7 @@ void on_i2c_irq(void){
   }
 }
   
-void motor_config(uint8_t is_brushless, MotorPort * devport){
+void motor_config(MotorPort * devport, uint8_t is_brushless){
   uint8_t *opt2_ptr = &OPT->OPT2;
   if (is_brushless){
     //FLASH_ProgramOptionByte((uint16_t)opt2_ptr, 0b10000001);
@@ -98,6 +98,24 @@ void motor_config(uint8_t is_brushless, MotorPort * devport){
     gpoutput_config(&devport->disable_driver, 0);
     gpinput_config(&devport->speed_control, GPIO_MODE_IN_FL_NO_IT); /* disable pd4 */
     tmr1_ch1_ch1n_output(25000, 50); /* pc6 & pc3 as pwm out */
+  }
+}
+
+void motor_set_speed(MotorPort *devport, int8_t speed, uint8_t is_brushless) {
+  printf("motor speed:%d\n", speed);
+  if(is_brushless){
+    if (speed > 0){
+      tmr2_duty_update(speed);
+      gpio_set(&devport->dir, 0);
+    } else if (speed < 0) {
+      tmr2_duty_update(-speed);
+      gpio_set(&devport->dir, 1);
+    } else {
+      tmr2_duty_update(0);
+    }
+    
+  } else {
+    tmr1_duty_update(50 + speed/2);
   }
 }
 
@@ -118,18 +136,28 @@ int main(void) {
   i2c_addr = I2C_ADDR_BASE + (uint8_t) (position * 2);
   i2c_config(i2c_addr, &i2c);
 
-  motor_config(1, &motor);
+  uint8_t is_brushless = 0;
+  motor_config(&motor, is_brushless);
 
-  uint8_t tag = 0;
+  int8_t speed = 0;
+  int8_t direction = 1;
   while (1){
     //tmr1_ch1_sense();
-    gpio_set(&gpout[0], tag);
-    gpio_set(&gpout[1], !tag);
-    printf("tag:%u in0:%u in1:%u\n",
-	   tag,
-	   gpio_read(&gpin[0]),
-	   gpio_read(&gpin[1]));
+    /* gpio_set(&gpout[0], tag); */
+    /* gpio_set(&gpout[1], !tag); */
+    /* printf("tag:%u in0:%u in1:%u\n", */
+    /* 	   tag, */
+    /* 	   gpio_read(&gpin[0]), */
+    /* 	   gpio_read(&gpin[1])); */
     delay_ms(1000);
-    tag = !tag;
+    speed += 10*direction;
+    if (speed>=100){
+      direction = -1;
+      speed=100;
+    } else if (speed <=-100){
+      speed=-100;
+      direction = 1;
+    }
+    motor_set_speed(&motor, speed, is_brushless);
   }
 }

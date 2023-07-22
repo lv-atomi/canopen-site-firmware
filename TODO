@@ -9,8 +9,8 @@ firmware:  at32
 2.1[done] stm8       address
 2.2[done] slave board sequence discovery
 2.3[done] board rework
-2.4 GPIO input test
-2.5 GPIO output test
+2.4[done] GPIO input test
+2.5[done] GPIO output test
 2.6[done] STM8 PWM out with complement
 2.7[done] STM8 PWM in
 2.6[done] brushless motor driven
