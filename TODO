@@ -14,6 +14,7 @@ firmware:  at32
 2.6[done] STM8 PWM out with complement
 2.7[done] STM8 PWM in
 2.6[done] brushless motor driven
+2.6.1 death zone control
 2.7[done] brush motor driven
 
 

@@ -91,13 +91,13 @@ void motor_config(MotorPort * devport, uint8_t is_brushless){
     gpoutput_config(&devport->disable_driver, 1);
     gpinput_config(&devport->phase_b, GPIO_MODE_IN_FL_NO_IT); /* disable pc3 */
     tmr1_ch1_sense();		/* pc6 as pwm in */
-    tmr2_ch1_output(25000, 50);	/* pd4 as pwm out */
+    tmr2_ch1_output(10000, 50);	/* pd4 as pwm out */
   } else {
     //    FLASH_ProgramOptionByte((uint16_t)opt2_ptr, 0b10000001);
     gpoutput_config(&devport->dir, 0);
     gpoutput_config(&devport->disable_driver, 0);
     gpinput_config(&devport->speed_control, GPIO_MODE_IN_FL_NO_IT); /* disable pd4 */
-    tmr1_ch1_ch1n_output(25000, 50); /* pc6 & pc3 as pwm out */
+    tmr1_ch1_ch1n_output(120000, 50); /* pc6 & pc3 as pwm out */
   }
 }
 
