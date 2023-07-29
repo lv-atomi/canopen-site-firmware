@@ -2,32 +2,61 @@
 #include "at32f421_clock.h"
 #include <stdio.h>
 
-MotorPort motor = {
-    .dir = {GPIOA, GPIO_PIN_2},
-    .disable_driver = {GPIOD, GPIO_PIN_6},
-    .phase_a_speedsense = {GPIOC, GPIO_PIN_6},
-    .phase_b = {GPIOC, GPIO_PIN_3},
-    .speed_control = {GPIOC, GPIO_PIN_5},
+#include "gpio.h"
+#include "motor.h"
+#include "i2c.h"
+#include "adc.h"
+
+MotorBrush motor_brush = {
+  .disable = {GPIOB, GPIO_PIN_3},
+  .pwm_a = {
+    .port = {GPIOA, GPIO_PIN_8},
+    .tmr = TMR1,
+    .channel = TMR_SELECT_CHANNEL_1,
+    .complementary = TRUE,
+  }
+  .pwm_b = {
+    .port = {GPIOA, GPIO_PIN_7},
+    .tmr = TMR1,
+    .channel = TMR_SELECT_CHANNEL_1C,
+    .complementary = TRUE,
+  }
+};
+
+MotorBrushless motor_brushless = {
+  .direction = {GPIOA, GPIO_PIN_5},
+  .speed_sense = {
+    .port = {GPIOA, GPIO_PIN_8},
+    .tmr = TMR1,
+    .channel = TMR_SELECT_CHANNEL_1,
+    .complementary = FALSE,
+  },
+  .speed_set = {
+    .port = {GPIOA, GPIO_PIN_7},
+    .tmr = TMR3,
+    .channel = TMR_SELECT_CHANNEL_2,
+    .complementary = FALSE,
+  }
 };
 
 I2CPort i2c = {
-  .clk = {GPIOB, GPIO_PIN_4},
-  .data= {GPIOB, GPIO_PIN_5},
-};
-
-ADCPort sense0 = {
-    .port = {GPIOD, GPIO_PIN_2},
-    .channel = 3,
+  .clk = {GPIOB, GPIO_PIN_10},
+  .data= {GPIOB, GPIO_PIN_11},
 };
 
 ADCPort sense1 = {
-    .port = {GPIOD, GPIO_PIN_3},
-    .channel = 4,
+    .port = {GPIOA, GPIO_PIN_0},
+    .channel = 0,
 };
 
-IOPort led = {GPIOA, GPIO_PIN_1};
-IOPort gpin[2] = {{GPIOD, GPIO_PIN_4}, {GPIOC, GPIO_PIN_7}};
-IOPort gpout[2] = {{GPIOA, GPIO_PIN_3}, {GPIOC, GPIO_PIN_4}};
+ADCPort sense2 = {
+    .port = {GPIOA, GPIO_PIN_1},
+    .channel = 1,
+};
+
+IOPort led = {GPIOB, GPIO_PIN_0};
+IOPort gpin[2] = {{GPIOB, GPIO_PIN_6}, {GPIOB, GPIO_PIN_7}};
+IOPort gpout[2] = {{GPIOA, GPIO_PIN_3}, {GPIOC, GPIO_PIN_6}};
 
 /* i2c declaration */
 #define I2C_ADDR_BASE 0x20

@@ -30,9 +30,10 @@ LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/device_support/s
 DEFINES =  -DAT32F421C8T7 -DAT_START_F421_V1	# device & board selection, use APPLICATION
 export DEFINES
 
-CFLAGS += $(DEFINES) -I. -I$(CMSISROOT)/core_support -I$(CMSISROOT)/device_support -I$(DRIVERROOT)/inc
+CFLAGS += $(DEFINES) -I. -I../user/subsystem -I$(CMSISROOT)/core_support -I$(CMSISROOT)/device_support -I$(DRIVERROOT)/inc
 
 LIBSRCS = $(wildcard $(DRIVERROOT)/src/*.c) \
+	$(wildcard ../user/subsystem/*.c) \
 	$(CMSISROOT)/device_support/system_at32f421.c \
 	$(CMSISROOT)/device_support/startup/gcc/startup_at32f421.s
 
