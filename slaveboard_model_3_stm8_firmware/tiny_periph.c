@@ -885,29 +885,28 @@ FLASH_Status_TypeDef FLASH_WaitForLastOperation(FLASH_MemType_TypeDef FLASH_MemT
 }
 
 
-void FLASH_ProgramOptionByte(uint16_t Address, uint8_t Data) {
-  /* Check parameter */
-  /* assert_param(IS_OPTION_BYTE_ADDRESS_OK(Address)); */
+/* void FLASH_ProgramOptionByte(uint16_t Address, uint8_t Data) { */
+/*   /\* Check parameter *\/ */
+/*   /\* assert_param(IS_OPTION_BYTE_ADDRESS_OK(Address)); *\/ */
   
-  /* enable write access to option bytes */
-  FLASH->CR2 |= FLASH_CR2_OPT;
-  FLASH->NCR2 &= (uint8_t)(~FLASH_NCR2_NOPT);
-  /* check if the option byte to program is ROP*/
-  if(Address == 0x4800) {
-    /* Program option byte*/
-    *((uint8_t*)Address) = Data;
-  } else {
-    /* Program option byte and his complement */
-    *((uint8_t*)Address) = Data;
-    *((uint8_t*)((uint16_t)(Address + 1))) = (uint8_t)(~Data);
-  }
-  FLASH_WaitForLastOperation(FLASH_MEMTYPE_PROG);
+/*   /\* enable write access to option bytes *\/ */
+/*   FLASH->CR2 |= FLASH_CR2_OPT; */
+/*   FLASH->NCR2 &= (uint8_t)(~FLASH_NCR2_NOPT); */
+/*   /\* check if the option byte to program is ROP*\/ */
+/*   if(Address == 0x4800) { */
+/*     /\* Program option byte*\/ */
+/*     *((uint8_t*)Address) = Data; */
+/*   } else { */
+/*     /\* Program option byte and his complement *\/ */
+/*     *((uint8_t*)Address) = Data; */
+/*     *((uint8_t*)((uint16_t)(Address + 1))) = (uint8_t)(~Data); */
+/*   } */
+/*   FLASH_WaitForLastOperation(FLASH_MEMTYPE_PROG); */
 
-  /* Disable write access to option bytes */
-  FLASH->CR2 &= (uint8_t)(~FLASH_CR2_OPT);
-  FLASH->NCR2 |= FLASH_NCR2_NOPT;
-}
-
+/*   /\* Disable write access to option bytes *\/ */
+/*   FLASH->CR2 &= (uint8_t)(~FLASH_CR2_OPT); */
+/*   FLASH->NCR2 |= FLASH_NCR2_NOPT; */
+/* } */
 
 
 void TIM2_ARRPreloadConfig(FunctionalState NewState)
@@ -995,6 +994,42 @@ static void TI1_Config(uint8_t TIM1_ICPolarity,
   TIM1->CCER1 |=  TIM1_CCER1_CC1E;
 }
 
+/**
+  * @brief  Configures the Break feature, dead time, Lock level, the OSSI,
+  *         and the AOE(automatic output enable).
+  * @param  TIM1_OSSIState specifies the OSSIS State from @ref TIM1_OSSIState_TypeDef.
+  * @param  TIM1_LockLevel specifies the lock level from @ref TIM1_LockLevel_TypeDef.
+  * @param  TIM1_DeadTime specifies the dead time value.
+  * @param  TIM1_Break specifies the Break state @ref TIM1_BreakState_TypeDef.
+  * @param  TIM1_BreakPolarity specifies the Break polarity from
+  *         @ref TIM1_BreakPolarity_TypeDef.
+  * @param  TIM1_AutomaticOutput specifies the Automatic Output configuration
+  *         from @ref TIM1_AutomaticOutput_TypeDef.
+  * @retval None
+  */
+void TIM1_BDTRConfig(TIM1_OSSIState_TypeDef TIM1_OSSIState,
+                     TIM1_LockLevel_TypeDef TIM1_LockLevel,
+                     uint8_t TIM1_DeadTime,
+                     TIM1_BreakState_TypeDef TIM1_Break,
+                     TIM1_BreakPolarity_TypeDef TIM1_BreakPolarity,
+                     TIM1_AutomaticOutput_TypeDef TIM1_AutomaticOutput)
+{
+  /* Check the parameters */
+  assert_param(IS_TIM1_OSSI_STATE_OK(TIM1_OSSIState));
+  assert_param(IS_TIM1_LOCK_LEVEL_OK(TIM1_LockLevel));
+  assert_param(IS_TIM1_BREAK_STATE_OK(TIM1_Break));
+  assert_param(IS_TIM1_BREAK_POLARITY_OK(TIM1_BreakPolarity));
+  assert_param(IS_TIM1_AUTOMATIC_OUTPUT_STATE_OK(TIM1_AutomaticOutput));
+  
+  TIM1->DTR = (uint8_t)(TIM1_DeadTime);
+  /* Set the Lock level, the Break enable Bit and the Polarity, the OSSI State,
+  the dead time value  and the Automatic Output Enable Bit */
+  
+  TIM1->BKR  =  (uint8_t)((uint8_t)(TIM1_OSSIState | (uint8_t)TIM1_LockLevel)  |
+                          (uint8_t)((uint8_t)(TIM1_Break | (uint8_t)TIM1_BreakPolarity)  |
+                          (uint8_t)TIM1_AutomaticOutput));
+}
+
 void TIM1_SetIC1Prescaler(TIM1_ICPSC_TypeDef TIM1_IC1Prescaler)
 {
   /* Check the parameters */
@@ -1060,8 +1095,7 @@ void TIM1_ICInit(TIM1_Channel_TypeDef TIM1_Channel,
                (uint8_t)TIM1_ICFilter);
     /* Set the Input Capture Prescaler value */
     TIM1_SetIC1Prescaler(TIM1_ICPrescaler);
-  }else if (TIM1_Channel == TIM1_CHANNEL_2)
-  {
+  } else if (TIM1_Channel == TIM1_CHANNEL_2) {
     /* TI2 Configuration */
     TI2_Config((uint8_t)TIM1_ICPolarity,
                (uint8_t)TIM1_ICSelection,

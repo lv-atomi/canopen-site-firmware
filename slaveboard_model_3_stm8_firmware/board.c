@@ -4,7 +4,7 @@
 #include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_gpio.h"
 #include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_tim1.h"
 #include "stm8s_conf.h"
-#include "stdio.h"
+/* #include "stdio.h" */
 #include <stdint.h>
 #include "tiny_periph.h"
 
@@ -199,13 +199,13 @@ void board_init(){
               UART1_SYNCMODE_CLOCK_DISABLE, UART1_MODE_TXRX_ENABLE);
 
   /* Output a message on Hyperterminal using printf function */
-  printf("\nUART1 inited.\n");
+  /* printf("\nUART1 inited.\n"); */
 
-  uint8_t opt2 = OPT->OPT2;
-  uint8_t *opt2_ptr = &OPT->OPT2;
-  opt2 |= 0b10000001;		/* set afr0 & afr7 to 1 */
-  if(opt2 != *opt2_ptr)
-    FLASH_ProgramOptionByte((uint16_t)opt2_ptr, opt2);
+  /* uint8_t opt2 = OPT->OPT2; */
+  /* uint8_t *opt2_ptr = &OPT->OPT2; */
+  /* opt2 |= 0b10000001;		/\* set afr0 & afr7 to 1 *\/ */
+  /* if(opt2 != *opt2_ptr) */
+  /*   FLASH_ProgramOptionByte((uint16_t)opt2_ptr, opt2); */
 }
 
 uint32_t my_round(uint32_t val){
@@ -266,7 +266,7 @@ uint8_t gpio_read(IOPort *devport) {
 void calc_period(uint32_t freq, uint16_t * period, uint16_t * cycle){
   uint32_t clock = CLK_GetClockFreq();
   uint32_t _period = clock / 100 / freq - 1;
-  printf("clock:%ld freq:%ld period:%d\n", clock, freq, period);
+  /* printf("clock:%ld freq:%ld period:%d\n", clock, freq, period); */
   if(_period > 65535){
     *period = clock / 1000 / freq - 1;
     *cycle = 999;
@@ -283,6 +283,22 @@ void tmr1_ch1_ch1n_output(uint32_t freq, uint8_t duty) {
   TIM1_OC1Init(TIM1_OCMODE_PWM2, TIM1_OUTPUTSTATE_ENABLE, TIM1_OUTPUTNSTATE_ENABLE,
                cycle / 2, TIM1_OCPOLARITY_LOW, TIM1_OCNPOLARITY_LOW, TIM1_OCIDLESTATE_SET,
                TIM1_OCNIDLESTATE_RESET);
+
+  
+    /* TIM1_OSSIState = TIM1_OSSISTATE_ENABLE */
+    /* TIM1_LockLevel = TIM1_LOCKLEVEL_1 */
+    /* TIM1_DeadTime = 117 */
+    /* TIM1_Break = TIM1_BREAK_ENABLE */
+    /* TIM1_BreakPolarity = TIM1_BREAKPOLARITY_HIGH */
+    /* TIM1_AutomaticOutput = TIM1_AUTOMATICOUTPUT_ENABLE */
+
+  /* TIM1_BDTRConfig(TIM1_OSSISTATE_ENABLE, */
+  /* 		  TIM1_LOCKLEVEL_1, */
+  /* 		  117,		/\* deadtime *\/ */
+  /* 		  TIM1_BREAK_ENABLE, */
+  /* 		  TIM1_BREAKPOLARITY_HIGH, */
+  /* 		  TIM1_AUTOMATICOUTPUT_ENABLE); */
+
   /* TIM1 counter enable */
   TIM1_Cmd(ENABLE);
 
@@ -298,7 +314,7 @@ void tmr2_ch1_output(uint32_t freq, uint8_t duty) {
   TIM2_DeInit();
   
   for (uint8_t i=0; i<=TIM2_PRESCALER_32768; i++){
-    printf("i:%u v:%ld period:%d\n", i, v, period);
+    /* printf("i:%u v:%ld period:%d\n", i, v, period); */
     if (period < v) {
       period = i;
       cycle = clock / (v/2) / freq;
@@ -306,7 +322,7 @@ void tmr2_ch1_output(uint32_t freq, uint8_t duty) {
     }
     v*=2;
   }
-  printf("v:%ld cycle:%d period:%d\n", v, cycle, period);
+  /* printf("v:%ld cycle:%d period:%d\n", v, cycle, period); */
   TIM2_TimeBaseInit(period, cycle);
   /* TIM2_TimeBaseInit(TIM2_PRESCALER_1, 999); */
   
@@ -386,5 +402,5 @@ void tmr1_ch1_sense(){
   LSIClockFreq = CLK_GetClockFreq() / (ICValue3 - ICValue1);
   uint32_t duty = (ICValue2-ICValue1);
   duty = duty * 100 / (ICValue3 - ICValue1);
-  printf("freq:%ld duty:%ld %u %u %u\n", LSIClockFreq, duty, ICValue1, ICValue2, ICValue3);
+  /* printf("freq:%ld duty:%ld %u %u %u\n", LSIClockFreq, duty, ICValue1, ICValue2, ICValue3); */
 }
