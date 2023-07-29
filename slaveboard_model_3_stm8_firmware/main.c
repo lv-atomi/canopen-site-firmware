@@ -1,6 +1,6 @@
 #include "spl/STM8S_StdPeriph_Lib/Libraries/STM8S_StdPeriph_Driver/inc/stm8s_gpio.h"
 #include "stm8s_conf.h"
-#include "stdio.h"
+/* #include "stdio.h" */
 #include "board.h"
 
 MotorPort motor = {
@@ -102,7 +102,7 @@ void motor_config(MotorPort * devport, uint8_t is_brushless){
 }
 
 void motor_set_speed(MotorPort *devport, int8_t speed, uint8_t is_brushless) {
-  printf("motor speed:%d\n", speed);
+  /* printf("motor speed:%d\n", speed); */
   if(is_brushless){
     if (speed > 0){
       tmr2_duty_update(speed);

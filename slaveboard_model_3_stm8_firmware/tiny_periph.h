@@ -64,6 +64,12 @@ void TIM1_TimeBaseInit(uint16_t TIM1_Prescaler,
 uint16_t TIM1_GetCapture1(void);
 void TIM1_ClearFlag(TIM1_FLAG_TypeDef TIM1_FLAG);
 uint16_t TIM1_GetCapture2(void);
+void TIM1_BDTRConfig(TIM1_OSSIState_TypeDef TIM1_OSSIState,
+                     TIM1_LockLevel_TypeDef TIM1_LockLevel,
+                     uint8_t TIM1_DeadTime,
+                     TIM1_BreakState_TypeDef TIM1_Break,
+                     TIM1_BreakPolarity_TypeDef TIM1_BreakPolarity,
+                     TIM1_AutomaticOutput_TypeDef TIM1_AutomaticOutput);
 
 typedef enum
 {
