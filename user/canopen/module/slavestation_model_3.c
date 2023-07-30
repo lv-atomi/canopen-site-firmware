@@ -170,15 +170,15 @@ bool_t GPOutRead(uint16_t slave_addr, uint8_t channel) {
   return cmd_gpout_read(&hi2cx, slave_addr, channel);
 }
 
-int32_t motor_speed_sense(uint16_t slave_addr){
-  int32_t speed = 0;
-  speed = cmd_motor_speed_read(&hi2cx, slave_addr);
-  return speed;
-}
+/* int32_t motor_speed_sense(uint16_t slave_addr){ */
+/*   int32_t speed = 0; */
+/*   speed = cmd_motor_speed_read(&hi2cx, slave_addr); */
+/*   return speed; */
+/* } */
 
-void motor_speed_set(uint16_t slave_addr, int32_t speed){
-  cmd_motor_speed_set(&hi2cx, slave_addr, speed);
-}
+/* void motor_speed_set(uint16_t slave_addr, int32_t speed){ */
+/*   cmd_motor_speed_set(&hi2cx, slave_addr, speed); */
+/* } */
 
 /* FIXME: HT8574 don't have pwm input/output mode, cannot do speed sense/control
  * for motor */
