@@ -2,6 +2,8 @@
 #define PWM_H
 
 #include "gpio.h"
+#include "board.h"
+#include <stdint.h>
 
 typedef struct{
   IOPort port;

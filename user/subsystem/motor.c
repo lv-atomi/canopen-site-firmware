@@ -8,7 +8,6 @@ void init_motor_brushless(MotorBrushless * mbl){
   /* gpio configuration for output pins */
   init_gpio_output(&mbl->direction,
 		   GPIO_OUTPUT_PUSH_PULL,
-		   GPIO_MODE_OUTPUT,
 		   GPIO_DRIVE_STRENGTH_STRONGER);
 
   /* set timer for pwm */
@@ -23,7 +22,6 @@ void init_motor_brush(MotorBrush * mb){
   /* gpio configuration for output pins */
   init_gpio_output(&mb->disable,
 		   GPIO_OUTPUT_PUSH_PULL,
-		   GPIO_MODE_OUTPUT,
 		   GPIO_DRIVE_STRENGTH_STRONGER);
 
   /* set timer for pwm */

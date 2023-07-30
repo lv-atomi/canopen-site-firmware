@@ -2,6 +2,8 @@
 #define FAN_H
 
 #include "pwm.h"
+#include "board.h"
+#include <stdint.h>
 
 typedef struct{
   PWMPort speed_sense;

@@ -2,6 +2,8 @@
 #define LOG_H
 
 #include <stdio.h>
+#include "board.h"
+#include <stdint.h>
 
 #define log_printf(macropar_message, ...)                                      \
   printf(macropar_message, ##__VA_ARGS__)

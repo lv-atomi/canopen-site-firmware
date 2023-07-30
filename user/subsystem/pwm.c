@@ -7,33 +7,73 @@ void tmr_clock_enable(tmr_type *tmr_x)
 {
   if (tmr_x == TMR1) {
     crm_periph_clock_enable(CRM_TMR1_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR2) {
+  }
+#if defined(TMR2)
+  else if (tmr_x == TMR2) {
     crm_periph_clock_enable(CRM_TMR2_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR3) {
+  }
+#endif
+#if defined(TMR3)
+  else if (tmr_x == TMR3) {
     crm_periph_clock_enable(CRM_TMR3_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR4) {
+  }
+#endif
+#if defined(TMR4)
+  else if (tmr_x == TMR4) {
     crm_periph_clock_enable(CRM_TMR4_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR5) {
+  }
+#endif
+#if defined(TMR5)
+  else if (tmr_x == TMR5) {
     crm_periph_clock_enable(CRM_TMR5_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR6) {
+  }
+#endif
+#if defined(TMR6)
+  else if (tmr_x == TMR6) {
     crm_periph_clock_enable(CRM_TMR6_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR7) {
+  }
+#endif
+#if defined(TMR7)
+  else if (tmr_x == TMR7) {
     crm_periph_clock_enable(CRM_TMR7_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR8) {
+  }
+#endif
+#if defined(TMR8)
+  else if (tmr_x == TMR8) {
     crm_periph_clock_enable(CRM_TMR8_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR9) {
+  }
+#endif
+#if defined(TMR9)
+  else if (tmr_x == TMR9) {
     crm_periph_clock_enable(CRM_TMR9_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR10) {
+  }
+#endif
+#if defined(TMR10)
+  else if (tmr_x == TMR10) {
     crm_periph_clock_enable(CRM_TMR10_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR11) {
+  }
+#endif
+#if defined(TMR11)
+  else if (tmr_x == TMR11) {
     crm_periph_clock_enable(CRM_TMR11_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR12) {
+  }
+#endif
+#if defined(TMR12)
+  else if (tmr_x == TMR12) {
     crm_periph_clock_enable(CRM_TMR12_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR13) {
+  }
+#endif
+#if defined(TMR13)
+  else if (tmr_x == TMR13) {
     crm_periph_clock_enable(CRM_TMR13_PERIPH_CLOCK, TRUE);
-  } else if (tmr_x == TMR14) {
+  }
+#endif
+#if defined(TMR14)
+  else if (tmr_x == TMR14) {
     crm_periph_clock_enable(CRM_TMR14_PERIPH_CLOCK, TRUE);
-  } else {
+  }
+#endif
+  else {
     ASSERT(FALSE);
   }
 }
@@ -43,10 +83,10 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   
   tmr_output_config_type tmr_oc_init_structure;
   /* gpio configuration for output pins */
-  init_gpio_output(&devport->port,
-		   GPIO_OUTPUT_PUSH_PULL,
-		   GPIO_MODE_MUX,
-		   GPIO_DRIVE_STRENGTH_STRONGER);
+  init_gpio_mux(&devport->port,
+		GPIO_OUTPUT_PUSH_PULL,
+		GPIO_PULL_UP,
+		GPIO_DRIVE_STRENGTH_STRONGER);
 
   if (devport->complementary &&
       (devport->channel == TMR_SELECT_CHANNEL_1C ||

@@ -3,6 +3,8 @@
 
 #include "gpio.h"
 #include "pwm.h"
+#include "board.h"
+#include <stdint.h>
 
 typedef struct {
   IOPort direction;
