@@ -1,4 +1,4 @@
-#include "at32f421_board.h"
+#include "board.h"
 #include "at32f421_clock.h"
 #include <stdio.h>
 
@@ -8,30 +8,30 @@
 
 MotorUnified motor = {
     .brush = {
-      .disable = {GPIOB, GPIO_PINS_3},
+      .disable = {GPIOB, GPIO_PINS_SOURCE3},
       .pwm_a = {
-	.port = {GPIOA, GPIO_PINS_8},
+	.port = {GPIOA, GPIO_PINS_SOURCE8, GPIO_MUX_2},
 	.tmr = TMR1,
 	.channel = TMR_SELECT_CHANNEL_1,
 	.complementary = TRUE,
       },
       .pwm_b = {
-	.port = {GPIOA, GPIO_PINS_7},
+	.port = {GPIOA, GPIO_PINS_SOURCE7, GPIO_MUX_2},
 	.tmr = TMR1,
 	.channel = TMR_SELECT_CHANNEL_1C,
 	.complementary = TRUE,
       }
     },
     .brushless = {
-      .direction = {GPIOA, GPIO_PINS_5},
+      .direction = {GPIOA, GPIO_PINS_SOURCE5},
       .speed_sense = {
-	.port = {GPIOA, GPIO_PINS_8},
+	.port = {GPIOA, GPIO_PINS_SOURCE8, GPIO_MUX_2},
 	.tmr = TMR1,
 	.channel = TMR_SELECT_CHANNEL_1,
 	.complementary = FALSE,
       },
       .speed_set = {
-	.port = {GPIOA, GPIO_PINS_7},
+	.port = {GPIOA, GPIO_PINS_SOURCE7, GPIO_MUX_1},
 	.tmr = TMR3,
 	.channel = TMR_SELECT_CHANNEL_2,
 	.complementary = FALSE,
@@ -40,26 +40,26 @@ MotorUnified motor = {
 };
 
 I2CPort i2c = {
-  .clk = {GPIOB, GPIO_PINS_10},
-  .data= {GPIOB, GPIO_PINS_11},
+  .clk = {GPIOB, GPIO_PINS_SOURCE10, GPIO_MUX_1},
+  .data= {GPIOB, GPIO_PINS_SOURCE11, GPIO_MUX_1},
   .controller = I2C1,
   .address = 0x10,
 };
 
 ADCPort senses[2] = {
   {
-    .port = {GPIOA, GPIO_PINS_0},
+    .port = {GPIOA, GPIO_PINS_SOURCE0},
     .channel = ADC_CHANNEL_0,
   },
   {
-    .port = {GPIOA, GPIO_PINS_1},
+    .port = {GPIOA, GPIO_PINS_SOURCE1},
     .channel = ADC_CHANNEL_1,
   }
 };
 
-IOPort led = {GPIOB, GPIO_PINS_0};
-IOPort gpin[2] = {{GPIOB, GPIO_PINS_6}, {GPIOB, GPIO_PINS_7}};
-IOPort gpout[2] = {{GPIOA, GPIO_PINS_3}, {GPIOC, GPIO_PINS_6}};
+IOPort led = {GPIOB, GPIO_PINS_SOURCE0};
+IOPort gpin[2] = {{GPIOB, GPIO_PINS_SOURCE6}, {GPIOB, GPIO_PINS_SOURCE7}};
+IOPort gpout[2] = {{GPIOA, GPIO_PINS_SOURCE3}, {GPIOC, GPIO_PINS_SOURCE6}};
 
 void gpio_config(void) {
   uint8_t i;
@@ -104,7 +104,7 @@ void main_logic(){
 int main(void) {
   init_system();
 
-  test_adc(senses);
+  /* test_adc(senses); */
   /* test_brush_motor(&motor); */
   /* test_brushless_motor(&motor); */
   /* main_logic(); */

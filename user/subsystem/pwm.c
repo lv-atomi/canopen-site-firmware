@@ -85,7 +85,7 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   /* gpio configuration for output pins */
   init_gpio_mux(&devport->port,
 		GPIO_OUTPUT_PUSH_PULL,
-		GPIO_PULL_UP,
+		GPIO_PULL_NONE,
 		GPIO_DRIVE_STRENGTH_STRONGER);
 
   if (devport->complementary &&
@@ -102,15 +102,16 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
 
   /* compute tmr peroid value & tmr div value according to requested frequency  */
   /* just assume all timers are 16 bits */
-  uint32_t pr = system_core_clock / 100 / freq - 1;
+  uint32_t pr = crm_clocks_freq_struct.sclk_freq / 100 / freq - 1;
   uint16_t period = 99;
   /* compute the prescaler value */
   /* uint16_t prescaler_value = 0; */
   /* prescaler_value = (uint16_t)(system_core_clock / 24000000) - 1; */
   if (pr > 65535){
-    pr = system_core_clock / 10000 / freq -1;
+    pr = crm_clocks_freq_struct.sclk_freq / 10000 / freq -1;
     period = 9999;
   }
+  printf("sys clock: %ld, freq:%ld, pr:%ld, period:%u\n", crm_clocks_freq_struct.sclk_freq, freq, pr, period);
   /* tmr time base configuration */
   tmr_base_init(devport->tmr, period, (uint16_t)pr);
   tmr_cnt_dir_set(devport->tmr, TMR_COUNT_UP);
@@ -128,12 +129,9 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   }
 
   tmr_output_channel_config(devport->tmr, devport->channel, &tmr_oc_init_structure);
-
   pwm_output_update_duty(devport, duty);
-  /* uint32_t duty_32 = devport->tmr->pr * duty; */
-  /* duty_32 /= 100; */
-  /* tmr_channel_value_set(devport->tmr, devport->channel, */
-  /* 			(uint16_t)duty_32); */
+
+  tmr_output_enable(devport->tmr, TRUE);
 
   /* tmr enable counter */
   tmr_counter_enable(devport->tmr, TRUE);
@@ -143,6 +141,7 @@ void pwm_output_update_duty(PWMPort * devport, uint8_t duty){
   ASSERT(devport);
   uint32_t duty_32 = devport->tmr->pr * duty;
   duty_32 /= 100;
+  printf("duty set:%u, duty_32:%ld\n", duty, duty_32);
   tmr_channel_value_set(devport->tmr, devport->channel,
 			(uint16_t)duty_32);
 }

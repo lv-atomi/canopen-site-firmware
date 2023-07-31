@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-#include "stdio.h"
+#include <stdio.h>
 #include "at32f421.h"
 
 /** @addtogroup AT32F421_board

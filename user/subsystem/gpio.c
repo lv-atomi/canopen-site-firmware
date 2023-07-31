@@ -35,7 +35,7 @@ void init_gpio_output(IOPort * devport,
   gpio_initstructure.gpio_drive_strength = drive_strength;
 
   gpio_initstructure.gpio_mode = GPIO_MODE_OUTPUT;
-  gpio_initstructure.gpio_pins = devport->pin;
+  gpio_initstructure.gpio_pins = 1 << devport->pin_source;
   gpio_init(devport->port, &gpio_initstructure);
 }
 
@@ -53,8 +53,12 @@ void init_gpio_mux(IOPort * devport,
   gpio_initstructure.gpio_drive_strength = drive_strength;
 
   gpio_initstructure.gpio_mode = GPIO_MODE_MUX;
-  gpio_initstructure.gpio_pins = devport->pin;
+  gpio_initstructure.gpio_pins = 1 << devport->pin_source;
   gpio_init(devport->port, &gpio_initstructure);
+
+#if defined (__AT32F421_GPIO_H)
+  gpio_pin_mux_config(devport->port, devport->pin_source, devport->mux_sel);
+#endif  
 }
 
 void init_gpio_input(IOPort * devport,
@@ -69,7 +73,7 @@ void init_gpio_input(IOPort * devport,
   gpio_initstructure.gpio_drive_strength = drive_strength;
 
   gpio_initstructure.gpio_mode = GPIO_MODE_INPUT;
-  gpio_initstructure.gpio_pins = devport->pin;
+  gpio_initstructure.gpio_pins = 1 << devport->pin_source;
   gpio_init(devport->port, &gpio_initstructure);
 }
 
@@ -86,16 +90,16 @@ void init_gpio_analogy(IOPort * devport,
   gpio_initstructure.gpio_drive_strength = drive_strength;
 
   gpio_initstructure.gpio_mode = GPIO_MODE_ANALOG;
-  gpio_initstructure.gpio_pins = devport->pin;
+  gpio_initstructure.gpio_pins = 1 << devport->pin_source;
   gpio_init(devport->port, &gpio_initstructure);
 }
 
 void gpio_set(IOPort * devport, bool_t bit) {
   ASSERT(devport);
-  gpio_bits_write(devport->port, devport->pin, bit);
+  gpio_bits_write(devport->port, 1 << devport->pin_source, bit);
 }
 
 bool_t gpio_read(IOPort * devport) {
   ASSERT(devport);
-  return gpio_input_data_bit_read(devport->port, devport->pin);
+  return gpio_input_data_bit_read(devport->port, 1 << devport->pin_source);
 }

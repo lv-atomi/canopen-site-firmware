@@ -8,7 +8,10 @@ typedef uint_fast8_t bool_t;
 
 typedef struct {
   gpio_type *port;
-  uint16_t pin;
+  gpio_pins_source_type pin_source;
+#if defined (__AT32F421_GPIO_H)
+  gpio_mux_sel_type mux_sel;
+#endif
 } IOPort;
 
 void init_gpio_output(IOPort * devport,
