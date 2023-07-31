@@ -32,13 +32,13 @@ void init_motor_brush(MotorUnified * motor){
   /* gpio configuration for output pins */
   init_gpio_output(&motor->brush.disable,
 		   GPIO_OUTPUT_PUSH_PULL,
-		   GPIO_DRIVE_STRENGTH_STRONGER);
+		   GPIO_DRIVE_STRENGTH_MODERATE);
   /* enable hbridge */
   gpio_set(&motor->brush.disable, 0);
 
   /* set timer for pwm */
-  init_pwm_output(&motor->brush.pwm_a, 20000, 50); /* 20khz, 50% */
-  init_pwm_output(&motor->brush.pwm_b, 20000, 50); /* 20khz, 50% */
+  init_pwm_output(&motor->brush.pwm_a, 100000, 50); /* 100khz, 50% */
+  init_pwm_output(&motor->brush.pwm_b, 100000, 50); /* 100khz, 50% */
   
   /* automatic output enable, stop, dead time and lock configuration */
   tmr_brkdt_config_type tmr_brkdt_config_struct = {0};

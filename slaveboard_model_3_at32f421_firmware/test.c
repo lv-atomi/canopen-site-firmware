@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "at32f421_gpio.h"
 #include "test.h"
 #include "adc.h"
 #include "gpio.h"
@@ -55,3 +56,45 @@ int test_brushless_motor(MotorUnified * motor){
     motor_set_speed(motor, speed);
   }
 }
+
+int test_gpout(IOPort *gpout, uint8_t num_ports){
+  int8_t i;
+  for(i=0; i<num_ports; i++){
+    init_gpio_output(&gpout[0], GPIO_OUTPUT_PUSH_PULL, GPIO_DRIVE_STRENGTH_STRONGER);
+  }
+
+  uint8_t status = 0;
+  while (1){
+    uint8_t v = status;
+    for (i=0; i<num_ports; i++){
+      printf("gpout%u: %u", i, v);
+      gpio_set(&gpout[i], v);
+      v = !v;
+      if (i == (num_ports-1))
+	printf("\n");
+      else
+	printf(", ");
+    }
+    status = !status;
+    delay_ms(1000);
+  }
+}
+
+int test_gpin(IOPort *gpin, uint8_t num_ports){
+  int8_t i;
+  for(i=0; i<num_ports; i++){
+    init_gpio_input(&gpin[0], GPIO_PULL_UP, GPIO_DRIVE_STRENGTH_STRONGER);
+  }
+  
+  while (1){
+    for (i=0; i<num_ports; i++){
+      printf("gpin%u: %u", i, gpio_read(&gpin[i]));
+      if (i == (num_ports-1))
+	printf("\n");
+      else
+	printf(", ");
+    }
+    delay_ms(1000);
+  }
+}
+

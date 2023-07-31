@@ -107,6 +107,9 @@ int main(void) {
   /* test_adc(senses); */
   /* test_brush_motor(&motor); */
   /* test_brushless_motor(&motor); */
+  test_gpout(gpout, sizeof(gpout) / sizeof(gpout[0]));
+  /* test_gpin(gpin, sizeof(gpin) / sizeof(gpin[0])); */
+  
   /* main_logic(); */
 }
 
