@@ -22,9 +22,9 @@ CFLAGS  = -O0 -g3 -MMD
 else
 CFLAGS  = -O2 -finline -finline-functions-called-once
 endif
-CFLAGS += -Wall -Wno-missing-braces -std=c99 -mthumb -mcpu=cortex-m4
+CFLAGS += -Wall -Wno-missing-braces -std=c99 -mthumb -mcpu=cortex-m4 -fdata-sections -ffunction-sections -Wl,--gc-sections
 #CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork
-#CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
+# CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS += -mfloat-abi=soft
 # TODO: hard float was causing an exception; see what's up.
 LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gcc/linker/AT32F403AxG_FLASH.ld

@@ -288,3 +288,4 @@ pyocd_log.txt
 
 TAGS
 .idea
+compile_commands.json

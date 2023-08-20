@@ -6,17 +6,27 @@ firmware:  at32
 1.2[done] GPIO input test
 
 2. [done/deprecated] 8574        I2C   GPIO
-2.1[done] stm8       address
-2.2[done] slave board sequence discovery
-2.3[done] board rework
+2.1[done/deprecated] stm8       address
+2.2[done/deprecated] slave board sequence discovery
+2.3[done/deprecated] board rework
+2.4[done/deprecated] GPIO input test
+2.5[done/deprecated] GPIO output test
+2.6[done/deprecated] STM8 PWM out with complement
+2.7[done/deprecated] STM8 PWM in
+2.6[done/deprecated] brushless motor driven
+2.6[deprecated].1 death zone control
+2.7[done/deprecated] brush motor driven
+
+2. [done] slave board model3, at32f421 version
+2.1[] i2c address
+2.2[] slave board sequence discovery
 2.4[done] GPIO input test
 2.5[done] GPIO output test
-2.6[done] STM8 PWM out with complement
-2.7[done] STM8 PWM in
+2.6[done] PWM out with complement
+2.7[done] PWM in
 2.6[done] brushless motor driven
-2.6.1 death zone control
-2.7[done] brush motor driven
-
+2.6[] death zone control
+2.7[] brush motor driven
 
 3. [done] PWM input duty cycle    FAN
 3.1[done] PWM output              FAN
