@@ -11,12 +11,12 @@
 
     File info:
         File Names:   OD.h; OD.c
-        Project File: DS301_profile2.xdd
+        Project File: DS301_profile3.xdd
         File Version: 1
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/7/4 21:59:08
+        Modified:     2023/9/2 4:20:52
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -58,6 +58,7 @@
 #define OD_CNT_ARR_2110 16
 #define OD_CNT_ARR_2111 16
 #define OD_CNT_ARR_2112 16
+#define OD_CNT_ARR_6010 22
 #define OD_CNT_ARR_6100 8
 #define OD_CNT_ARR_6303 4
 #define OD_CNT_ARR_6400 2
@@ -71,9 +72,14 @@
 *******************************************************************************/
 typedef struct {
     uint32_t x1000_deviceType;
+    uint8_t x1001_errorRegister;
     uint32_t x1005_COB_ID_SYNCMessage;
     uint32_t x1006_communicationCyclePeriod;
     uint32_t x1007_synchronousWindowLength;
+    uint8_t x1010_storeParameters_sub0;
+    uint32_t x1010_storeParameters[OD_CNT_ARR_1010];
+    uint8_t x1011_restoreDefaultParameters_sub0;
+    uint32_t x1011_restoreDefaultParameters[OD_CNT_ARR_1011];
     uint32_t x1012_COB_IDTimeStampObject;
     uint32_t x1014_COB_ID_EMCY;
     uint16_t x1015_inhibitTimeEMCY;
@@ -88,6 +94,11 @@ typedef struct {
         uint32_t serialNumber;
     } x1018_identity;
     uint8_t x1019_synchronousCounterOverflowValue;
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t COB_IDClientToServerRx;
+        uint32_t COB_IDServerToClientTx;
+    } x1200_SDOServerParameter;
     struct {
         uint8_t highestSub_indexSupported;
         uint32_t COB_IDClientToServerTx;
@@ -238,27 +249,24 @@ typedef struct {
         uint32_t applicationObject7;
         uint32_t applicationObject8;
     } x1A03_TPDOMappingParameter;
-} OD_PERSIST_COMM_t;
-
-typedef struct {
-    uint8_t x1001_errorRegister;
-    uint8_t x1010_storeParameters_sub0;
-    uint32_t x1010_storeParameters[OD_CNT_ARR_1010];
-    uint8_t x1011_restoreDefaultParameters_sub0;
-    uint32_t x1011_restoreDefaultParameters[OD_CNT_ARR_1011];
-    struct {
-        uint8_t highestSub_indexSupported;
-        uint32_t COB_IDClientToServerRx;
-        uint32_t COB_IDServerToClientTx;
-    } x1200_SDOServerParameter;
     uint8_t x2100_errorStatusBits[1];
+    uint32_t x2106_power_onCounter;
     uint8_t x2110_variableInt32_sub0;
     int32_t x2110_variableInt32[OD_CNT_ARR_2110];
+    uint8_t x2111_variableInt32Save_sub0;
+    int32_t x2111_variableInt32Save[OD_CNT_ARR_2111];
+    uint8_t x2112_variableNV_Int32AutoSave_sub0;
+    int32_t x2112_variableNV_Int32AutoSave[OD_CNT_ARR_2112];
+    uint8_t x2114_stationID;
+    uint16_t x2115_screenOffTimeout;
+    uint8_t x6000_boardType;
     uint32_t x6001_PSU_CurrentRead;
     uint32_t x6002_PSU_VoltageRead;
     uint32_t x6003_PSU_CurentSet;
     uint32_t x6004_PSU_VoltageSet;
     int32_t x6005_PSUModuleTemperature;
+    uint8_t x6010_capability_sub0;
+    bool_t x6010_capability[OD_CNT_ARR_6010];
     uint8_t x6100_triggerInputX8_sub0;
     bool_t x6100_triggerInputX8[OD_CNT_ARR_6100];
     struct {
@@ -413,51 +421,10 @@ typedef struct {
     } x6705_FAN0;
 } OD_RAM_t;
 
-typedef struct {
-    uint32_t x2106_power_onCounter;
-    uint8_t x2112_variableNV_Int32AutoSave_sub0;
-    int32_t x2112_variableNV_Int32AutoSave[OD_CNT_ARR_2112];
-} OD_PERSIST_APP_AUTO_t;
-
-typedef struct {
-    uint8_t x2111_variableInt32Save_sub0;
-    int32_t x2111_variableInt32Save[OD_CNT_ARR_2111];
-    struct {
-        uint8_t highestSub_indexSupported;
-        int64_t I64;
-        uint64_t U64;
-        float32_t R32;
-        float64_t R64;
-        uint16_t parameterWithDefaultValue;
-    } x2120_demoRecord;
-    struct {
-        uint8_t highestSub_indexSupported;
-        char stringShort[4];
-        char stringLong[111];
-        uint8_t octetString[3];
-    } x2121_demoStrings;
-    uint8_t x6000_boardType;
-} OD_PERSIST_APP_t;
-
-#ifndef OD_ATTR_PERSIST_COMM
-#define OD_ATTR_PERSIST_COMM
-#endif
-extern OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM;
-
 #ifndef OD_ATTR_RAM
 #define OD_ATTR_RAM
 #endif
 extern OD_ATTR_RAM OD_RAM_t OD_RAM;
-
-#ifndef OD_ATTR_PERSIST_APP_AUTO
-#define OD_ATTR_PERSIST_APP_AUTO
-#endif
-extern OD_ATTR_PERSIST_APP_AUTO OD_PERSIST_APP_AUTO_t OD_PERSIST_APP_AUTO;
-
-#ifndef OD_ATTR_PERSIST_APP
-#define OD_ATTR_PERSIST_APP
-#endif
-extern OD_ATTR_PERSIST_APP OD_PERSIST_APP_t OD_PERSIST_APP;
 
 #ifndef OD_ATTR_OD
 #define OD_ATTR_OD
@@ -509,15 +476,15 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2110 &OD->list[38]
 #define OD_ENTRY_H2111 &OD->list[39]
 #define OD_ENTRY_H2112 &OD->list[40]
-#define OD_ENTRY_H2120 &OD->list[41]
-#define OD_ENTRY_H2121 &OD->list[42]
-#define OD_ENTRY_H2122 &OD->list[43]
-#define OD_ENTRY_H6000 &OD->list[44]
-#define OD_ENTRY_H6001 &OD->list[45]
-#define OD_ENTRY_H6002 &OD->list[46]
-#define OD_ENTRY_H6003 &OD->list[47]
-#define OD_ENTRY_H6004 &OD->list[48]
-#define OD_ENTRY_H6005 &OD->list[49]
+#define OD_ENTRY_H2114 &OD->list[41]
+#define OD_ENTRY_H2115 &OD->list[42]
+#define OD_ENTRY_H6000 &OD->list[43]
+#define OD_ENTRY_H6001 &OD->list[44]
+#define OD_ENTRY_H6002 &OD->list[45]
+#define OD_ENTRY_H6003 &OD->list[46]
+#define OD_ENTRY_H6004 &OD->list[47]
+#define OD_ENTRY_H6005 &OD->list[48]
+#define OD_ENTRY_H6010 &OD->list[49]
 #define OD_ENTRY_H6100 &OD->list[50]
 #define OD_ENTRY_H6101 &OD->list[51]
 #define OD_ENTRY_H6200 &OD->list[52]
@@ -594,15 +561,15 @@ extern OD_ATTR_OD OD_t *OD;
 #define OD_ENTRY_H2110_variableInt32 &OD->list[38]
 #define OD_ENTRY_H2111_variableInt32Save &OD->list[39]
 #define OD_ENTRY_H2112_variableNV_Int32AutoSave &OD->list[40]
-#define OD_ENTRY_H2120_demoRecord &OD->list[41]
-#define OD_ENTRY_H2121_demoStrings &OD->list[42]
-#define OD_ENTRY_H2122_demoDomain &OD->list[43]
-#define OD_ENTRY_H6000_boardType &OD->list[44]
-#define OD_ENTRY_H6001_PSU_CurrentRead &OD->list[45]
-#define OD_ENTRY_H6002_PSU_VoltageRead &OD->list[46]
-#define OD_ENTRY_H6003_PSU_CurentSet &OD->list[47]
-#define OD_ENTRY_H6004_PSU_VoltageSet &OD->list[48]
-#define OD_ENTRY_H6005_PSUModuleTemperature &OD->list[49]
+#define OD_ENTRY_H2114_stationID &OD->list[41]
+#define OD_ENTRY_H2115_screenOffTimeout &OD->list[42]
+#define OD_ENTRY_H6000_boardType &OD->list[43]
+#define OD_ENTRY_H6001_PSU_CurrentRead &OD->list[44]
+#define OD_ENTRY_H6002_PSU_VoltageRead &OD->list[45]
+#define OD_ENTRY_H6003_PSU_CurentSet &OD->list[46]
+#define OD_ENTRY_H6004_PSU_VoltageSet &OD->list[47]
+#define OD_ENTRY_H6005_PSUModuleTemperature &OD->list[48]
+#define OD_ENTRY_H6010_capability &OD->list[49]
 #define OD_ENTRY_H6100_triggerInputX8 &OD->list[50]
 #define OD_ENTRY_H6101_motor &OD->list[51]
 #define OD_ENTRY_H6200_cameraModule0 &OD->list[52]

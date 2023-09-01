@@ -1,5 +1,5 @@
 [FileInfo]
-FileName=DS301_profile2.eds
+FileName=DS301_profile3.eds
 FileVersion=1
 FileRevision=1
 LastEDS=
@@ -8,7 +8,7 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=4:13AM
+ModificationTime=4:20AM
 ModificationDate=09-02-2023
 ModifiedBy=Janez Paternoster
 
