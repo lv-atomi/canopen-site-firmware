@@ -4,7 +4,7 @@
 #include "pwm.h"
 
 PWMPort port={
-  .port={GPIOB, GPIO_PINS_6},	/* PB6 */
+  .port={GPIOB, GPIO_PINS_SOURCE6},	/* PB6 */
   .tmr=TMR4,
   .channel=TMR_SELECT_CHANNEL_1,
   .complementary=FALSE,

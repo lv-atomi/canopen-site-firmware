@@ -39,6 +39,17 @@ void init_gpio_output(IOPort * devport,
   gpio_init(devport->port, &gpio_initstructure);
 }
 
+void gpio_set_input_mode(IOPort * devport, bool_t is_input){
+  uint32_t pinval = is_input ? 0b01 : 0b0101;
+  if (devport->pin_source < 8) {
+    devport->port->cfglr &= (uint32_t)~(0xf << (devport->pin_source * 4));
+    devport->port->cfglr |= (uint32_t)(pinval << (devport->pin_source * 4));
+  } else{
+    devport->port->cfghr &= (uint32_t)~(0xf << ((devport->pin_source - 8) * 4));
+    devport->port->cfghr |= (uint32_t)(pinval << ((devport->pin_source - 8) * 4));
+  }
+}
+
 void init_gpio_mux(IOPort * devport,
 		   gpio_output_type output_type,
 		   gpio_pull_type pull_type,

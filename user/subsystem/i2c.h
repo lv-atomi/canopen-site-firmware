@@ -16,5 +16,6 @@ typedef struct {
 } I2CPort;
 
 void init_i2c(I2CPort *port, uint32_t speed);
+void init_i2c_soft(I2CPort *port);
 
 #endif

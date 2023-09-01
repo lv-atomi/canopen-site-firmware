@@ -1,6 +1,5 @@
 #include "can.h"
 #include "flash.h"
-#include "key.h"
 
 #include "CO_app_STM32.h"
 #include <sys/types.h>

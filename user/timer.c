@@ -1,14 +1,16 @@
 #include "at32f403a_407_clock.h"
+#include "subsystem/keyboard.h"
 #include "timer.h"
 /* #include "key.h" */
 /* #include "oled.h" */
 /* #include "flash.h" */
 #include "can.h"
-//#include <cstdint>
+// #include <cstdint>
+#include "keyboard.h"
 
 crm_clocks_freq_type crm_clocks_freq_struct = {0};
 
-uint16_t TimerCount_1ms = 0;
+/* uint16_t TimerCount_1ms = 0; */
 uint16_t TimerCountms   = 0;
 uint16_t TimerCount = 0;
 uint32_t TimerTick = 0;
@@ -51,35 +53,25 @@ uint32_t get_ticks(void) {
 }
 
 void TMR6_GLOBAL_IRQHandler(void) {
-  if(tmr_flag_get(TMR6, TMR_OVF_FLAG) != RESET)
-  {
+  if(tmr_flag_get(TMR6, TMR_OVF_FLAG) != RESET) {
     /* add user code... */
-    TimerCountms++;
+    /* TimerCountms++; */
     TimerTick++;
+    keyboard_tick();
 
     /* call canopen intervals */
     /* printf("app interrupt\n"); */
     /* canopen_app_interrupt(); */
 
-    if (TimerCountms % 100 == 0) { // 100ms can send circle
-      TimerCount_1ms = 1;
-    }
+    /* if (TimerCountms % 100 == 0) { // 100ms can send circle */
+    /*   TimerCount_1ms = 1; */
+    /* } */
     /* if (TimerCountms % 300 == 0) {// key press circly is 300 ms */
     /*   Key_ScanFun(); */
     /* } */
-    if (TimerCountms > 10000)
-      TimerCountms = 0;
+    /* if (TimerCountms > 10000) */
+    /*   TimerCountms = 0; */
 
-    /* if (keySta.KeyCnt10s >= 1) { */
-    /*   keySta.KeyCnt10s--; */
-    /*   if (keySta.KeyCnt10s == 0) { */
-    /*     keySta.Dismode = 0; */
-    /*     /\* write data to flash *\/ */
-    /*     err_status = */
-    /*         flash_write(TEST_FLASH_ADDRESS_START, buffer_write,
-     * TEST_BUFEER_SIZE); */
-    /*   } */
-    /* } */
   }
   tmr_flag_clear(TMR6, TMR_OVF_FLAG);
 }

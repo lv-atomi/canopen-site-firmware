@@ -5,27 +5,27 @@
 #include "log.h"
 
 IOPort ports[] = {
-  {GPIOA, GPIO_PINS_15},	/* PA15 */
-  {GPIOB, GPIO_PINS_3},	/* PB3 */
-  {GPIOB, GPIO_PINS_4},	/* PB4 */
-  {GPIOB, GPIO_PINS_5},	/* PB5 */
-  {GPIOB, GPIO_PINS_6},	/* PB6 */
+  {GPIOA, GPIO_PINS_SOURCE15},	/* PA15 */
+  {GPIOB, GPIO_PINS_SOURCE3},	/* PB3 */
+  {GPIOB, GPIO_PINS_SOURCE4},	/* PB4 */
+  {GPIOB, GPIO_PINS_SOURCE5},	/* PB5 */
+  {GPIOB, GPIO_PINS_SOURCE6},	/* PB6 */
   
-  {GPIOA, GPIO_PINS_0},	/* PA0 */
-  {GPIOA, GPIO_PINS_1},	/* PA1 */
-  {GPIOA, GPIO_PINS_2},	/* PA2 */
-  {GPIOA, GPIO_PINS_3},	/* PA3 */
-  {GPIOB, GPIO_PINS_0},	/* PB0 */
-  {GPIOB, GPIO_PINS_1},	/* PB1 */
-  {GPIOB, GPIO_PINS_10},	/* PB10 */
-  {GPIOB, GPIO_PINS_11},	/* PB11 */
-  {GPIOB, GPIO_PINS_12},	/* PB12 */
-  {GPIOB, GPIO_PINS_13},	/* PB13 */
-  {GPIOB, GPIO_PINS_15},	/* PB15 */
-  {GPIOB, GPIO_PINS_14},	/* PB14 */
-  {GPIOA, GPIO_PINS_8},	/* PA8 */
-  /* {GPIOA, GPIO_PINS_9},	/\* PA9 *\/ */
-  {GPIOA, GPIO_PINS_10},	/* PA10 */
+  {GPIOA, GPIO_PINS_SOURCE0},	/* PA0 */
+  {GPIOA, GPIO_PINS_SOURCE1},	/* PA1 */
+  {GPIOA, GPIO_PINS_SOURCE2},	/* PA2 */
+  {GPIOA, GPIO_PINS_SOURCE3},	/* PA3 */
+  {GPIOB, GPIO_PINS_SOURCE0},	/* PB0 */
+  {GPIOB, GPIO_PINS_SOURCE1},	/* PB1 */
+  {GPIOB, GPIO_PINS_SOURCE10},	/* PB10 */
+  {GPIOB, GPIO_PINS_SOURCE11},	/* PB11 */
+  {GPIOB, GPIO_PINS_SOURCE12},	/* PB12 */
+  {GPIOB, GPIO_PINS_SOURCE13},	/* PB13 */
+  {GPIOB, GPIO_PINS_SOURCE15},	/* PB15 */
+  {GPIOB, GPIO_PINS_SOURCE14},	/* PB14 */
+  {GPIOA, GPIO_PINS_SOURCE8},	/* PA8 */
+  /* {GPIOA, GPIO_PINS_SOURCE9},	/\* PA9 *\/ */
+  {GPIOA, GPIO_PINS_SOURCE10},	/* PA10 */
 };
 
 int main(void) {
@@ -39,10 +39,9 @@ int main(void) {
     printf("init port%s.",
 	   ports[i].port==GPIOA?"A":"B"
 	   );
-    DumpBinary((uint8_t*)&ports[i].pin, 2);
+    DumpBinary((uint8_t*)&ports[i].pin_source, 2);
     init_gpio_output(&ports[i],
 		     GPIO_OUTPUT_PUSH_PULL,
-		     GPIO_MODE_OUTPUT,
 		     GPIO_DRIVE_STRENGTH_STRONGER);
   }
   while (1) {

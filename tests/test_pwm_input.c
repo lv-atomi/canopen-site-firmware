@@ -4,21 +4,21 @@
 #include "pwm.h"
 
 PWMPort port_ch1={
-  .port={GPIOB, GPIO_PINS_6},	/* PB6 */
+  .port={GPIOB, GPIO_PINS_SOURCE6},	/* PB6 */
   .tmr=TMR4,
   .channel=TMR_SELECT_CHANNEL_1,
   .complementary=FALSE,
 };
 
 PWMPort port_ch2={
-  .port={GPIOB, GPIO_PINS_14},	/* PB14 */
+  .port={GPIOB, GPIO_PINS_SOURCE14},	/* PB14 */
   .tmr=TMR12,
   .channel=TMR_SELECT_CHANNEL_1,
   .complementary=FALSE,
 };
 
 PWMPort port_ch3={
-  .port={GPIOB, GPIO_PINS_15},	/* PB15 */
+  .port={GPIOB, GPIO_PINS_SOURCE15},	/* PB15 */
   .tmr=TMR12,
   .channel=TMR_SELECT_CHANNEL_2,
   .complementary=FALSE,

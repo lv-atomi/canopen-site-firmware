@@ -3,20 +3,23 @@
 #include "timer.h"
 #include "motor.h"
 
-MotorBrush motor_brush = {
-  .disable = {GPIOB, GPIO_PINS_14},
-  .pwm_a = {
-    .port = {GPIOA, GPIO_PINS_9},
-    .tmr = TMR1,
-    .channel = TMR_SELECT_CHANNEL_1,
-    .complementary = TRUE,
+MotorUnified motor_brush = {
+  .brush = {
+    .disable = {GPIOB, GPIO_PINS_SOURCE14},
+    .pwm_a = {
+      .port = {GPIOA, GPIO_PINS_SOURCE9},
+      .tmr = TMR1,
+      .channel = TMR_SELECT_CHANNEL_1,
+      .complementary = TRUE,
+    },
+    .pwm_b = {
+      .port = {GPIOB, GPIO_PINS_SOURCE0},
+      .tmr = TMR1,
+      .channel = TMR_SELECT_CHANNEL_1C,
+      .complementary = TRUE,
+    }
   },
-  .pwm_b = {
-    .port = {GPIOB, GPIO_PINS_0},
-    .tmr = TMR1,
-    .channel = TMR_SELECT_CHANNEL_1C,
-    .complementary = TRUE,
-  }
+  .is_brushless = 0
 };
 
 int main(void) {

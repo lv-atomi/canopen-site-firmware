@@ -27,6 +27,8 @@ void init_gpio_input(IOPort * devport,
 void init_gpio_analogy(IOPort *devport, gpio_pull_type pull_type,
                        gpio_drive_type drive_strength);
 
+void gpio_set_input_mode(IOPort *devport, bool_t is_input);
+
 void gpio_set(IOPort * devport, bool_t bit);
 bool_t gpio_read(IOPort *devport);
 

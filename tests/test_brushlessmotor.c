@@ -3,20 +3,23 @@
 #include "timer.h"
 #include "motor.h"
 
-MotorBrushless motor_burshless = {
-  .direction = {GPIOB, GPIO_PINS_1},
-  .speed_sense ={
-    .port = {GPIOA, GPIO_PINS_9},
-    .tmr = TMR1,
-    .channel = TMR_SELECT_CHANNEL_2,
-    .complementary = FALSE,
+MotorUnified motor_burshless = {
+  .brushless = {
+    .direction = {GPIOB, GPIO_PINS_SOURCE1},
+    .speed_sense ={
+      .port = {GPIOA, GPIO_PINS_SOURCE9},
+      .tmr = TMR1,
+      .channel = TMR_SELECT_CHANNEL_2,
+      .complementary = FALSE,
+    },
+    .speed_set ={
+      .port = {GPIOB, GPIO_PINS_SOURCE0},
+      .tmr = TMR3,
+      .channel = TMR_SELECT_CHANNEL_3,
+      .complementary = FALSE,
+    }
   },
-  .speed_set ={
-    .port = {GPIOB, GPIO_PINS_0},
-    .tmr = TMR3,
-    .channel = TMR_SELECT_CHANNEL_3,
-    .complementary = FALSE,
-  }
+  .is_brushless = 1
 };
 
 int main(void) {
