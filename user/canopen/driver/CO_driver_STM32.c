@@ -957,7 +957,7 @@ void CAN1_SE_IRQHandler(void) {
       printf("reconfigure can\n");
       can_reset(CAN1);
       /* need_reconfigure_can = 1; */
-      /* can_configuration(); */
+      can_configuration();
     }
     err_index=1;
   }

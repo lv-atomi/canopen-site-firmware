@@ -131,7 +131,7 @@ const struct lfs_config cfg = {
     .block_count = 64,
     .cache_size = 32,
     .lookahead_size = 32,
-    .block_cycles = 100,
+    .block_cycles = 10000,
 };
 
 /*

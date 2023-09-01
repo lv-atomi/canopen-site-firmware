@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/9/2 4:20:52
+        Modified:     2023/9/2 5:00:51
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -72,14 +72,9 @@
 *******************************************************************************/
 typedef struct {
     uint32_t x1000_deviceType;
-    uint8_t x1001_errorRegister;
     uint32_t x1005_COB_ID_SYNCMessage;
     uint32_t x1006_communicationCyclePeriod;
     uint32_t x1007_synchronousWindowLength;
-    uint8_t x1010_storeParameters_sub0;
-    uint32_t x1010_storeParameters[OD_CNT_ARR_1010];
-    uint8_t x1011_restoreDefaultParameters_sub0;
-    uint32_t x1011_restoreDefaultParameters[OD_CNT_ARR_1011];
     uint32_t x1012_COB_IDTimeStampObject;
     uint32_t x1014_COB_ID_EMCY;
     uint16_t x1015_inhibitTimeEMCY;
@@ -94,11 +89,6 @@ typedef struct {
         uint32_t serialNumber;
     } x1018_identity;
     uint8_t x1019_synchronousCounterOverflowValue;
-    struct {
-        uint8_t highestSub_indexSupported;
-        uint32_t COB_IDClientToServerRx;
-        uint32_t COB_IDServerToClientTx;
-    } x1200_SDOServerParameter;
     struct {
         uint8_t highestSub_indexSupported;
         uint32_t COB_IDClientToServerTx;
@@ -249,6 +239,21 @@ typedef struct {
         uint32_t applicationObject7;
         uint32_t applicationObject8;
     } x1A03_TPDOMappingParameter;
+    uint8_t x2114_stationID;
+    uint16_t x2115_screenOffTimeout;
+} OD_PERSIST_COMM_t;
+
+typedef struct {
+    uint8_t x1001_errorRegister;
+    uint8_t x1010_storeParameters_sub0;
+    uint32_t x1010_storeParameters[OD_CNT_ARR_1010];
+    uint8_t x1011_restoreDefaultParameters_sub0;
+    uint32_t x1011_restoreDefaultParameters[OD_CNT_ARR_1011];
+    struct {
+        uint8_t highestSub_indexSupported;
+        uint32_t COB_IDClientToServerRx;
+        uint32_t COB_IDServerToClientTx;
+    } x1200_SDOServerParameter;
     uint8_t x2100_errorStatusBits[1];
     uint32_t x2106_power_onCounter;
     uint8_t x2110_variableInt32_sub0;
@@ -257,8 +262,6 @@ typedef struct {
     int32_t x2111_variableInt32Save[OD_CNT_ARR_2111];
     uint8_t x2112_variableNV_Int32AutoSave_sub0;
     int32_t x2112_variableNV_Int32AutoSave[OD_CNT_ARR_2112];
-    uint8_t x2114_stationID;
-    uint16_t x2115_screenOffTimeout;
     uint8_t x6000_boardType;
     uint32_t x6001_PSU_CurrentRead;
     uint32_t x6002_PSU_VoltageRead;
@@ -420,6 +423,11 @@ typedef struct {
         uint32_t targetSpeed;
     } x6705_FAN0;
 } OD_RAM_t;
+
+#ifndef OD_ATTR_PERSIST_COMM
+#define OD_ATTR_PERSIST_COMM
+#endif
+extern OD_ATTR_PERSIST_COMM OD_PERSIST_COMM_t OD_PERSIST_COMM;
 
 #ifndef OD_ATTR_RAM
 #define OD_ATTR_RAM

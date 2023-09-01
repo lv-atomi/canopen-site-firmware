@@ -5,7 +5,7 @@
 #include <sys/types.h>
 
 /* uint16_t testkey1 = 0, testkey2 = 0; */
-extern uint8_t need_reconfigure_can;
+//extern uint8_t need_reconfigure_can;
 
 SysParm_TypeDef gSysParm;
 SysEprom_TypeDef gSysEpromData;
@@ -43,7 +43,7 @@ void can_configuration(void) {
   can_baudrate_type can_baudrate_struct;
   can_filter_init_type can_filter_init_struct;
 
-  need_reconfigure_can = 0;
+  //need_reconfigure_can = 0;
   crm_periph_clock_enable(CRM_CAN1_PERIPH_CLOCK, TRUE);
   /* can base init */
   can_default_para_init(&can_base_struct);

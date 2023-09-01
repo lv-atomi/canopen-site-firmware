@@ -8,7 +8,7 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=4:20AM
+ModificationTime=4:55AM
 ModificationDate=09-02-2023
 ModifiedBy=Janez Paternoster
 
@@ -57,7 +57,7 @@ SupportedObjects=3
 [1000]
 ParameterName=Device type
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=ro
 DefaultValue=0x000F0191
@@ -75,7 +75,7 @@ PDOMapping=1
 [1018]
 ParameterName=Identity
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x5
 
 [1018sub0]
@@ -358,7 +358,7 @@ PDOMapping=0
 [1005]
 ParameterName=COB-ID SYNC message
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0x00000080
@@ -367,7 +367,7 @@ PDOMapping=0
 [1006]
 ParameterName=Communication cycle period
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0
@@ -376,7 +376,7 @@ PDOMapping=0
 [1007]
 ParameterName=Synchronous window length
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0
@@ -550,7 +550,7 @@ PDOMapping=0
 [1012]
 ParameterName=COB-ID time stamp object
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0x00000100
@@ -559,7 +559,7 @@ PDOMapping=0
 [1014]
 ParameterName=COB-ID EMCY
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0007
 AccessType=rw
 DefaultValue=0x80+$NODEID
@@ -568,7 +568,7 @@ PDOMapping=0
 [1015]
 ParameterName=Inhibit time EMCY
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0006
 AccessType=rw
 DefaultValue=0
@@ -577,7 +577,7 @@ PDOMapping=0
 [1016]
 ParameterName=Consumer heartbeat time
 ObjectType=0x8
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1016sub0]
@@ -664,7 +664,7 @@ PDOMapping=0
 [1017]
 ParameterName=Producer heartbeat time
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0006
 AccessType=rw
 DefaultValue=0
@@ -673,7 +673,7 @@ PDOMapping=0
 [1019]
 ParameterName=Synchronous counter overflow value
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0005
 AccessType=rw
 DefaultValue=0
@@ -715,7 +715,7 @@ PDOMapping=1
 [1280]
 ParameterName=SDO client parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x4
 
 [1280sub0]
@@ -757,7 +757,7 @@ PDOMapping=0
 [1400]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x4
 
 [1400sub0]
@@ -799,7 +799,7 @@ PDOMapping=0
 [1401]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x4
 
 [1401sub0]
@@ -841,7 +841,7 @@ PDOMapping=0
 [1402]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x4
 
 [1402sub0]
@@ -883,7 +883,7 @@ PDOMapping=0
 [1403]
 ParameterName=RPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x4
 
 [1403sub0]
@@ -925,7 +925,7 @@ PDOMapping=0
 [1600]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1600sub0]
@@ -1012,7 +1012,7 @@ PDOMapping=0
 [1601]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1601sub0]
@@ -1099,7 +1099,7 @@ PDOMapping=0
 [1602]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1602sub0]
@@ -1186,7 +1186,7 @@ PDOMapping=0
 [1603]
 ParameterName=RPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1603sub0]
@@ -1273,7 +1273,7 @@ PDOMapping=0
 [1800]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x6
 
 [1800sub0]
@@ -1333,7 +1333,7 @@ PDOMapping=0
 [1801]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x6
 
 [1801sub0]
@@ -1393,7 +1393,7 @@ PDOMapping=0
 [1802]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x6
 
 [1802sub0]
@@ -1453,7 +1453,7 @@ PDOMapping=0
 [1803]
 ParameterName=TPDO communication parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x6
 
 [1803sub0]
@@ -1513,7 +1513,7 @@ PDOMapping=0
 [1A00]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1A00sub0]
@@ -1600,7 +1600,7 @@ PDOMapping=0
 [1A01]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1A01sub0]
@@ -1687,7 +1687,7 @@ PDOMapping=0
 [1A02]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1A02sub0]
@@ -1774,7 +1774,7 @@ PDOMapping=0
 [1A03]
 ParameterName=TPDO mapping parameter
 ObjectType=0x9
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 SubNumber=0x9
 
 [1A03sub0]
@@ -3993,7 +3993,7 @@ PDOMapping=0
 [2114]
 ParameterName=StationID
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0005
 AccessType=rw
 DefaultValue=0
@@ -4002,7 +4002,7 @@ PDOMapping=0
 [2115]
 ParameterName=ScreenOffTimeout
 ObjectType=0x7
-;StorageLocation=RAM
+;StorageLocation=PERSIST_COMM
 DataType=0x0006
 AccessType=rw
 DefaultValue=0

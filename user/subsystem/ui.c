@@ -32,7 +32,7 @@ KeyboardPort ui_select = {
 /* 3. screen off */
 
 /* state machine
- * 0-> init status            go->5
+ * 0-> init status            go->1
  * 1-> show system status     longpress enter-> 2, timeout -> 6
  * 2-> show menu.status       select ->3, longpress enter ->1
  * 3-> show menu.setup        select ->4, longpress enter ->7
@@ -66,7 +66,7 @@ enum UIState{
 
 enum UIState ui_state = UI_INIT, last_ui_state = UI_INIT;
 uint8_t station_id=0;
-uint8_t station_id_stored=1;
+//uint8_t station_id_stored=1;
 enum SCREENTIMEOUT{
   SECOND_5,
   SECOND_10,
@@ -81,9 +81,14 @@ enum SCREENTIMEOUT{
 };
 
 enum SCREENTIMEOUT screen_timeout = SECOND_5;
-enum SCREENTIMEOUT screen_timeout_stored = SECOND_5;
+//enum SCREENTIMEOUT screen_timeout_stored = SECOND_5;
 uint16_t screen_timeout_current = 0;
 uint16_t screen_timeout_current_ms_counter = 0;
+
+store_id_cb func_store_id_cb = NULL;
+get_id_cb func_get_id_cb = NULL;
+store_timeout_cb func_store_timeout_cb = NULL;
+get_timeout_cb func_get_timeout_cb = NULL;
 
 uint16_t timeout_to_seconds(enum SCREENTIMEOUT timeout){
   return screen_timeout == SECOND_5 ? 5 :		\
@@ -97,7 +102,13 @@ uint16_t timeout_to_seconds(enum SCREENTIMEOUT timeout){
     screen_timeout == MINUTE_30 ? 1800 : 1800;
 }
 
-void init_ui(void){
+void init_ui(store_id_cb f1, get_id_cb f2, store_timeout_cb f3, get_timeout_cb f4){
+
+  func_store_id_cb = f1;
+  func_get_id_cb = f2;
+  func_store_timeout_cb = f3;
+  func_get_timeout_cb = f4;
+  
   init_keyboard(&ui_enter);
   init_keyboard(&ui_select);
   init_oled(&ui_oled);
@@ -138,7 +149,7 @@ void ui_update(void){
     oled_showstring(&ui_oled, 0, 0, "Status", 0, 8, 1);
     snprintf(buf, 20, "StationID:");//, station_id_stored);
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
-    snprintf(buf, 20, "%d", station_id_stored);
+    snprintf(buf, 20, "%d", func_get_id_cb != NULL ? (*func_get_id_cb)() : 0);
     oled_showstring(&ui_oled, 0, 20, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
@@ -207,9 +218,6 @@ void ui_update(void){
 
 void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS status){
   switch (ui_state) {
-  case UI_INIT:
-    ui_state = UI_DO_SCREENOFF;
-    break;
   case UI_DO_SHOW_STATUS:
     break;
   case UI_SHOW_STATUS:
@@ -231,7 +239,7 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
       ui_state = UI_MENU_SCREENOFF;
     else if ((port == &ui_enter) && (status == KEY_LONGPRESS)) {
       ui_state = UI_SETTING_STATION_ID;
-      station_id = station_id_stored;
+      station_id = func_get_id_cb != NULL ? (*func_get_id_cb)() : 0; //station_id_stored;
       keyboard_suppress_longpress(&ui_enter);
     }
     break;
@@ -249,7 +257,7 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
     else if ((port == &ui_enter) && (status == KEY_LONGPRESS)) {
       keyboard_suppress_longpress(&ui_enter);
       ui_state = UI_SETTING_SCREEN_TIMEOUT;
-      screen_timeout = screen_timeout_stored;
+      screen_timeout = func_get_timeout_cb != NULL ? (*func_get_timeout_cb)() : 0;//screen_timeout_stored;
     }
     break;
   case UI_DO_SCREENOFF:
@@ -257,11 +265,12 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
     ui_state = UI_WAITING_FOR_WAKEUP;
     break;
   case UI_WAITING_FOR_WAKEUP:
-    if ((port == &ui_select) && (status == KEY_CLICKED))
+    if ((port == &ui_select) && (status == KEY_CLICKED)){
       ui_state = UI_MENU_STATUS;
+      oled_display_on(&ui_oled);
+    }
     else if ((port == &ui_enter) && (status == KEY_CLICKED))
       ui_state = UI_DO_SHOW_STATUS;
-    oled_display_on(&ui_oled);
     break;
   case UI_SETTING_STATION_ID:
     if ((port == &ui_select) &&
@@ -278,7 +287,8 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
     break;
   case UI_DO_WRITE_STATION_ID:
     ui_state = UI_DO_SHOW_STATUS;
-    station_id_stored = station_id;
+    //station_id_stored = station_id;
+    func_store_id_cb != NULL ? (*func_store_id_cb)(station_id) : 0;
     break;
   case UI_SETTING_SCREEN_TIMEOUT:
     if ((port == &ui_select) &&
@@ -290,26 +300,27 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
       ui_state = UI_DO_SHOW_STATUS;
     else if ((port == &ui_enter) && (status == KEY_LONGPRESS)) {
       ui_state = UI_DO_SHOW_STATUS;
-      screen_timeout_stored = screen_timeout;
+      //screen_timeout_stored = screen_timeout;
+      func_store_timeout_cb != NULL ? (*func_store_timeout_cb)(screen_timeout) : 0;
       keyboard_suppress_longpress(&ui_enter);
     }
     break;
+  default:
   }
-
-  if (last_ui_state != ui_state) { /* update ui */
-    oled_clear(&ui_oled);
-    ui_update();
-  }
-  last_ui_state = ui_state;
 }
 
 void tick_triggered_state_transfer(){
   switch (ui_state){
+  case UI_INIT:
+    ui_state = UI_DO_SHOW_STATUS;
+    //printf("UI_INIT -> UI_DO_SHOW_STATUS\n");
+    break;
   case UI_DO_SHOW_STATUS:
     screen_timeout_current_ms_counter = 1000;
-    screen_timeout_current = timeout_to_seconds(screen_timeout_stored);
+    screen_timeout_current = timeout_to_seconds(					       func_get_timeout_cb != NULL ? (*func_get_timeout_cb)() : 0); // screen_timeout_stored);
     ui_state = UI_SHOW_STATUS;
-    /* printf("UI_DO_SHOW_STATUS -> UI_SHOW_STATUS\n"); */
+    oled_display_on(&ui_oled);
+    //printf("UI_DO_SHOW_STATUS -> UI_SHOW_STATUS, %d\n", screen_timeout_current);
     break;
   case UI_SHOW_STATUS:
     if (screen_timeout_current_ms_counter == 0){
@@ -317,7 +328,7 @@ void tick_triggered_state_transfer(){
       if(screen_timeout_current == 0){ /* triggered */
 	ui_state = UI_DO_SCREENOFF;
       }
-      /* printf("screen timout:%d\n", screen_timeout_current); */
+      //printf("screen timout:%d\n", screen_timeout_current);
       screen_timeout_current -= 1;
     } else screen_timeout_current_ms_counter -= 1;
     break;
@@ -340,5 +351,12 @@ bool_t ui_tick(void){		/* per 1ms */
     return 1;
   }
   tick_triggered_state_transfer();
+  
+  if (last_ui_state != ui_state) { /* update ui */
+    oled_clear(&ui_oled);
+    ui_update();
+  }
+  last_ui_state = ui_state;
+
   return 0;
 }
