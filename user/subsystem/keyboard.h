@@ -25,6 +25,7 @@ enum KEY_CAPTURE{
 typedef struct {
   IOPort port;
   uint8_t key_last_val;
+  uint8_t restart;		/* 0=> nothing, 1=> waiting for key press down only*/
   uint16_t count_down;
   enum KEY_CAPTURE capture;
 } KeyboardPort;
@@ -32,5 +33,6 @@ typedef struct {
 void init_keyboard(KeyboardPort * devport);
 void keyboard_tick();		/* called every 1ms */
 bool_t keyboard_get_event(KeyboardPort **triggered_port, enum KEYSTATUS * status);
+void keyboard_suppress_longpress(KeyboardPort *port);
 
 #endif

@@ -63,7 +63,8 @@ void init_keyboard(KeyboardPort *devport) {
   init_gpio_input(&devport->port,
 		  devport->capture == KEY_ACTIVE_LOW ? GPIO_PULL_UP : GPIO_PULL_DOWN,
 		  GPIO_DRIVE_STRENGTH_STRONGER);
-  devport->key_last_val = KEY_RELEASE;
+  devport->key_last_val = KEY_DUMMY;
+  devport->restart = 1;
   if (!queue_inited){
     init_queue(&keyboard_event_queue);
     queue_inited = 1;
@@ -84,37 +85,47 @@ void keyboard_tick(){		/* called every 1ms */
   for (i=0; i<keyboard_monitor_num; i++){
     KeyboardPort *port = monitor[i];
     key_val = gpio_read(&port->port);
-    if (port->key_last_val != key_val){
-      if (((port->capture == KEY_ACTIVE_HIGH) && (key_val)) || \
-	  ((port->capture == KEY_ACTIVE_LOW) && (!key_val))) { /* something triggered */
+    if (port->key_last_val != key_val) { /* key status changed */
+      /* printf("key_val:%d  last_val: %d  countdown:%d  restart:%d\n", */
+      /* 	     key_val, port->key_last_val,port->count_down, port->restart); */
+
+      /* restart:1 => waiting for key press down */
+      if (((port->capture == KEY_ACTIVE_HIGH) && (key_val)) ||		\
+	   ((port->capture == KEY_ACTIVE_LOW) && (!key_val))) { /* something triggered */
 	if (port->count_down > 1) port->count_down -=1;	  /* soft schmitt trigger */
 	else if (port->count_down == 1){		  /* triggered! */
 	  port->key_last_val = key_val;
 	  triggered_port = port;
 	  status = KEY_PRESS;
-
+	  port->restart = 0;
 	  port->count_down = REPEATIVE_TRIGGER_CYCLE;
 	} else {		/* init schmitt trigger */
 	  port->count_down = SCHMITT_TRIGGER_PRESS - 1;
 	}
-      } else if (((port->capture == KEY_ACTIVE_HIGH) && (!key_val)) || \
-		 ((port->capture == KEY_ACTIVE_LOW) && (key_val))) { /* something released */
+      } else if (((port->capture == KEY_ACTIVE_HIGH) && (!key_val)) ||	\
+		  ((port->capture == KEY_ACTIVE_LOW) && (key_val))) { /* something released */
 	if (port->count_down > 2) port->count_down -=1;	  /* soft schmitt trigger */
 	else if (port->count_down == 2){		  /* released detect, send clicked */
 	  port->count_down--;
-	  triggered_port = port;
-	  status = KEY_CLICKED;
+	  if (!port->restart){
+	    triggered_port = port;
+	    status = KEY_CLICKED;
+	  }
 	} else if (port->count_down == 1){ /* released detect again, send release */
 	  port->count_down = 0;
-	  triggered_port = port;
-	  status = KEY_RELEASE;
 	  port->key_last_val = key_val;
+          port->restart = 1;
+          if (!port->restart){
+	    triggered_port = port;
+	    status = KEY_RELEASE;
+	  }
 	} else {		/* init schmitt trigger */
 	  port->count_down = SCHMITT_TRIGGER_PRESS;
 	}
       }
-    } else if(((port->capture == KEY_ACTIVE_HIGH) && (key_val)) || \
-	      ((port->capture == KEY_ACTIVE_LOW) && (!key_val))) { /* repeative? */
+    } else if (!(port->restart) &&					\
+	       (((port->capture == KEY_ACTIVE_HIGH) && (key_val)) ||	\
+		((port->capture == KEY_ACTIVE_LOW) && (!key_val)))) { /* repeative? */
       if (port->count_down == 1) {			       /* need to send repeative click */
 	triggered_port = port;
 	status = KEY_LONGPRESS;
@@ -126,6 +137,12 @@ void keyboard_tick(){		/* called every 1ms */
   if (queue_inited && (status != KEY_DUMMY)) {
     queue_put(&keyboard_event_queue, status, triggered_port);
   }
+}
+
+void keyboard_suppress_longpress(KeyboardPort *port){
+  port->count_down = 0;
+  port->key_last_val = gpio_read(&port->port);
+  port->restart = 1;
 }
 
 bool_t keyboard_get_event(KeyboardPort **triggered_port, enum KEYSTATUS * status){

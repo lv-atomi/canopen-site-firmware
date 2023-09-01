@@ -3,6 +3,7 @@
 #include "log.h"
 #include "i2c_soft.h"
 #include "oledfont.h"
+#include <string.h>
 
 #define OLED_CMD    0
 #define OLED_DATA   1
@@ -80,28 +81,21 @@ void oled_drawpoint(OLEDPort * devport, uint8_t x, uint8_t y, uint8_t t) {
 
 
 void oled_refresh(OLEDPort * devport) {
-  uint8_t i, n;
-  uint8_t * gram = (uint8_t *)devport->OLED_GRAM;
+  uint8_t i, n, old;
+  uint8_t * gram = NULL;
   for (i = 0; i < 5; i++) {
+    gram = (uint8_t *)(&devport->OLED_GRAM[i][0]);
     oled_write_register_byte(devport, 0xb0 + i, OLED_CMD); //设置行起始地址
     oled_write_register_byte(devport, 0x0c, OLED_CMD);     //设置低列起始地址
     oled_write_register_byte(devport, 0x11, OLED_CMD);     //设置高列起始地址
-    
+
+    old = gram[-1];
     gram[-1] = 0x40;		/* WARNING: access out of oled_gram, that's why we must declare padding byte in OLEDPort structure */
     i2c_master_transmit_soft(&devport->i2c,
 			     gram-1,
 			     72+1,
 			     0);
-    /* I2C_Start(); */
-    /* Send_Byte(0x78); */
-    /* I2C_WaitAck(); */
-    /* Send_Byte(0x40); */
-    /* I2C_WaitAck(); */
-    /* for (n = 0; n < 72; n++) { */
-    /*   Send_Byte(devport->OLED_GRAM[n][i]); */
-    /*   I2C_WaitAck(); */
-    /* } */
-    /* I2C_Stop(); */
+    gram[-1] = old;
   }
 }
 
@@ -143,6 +137,7 @@ void oled_showchar(OLEDPort * devport,
     } //调用2412字体
     else
       return;
+ 
     for (m = 0; m < 8; m++) {
       if (temp & 0x01)
         oled_drawpoint(devport, x, y, mode);
@@ -161,10 +156,12 @@ void oled_showchar(OLEDPort * devport,
 }
 
 void oled_showstring(OLEDPort *devport,
-		     uint8_t x, uint8_t y, char *str, uint16_t strlen,
+		     uint8_t x, uint8_t y, char *str,
+		     uint16_t len, /* 0-> auto */
 		     uint8_t font_size, uint8_t mode) {
   char * chr = str;
-  while ((*chr >= ' ') && (*chr <= '~') && ((chr - str) < strlen)) //判断是不是非法字符!
+  if (len == 0) len = strlen(str);
+  while ((*chr >= ' ') && (*chr <= '~') && ((chr - str) < len)) //判断是不是非法字符!
   {
     oled_showchar(devport, x, y, *chr, font_size, mode);
     if (font_size == 8)
@@ -178,10 +175,11 @@ void oled_showstring(OLEDPort *devport,
 
 void oled_clear(OLEDPort * devport) {
   uint8_t i, n;
-  for (i = 0; i < 5; i++) {
-    for (n = 0; n < 72; n++) {
-      devport->OLED_GRAM[i][n] = 0; //清除所有数据
-    }
-  }
+  memset(&devport->OLED_GRAM[0][0], 0, sizeof(devport->OLED_GRAM));
+  /* for (i = 0; i < 5; i++) { */
+  /*   for (n = 0; n < 72; n++) { */
+  /*     devport->OLED_GRAM[i][n] = 0; //清除所有数据 */
+  /*   } */
+  /* } */
   oled_refresh(devport); //更新显示
 }
