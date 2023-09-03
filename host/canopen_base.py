@@ -2,11 +2,6 @@ from canopen import RemoteNode, Network, objectdictionary
 from typing import List
 import time
 
-# node = network.add_node(127, 'delta_servo_dictionary.eds')
-#local_node = canopen.LocalNode(1, '/path/to/master_dictionary.eds')
-#network.add_node(local_node)
-EDS_PATH = '../user/canopen/application/DS301_profile3.eds'
-
 class CanOpenStack:
     def __init__(self, ifname='can0') -> None:
         self.network = Network()
@@ -19,7 +14,7 @@ class CanOpenStack:
     def scan_network(self, verbose=False) -> List[int]:
         self.network.scanner.search()
         # We may need to wait a short while here to allow all nodes to respond
-        time.sleep(1.05)
+        time.sleep(0.05)
         if verbose:
             for node_id in self.network.scanner.nodes:
                 print("Found node %d!" % node_id)
@@ -28,14 +23,9 @@ class CanOpenStack:
     def __del__(self):
         self.network.disconnect()
 
-
-def test_discovery():
+def list_objectdict(nid=127, show_value=False, eds='ASDA_A2_1042sub980_C.eds'):
     cos = CanOpenStack()
-    cos.scan_network(verbose=True)
-
-def test_list_objectdict(nid=127, show_value=False):
-    cos = CanOpenStack()
-    node = cos.add_node(nid, EDS_PATH)
+    node = cos.add_node(nid, eds)
 
     def dump_values(obj, show_value, oaccess):
         for subobj in obj.values():
@@ -66,32 +56,11 @@ def test_list_objectdict(nid=127, show_value=False):
                     display += f' -> {node.sdo[tobj.index].read()}'
             print(display)
                     
+def discovery():
+    cos = CanOpenStack()
+    cos.scan_network(verbose=True)
 
 def dump(node, *names):
     print('  '.join(
         [f'{node.sdo[name].name}: {hex(node.sdo[name].read())}[{bin(node.sdo[name].read())}]' for name in names])
           )
-
-def test_simple(nid=1):
-    cos = CanOpenStack()
-    node = cos.add_node(nid, EDS_PATH)
-    #node.sdo[0x6000].write(3)
-    dump(node, 0x6000)
-
-def test_psu(nid=1):
-    cos = CanOpenStack()
-    node = cos.add_node(nid, EDS_PATH)
-    # node.sdo[0x6004].write(100) # set voltage to 100
-    
-    dump(node, 0x6001)          # PSU current read
-    dump(node, 0x6002)          # PSU voltage read
-    dump(node, 0x6003)          # PSU current set read
-    dump(node, 0x6004)          # PSU voltage set read
-    dump(node, 0x6005)          # at32 temperature read
-    
-if __name__ == '__main__':
-    #test_discovery()
-    #test_list_objectdict(nid=1, show_value=True)
-    #test_simple()
-    test_psu()
-    
