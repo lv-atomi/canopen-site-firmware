@@ -246,6 +246,7 @@ ODR_t OD_getSub(const OD_entry_t *entry, uint8_t subIndex,
     }
     /* Access data from extension specified by application */
     else {
+      /* printf("access extension write:%p\n", entry->extension->write); */
         io->read = entry->extension->read != NULL ?
                    entry->extension->read : OD_readDisabled;
         io->write = entry->extension->write != NULL ?
@@ -325,7 +326,7 @@ ODR_t OD_set_value(const OD_entry_t *entry, uint8_t subIndex, void *val,
 
     if (ret != ODR_OK) return ret;
     if (stream->dataLength != len) return ODR_TYPE_MISMATCH;
-
+    /* printf("od set value func:%p\n", io.write); */
     return io.write(stream, val, len, &countWritten);
 }
 

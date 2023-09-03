@@ -2,6 +2,8 @@
 #include "flash.h"
 
 #include "CO_app_STM32.h"
+#include "timer.h"
+#include <stdint.h>
 #include <sys/types.h>
 
 /* uint16_t testkey1 = 0, testkey2 = 0; */
@@ -126,14 +128,17 @@ void can_configuration(void) {
 /* } */
 
 
-void canopen_init(void){
+void canopen_init(uint8_t station_id){
   static CANopenNodeSTM32 canOpenNodeSTM32;
   canOpenNodeSTM32.CANHandle = CAN1;
   canOpenNodeSTM32.HWInitFunction = can_configuration;
-  canOpenNodeSTM32.desiredNodeID = 1;
+  canOpenNodeSTM32.desiredNodeID = station_id;
   canOpenNodeSTM32.baudrate = 500;
   canopen_app_init(&canOpenNodeSTM32);
-  log_printf("init, canOpenNodeSTM32:%p\n", &canOpenNodeSTM32);
+  log_printf("init, station id:%d baudrate:%d\n",
+	     canOpenNodeSTM32.desiredNodeID,
+	     canOpenNodeSTM32.baudrate);
+  timer_add_tick(canopen_app_interrupt);
 }
 
 /* uint8_t can_read_para(void) { */

@@ -24,6 +24,8 @@
   */
 
 #include "at32f403a_407_board.h"
+#include <stddef.h>
+#include "log.h"
 
 /** @addtogroup AT32F403A_407_board
   * @{
@@ -91,8 +93,8 @@ static __IO uint32_t fac_ms;
   * @retval none
   */
 PUTCHAR_PROTOTYPE
+/* void my_putc(void *p, char ch)   */
 {
-  /* ITM_SendChar(ch); */
   while(usart_flag_get(PRINT_UART, USART_TDBE_FLAG) == RESET);
   usart_data_transmit(PRINT_UART, ch);
   return ch;
@@ -123,6 +125,7 @@ void uart_print_init(uint32_t baudrate)
   setvbuf(stdout, NULL, _IONBF, 0);
 #endif
 
+  /* init_printf(NULL, my_putc); */
   /* enable the uart and gpio clock */
   crm_periph_clock_enable(PRINT_UART_CRM_CLK, TRUE);
   crm_periph_clock_enable(PRINT_UART_TX_GPIO_CRM_CLK, TRUE);

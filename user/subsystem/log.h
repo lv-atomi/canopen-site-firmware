@@ -1,9 +1,11 @@
 #ifndef LOG_H
 #define LOG_H
 
+/* #include "tiny_printf.h" */
 #include <stdio.h>
 #include "board.h"
-#include <stdint.h>
+//#include <stdint.h>
+#include <stddef.h>
 
 #define log_printf(macropar_message, ...)                                      \
   printf(macropar_message, ##__VA_ARGS__)

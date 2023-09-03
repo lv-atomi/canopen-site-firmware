@@ -9,11 +9,14 @@ extern "C" {
 
 
 #define TIME_1MS  10-1
-
-extern uint16_t TimerCount_1ms;
+#define MAX_TICKS 16
+typedef void (*tick_cb)(void) ;
+  
 void Timer_Init(void);
 uint32_t get_ticks(void);
-
+void timer_add_tick(tick_cb);
+void timer_pause(void);
+void timer_resume(void);
 
 #endif
 

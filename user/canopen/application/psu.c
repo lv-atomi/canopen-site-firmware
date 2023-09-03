@@ -1,4 +1,3 @@
-#include <stdio.h>
 //#include "CO_app_STM32.h"
 #include "app_common.h"
 #include "psu.h"

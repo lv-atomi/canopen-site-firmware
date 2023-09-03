@@ -23,7 +23,9 @@
  */
 
 #include "CO_storageLittleFS.h"
+#include "301/CO_driver.h"
 #include "flash.h"
+#include "lfs.h"
 #include "log.h"
 
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
@@ -119,6 +121,12 @@ int block_device_sync(const struct lfs_config *c) {
   return 0;
 }
 
+uint8_t lfs_read_file_buffer[64];
+uint8_t uploadFileName[64];
+uint8_t lfs_read_buffer[64];
+uint8_t lfs_prog_buffer[64];
+uint8_t lfs_lookahead_buffer[64];
+
 // Configuration of the filesystem
 const struct lfs_config cfg = {
     .read = block_device_read,
@@ -129,11 +137,13 @@ const struct lfs_config cfg = {
     .prog_size = 2,
     .block_size = 2048,
     .block_count = 64,
-    .cache_size = 32,
+    .cache_size = 64,
     .lookahead_size = 32,
+    .read_buffer = lfs_read_buffer,
+    .prog_buffer = lfs_prog_buffer,
+    .lookahead_buffer = lfs_lookahead_buffer,
     .block_cycles = 10000,
 };
-
 /*
  * Function for writing data on "Store parameters" command - OD object 1010
  *
@@ -142,11 +152,22 @@ const struct lfs_config cfg = {
 static ODR_t storeLittleFS(CO_storage_entry_t *entry,
                            CO_CANmodule_t *CANmodule) {
   lfs_file_t file;
+  struct lfs_file_config uploadFileConfig;
 
+
+  log_printf("store:%d\n", entry->len);
+  
+  memset(&uploadFileConfig, 0, sizeof(struct lfs_file_config));
+  uploadFileConfig.buffer = lfs_read_file_buffer;  // use the static buffer
+  uploadFileConfig.attr_count = 0;
+  
   CO_LOCK_OD(CANmodule);
 
-  if (lfs_file_open(&lfs, &file, entry->filename,
-                    LFS_O_RDWR | LFS_O_CREAT) != LFS_ERR_OK) {
+  if (lfs_file_opencfg(&lfs, &file, (char*) entry->filename,
+		       LFS_O_RDWR | LFS_O_CREAT, &uploadFileConfig) != LFS_ERR_OK){
+  
+  /* if (lfs_file_open(&lfs, &file, entry->filename, */
+  /*                   LFS_O_RDWR | LFS_O_CREAT) != LFS_ERR_OK) { */
     CO_UNLOCK_OD(CANmodule);
     return ODR_HW;
   }
@@ -173,10 +194,20 @@ static ODR_t restoreLittleFS(CO_storage_entry_t *entry,
                              CO_CANmodule_t *CANmodule) {
   lfs_file_t file;
 
+  struct lfs_file_config uploadFileConfig;
+
+  /* log_printf("restore:%d\n", entry->len); */
+
+  memset(&uploadFileConfig, 0, sizeof(struct lfs_file_config));
+  uploadFileConfig.buffer = lfs_read_file_buffer;  // use the static buffer
+  uploadFileConfig.attr_count = 0;
+
   CO_LOCK_OD(CANmodule);
 
-  if (lfs_file_open(&lfs, &file, entry->filename,
-                    LFS_O_RDWR) != LFS_ERR_OK) {
+  /* if (lfs_file_open(&lfs, &file, entry->filename, */
+  /*                   LFS_O_RDONLY) != LFS_ERR_OK) { */
+  if (lfs_file_opencfg(&lfs, &file, (char*)entry->filename,
+		       LFS_O_RDONLY, &uploadFileConfig) != LFS_ERR_OK) {
     CO_UNLOCK_OD(CANmodule);
     return ODR_HW;
   }
@@ -208,9 +239,13 @@ CO_storageLittleFS_init(CO_storage_t *storage, CO_CANmodule_t *CANmodule,
   // reformat if we can't mount the filesystem, this should only happen on the
   // first boot
   if (err) {
-    log_printf("little fs format!\n");
+    log_printf("little fs format! %d\n", err);
     lfs_format(&lfs, &cfg);
-    lfs_mount(&lfs, &cfg);
+    err = lfs_mount(&lfs, &cfg);
+    if (err){
+      log_printf("little fs format failed! %d\n", err);
+      return CO_ERROR_SYSCALL;
+    }
   }
 
   ret = CO_storage_init(storage, CANmodule, OD_1010_StoreParameters,
@@ -233,6 +268,7 @@ CO_storageLittleFS_init(CO_storage_t *storage, CO_CANmodule_t *CANmodule,
     // No action needed here if LittleFS is already mounted
   }
 
+  storage->enabled = true;
   return ret;
 }
 

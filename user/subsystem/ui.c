@@ -2,8 +2,12 @@
 #include "gpio.h"
 #include "keyboard.h"
 #include "oled.h"
+#include "timer.h"
 #include <string.h>
-#include <stdio.h>
+#include "log.h"
+
+// forward declare
+bool_t ui_tick(void);
 
 OLEDPort ui_oled = {
     .en = {GPIOC, GPIO_PINS_SOURCE13},
@@ -102,6 +106,10 @@ uint16_t timeout_to_seconds(enum SCREENTIMEOUT timeout){
     screen_timeout == MINUTE_30 ? 1800 : 1800;
 }
 
+void ui_tick_wrap(){
+  while(ui_tick());
+}
+
 void init_ui(store_id_cb f1, get_id_cb f2, store_timeout_cb f3, get_timeout_cb f4){
 
   func_store_id_cb = f1;
@@ -111,20 +119,24 @@ void init_ui(store_id_cb f1, get_id_cb f2, store_timeout_cb f3, get_timeout_cb f
   
   init_keyboard(&ui_enter);
   init_keyboard(&ui_select);
+  /* printf("6.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
   init_oled(&ui_oled);
+  /* printf("7.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
   ui_state = UI_INIT;
   last_ui_state = UI_INIT;
+  /* printf("11.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
+  timer_add_tick(ui_tick_wrap);
 }
 
 void dump_keystate(KeyboardPort * port, enum KEYSTATUS status){
   printf("State:%s, Key:%s  evt:%s\n",
-	 ui_state == UI_INIT ? "init" :			\
+	 ui_state == UI_INIT ? "init" :					\
 	 ui_state == UI_DO_SHOW_STATUS ? "prepare to show status" :	\
-	 ui_state == UI_SHOW_STATUS ? "show status" :	\
-	 ui_state == UI_MENU_STATUS ? "menu status" :	\
-	 ui_state == UI_MENU_SETUP ? "menu setup" :		\
-	 ui_state == UI_MENU_SCREENOFF ? "menu screenoff" :	     \
-	 ui_state == UI_MENU_SCREENOFF_TIMEOUT ? "screen timeout":   \
+	 ui_state == UI_SHOW_STATUS ? "show status" :			\
+	 ui_state == UI_MENU_STATUS ? "menu status" :			\
+	 ui_state == UI_MENU_SETUP ? "menu setup" :			\
+	 ui_state == UI_MENU_SCREENOFF ? "menu screenoff" :		\
+	 ui_state == UI_MENU_SCREENOFF_TIMEOUT ? "screen timeout":	\
 	 ui_state == UI_DO_SCREENOFF ? "do screenoff" :			\
 	 ui_state == UI_WAITING_FOR_WAKEUP ? "waiting for wakeup" :	\
 	 ui_state == UI_SETTING_STATION_ID ? "setting station id" :	\
@@ -147,9 +159,9 @@ void ui_update(void){
     break;
   case UI_SHOW_STATUS:
     oled_showstring(&ui_oled, 0, 0, "Status", 0, 8, 1);
-    snprintf(buf, 20, "StationID:");//, station_id_stored);
+    sprintf(buf, "StationID:");//, station_id_stored);
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
-    snprintf(buf, 20, "%d", func_get_id_cb != NULL ? (*func_get_id_cb)() : 0);
+    sprintf(buf, "%d", func_get_id_cb != NULL ? (*func_get_id_cb)() : 0);
     oled_showstring(&ui_oled, 0, 20, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
@@ -158,28 +170,28 @@ void ui_update(void){
     break;
   case UI_MENU_STATUS:
     oled_showstring(&ui_oled, 0, 0, "Menu", 0, 8, 1);
-    snprintf(buf, 20, "Status");
+    sprintf(buf, "Status");
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
   case UI_MENU_SETUP:
     oled_showstring(&ui_oled, 0, 0, "Menu", 0, 8, 1);
-    snprintf(buf, 20, "Setup");
+    sprintf(buf, "Setup");
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
   case UI_MENU_SCREENOFF:
     oled_showstring(&ui_oled, 0, 0, "Menu", 0, 8, 1);
-    snprintf(buf, 20, "ScreenOff");
+    sprintf(buf, "ScreenOff");
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
   case UI_MENU_SCREENOFF_TIMEOUT:
     oled_showstring(&ui_oled, 0, 0, "Menu", 0, 8, 1);
-    snprintf(buf, 20, "Setup screen");
+    sprintf(buf, "Setup screen");
     //    timeout");
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
-    snprintf(buf, 20, "timeout");
+    sprintf(buf, "timeout");
     oled_showstring(&ui_oled, 0, 20, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
@@ -189,17 +201,18 @@ void ui_update(void){
     break;
   case UI_SETTING_STATION_ID:
     oled_showstring(&ui_oled, 0, 0, "Set stationID", 0, 8, 1);
-    snprintf(buf, 20, "ID:%d", station_id);
+    sprintf(buf, "ID:%d", station_id);
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
     oled_refresh(&ui_oled);
     break;
   case UI_DO_WRITE_STATION_ID:
+    
     break;
   case UI_SETTING_SCREEN_TIMEOUT:
     oled_showstring(&ui_oled, 0, 0, "Set screen", 0, 8, 1);
-    snprintf(buf, 20, "timeout::");
+    sprintf(buf, "timeout::");
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
-    snprintf(buf, 20, "%s",
+    sprintf(buf, "%s",
 	     screen_timeout == SECOND_5 ? "5 sec" :	\
 	     screen_timeout == SECOND_10 ? "10 sec" :	\
 	     screen_timeout == SECOND_30 ? "30 sec" :	\
@@ -285,11 +298,6 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
       keyboard_suppress_longpress(&ui_enter);
     }
     break;
-  case UI_DO_WRITE_STATION_ID:
-    ui_state = UI_DO_SHOW_STATUS;
-    //station_id_stored = station_id;
-    func_store_id_cb != NULL ? (*func_store_id_cb)(station_id) : 0;
-    break;
   case UI_SETTING_SCREEN_TIMEOUT:
     if ((port == &ui_select) &&
         (status == KEY_CLICKED || status == KEY_LONGPRESS)) {
@@ -315,9 +323,14 @@ void tick_triggered_state_transfer(){
     ui_state = UI_DO_SHOW_STATUS;
     //printf("UI_INIT -> UI_DO_SHOW_STATUS\n");
     break;
+  case UI_DO_WRITE_STATION_ID:
+    ui_state = UI_DO_SHOW_STATUS;
+    //station_id_stored = station_id;
+    func_store_id_cb != NULL ? (*func_store_id_cb)(station_id) : 0;
+    break;
   case UI_DO_SHOW_STATUS:
     screen_timeout_current_ms_counter = 1000;
-    screen_timeout_current = timeout_to_seconds(					       func_get_timeout_cb != NULL ? (*func_get_timeout_cb)() : 0); // screen_timeout_stored);
+    screen_timeout_current = timeout_to_seconds(					       func_get_timeout_cb != NULL ? func_get_timeout_cb() : 0); // screen_timeout_stored);
     ui_state = UI_SHOW_STATUS;
     oled_display_on(&ui_oled);
     //printf("UI_DO_SHOW_STATUS -> UI_SHOW_STATUS, %d\n", screen_timeout_current);

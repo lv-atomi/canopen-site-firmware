@@ -1,12 +1,19 @@
 #include "at32f403a_407_clock.h"
+#include "at32f403a_407_misc.h"
 #include "subsystem/keyboard.h"
 #include "timer.h"
 /* #include "key.h" */
 /* #include "oled.h" */
 /* #include "flash.h" */
 #include "can.h"
+#include "log.h"
 // #include <cstdint>
 #include "keyboard.h"
+#include <stdint.h>
+
+tick_cb timer_ticks_cb[MAX_TICKS];
+uint8_t timer_ticks_cb_num = 0;
+
 
 crm_clocks_freq_type crm_clocks_freq_struct = {0};
 
@@ -42,6 +49,9 @@ void Timer_Init()
   nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
   nvic_irq_enable(TMR6_GLOBAL_IRQn, 0, 0);
 
+
+  timer_ticks_cb_num = 0;
+  
   /* enable tmr1 */
   tmr_counter_enable(TMR6, TRUE);
 }
@@ -52,26 +62,31 @@ uint32_t get_ticks(void) {
   return TimerTick;
 }
 
+void timer_add_tick(tick_cb cb) {
+  uint8_t i;
+
+  ASSERT(timer_ticks_cb_num < MAX_TICKS);
+  for (i = 0; i < timer_ticks_cb_num; i++)
+    if (timer_ticks_cb[i] == cb) return;
+  
+  timer_ticks_cb[timer_ticks_cb_num++] = cb;
+}
+
 void TMR6_GLOBAL_IRQHandler(void) {
+  uint8_t i;
   if(tmr_flag_get(TMR6, TMR_OVF_FLAG) != RESET) {
-    /* add user code... */
-    /* TimerCountms++; */
     TimerTick++;
-    keyboard_tick();
-
-    /* call canopen intervals */
-    /* printf("app interrupt\n"); */
-    /* canopen_app_interrupt(); */
-
-    /* if (TimerCountms % 100 == 0) { // 100ms can send circle */
-    /*   TimerCount_1ms = 1; */
-    /* } */
-    /* if (TimerCountms % 300 == 0) {// key press circly is 300 ms */
-    /*   Key_ScanFun(); */
-    /* } */
-    /* if (TimerCountms > 10000) */
-    /*   TimerCountms = 0; */
-
+    for (i=0; i<timer_ticks_cb_num; i++){
+      timer_ticks_cb[i]();
+    }
   }
   tmr_flag_clear(TMR6, TMR_OVF_FLAG);
+}
+
+void timer_pause(void) {
+  nvic_irq_disable(TMR6_GLOBAL_IRQn);
+}
+
+void timer_resume(void){
+  nvic_irq_enable(TMR6_GLOBAL_IRQn, 0, 0);
 }

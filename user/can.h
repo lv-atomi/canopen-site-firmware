@@ -2,6 +2,7 @@
 #define __CAN_H
 
 #include "at32f403a_407.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,7 +52,7 @@ void can_gpio_config(void);
 void can_configuration(void);
 /* void can_transmit_data(void); */
 /* uint8_t can_read_para(void); */
-void canopen_init(void);
+void canopen_init(uint8_t station_id);
 
 
 #ifdef __cplusplus

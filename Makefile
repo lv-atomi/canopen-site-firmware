@@ -1,8 +1,9 @@
 PROJ_NAME=main
 
-DEBUG=1
+DEBUG=0
 
-CC=arm-none-eabi-gcc --specs=nosys.specs -Werror -Wno-unused-variable
+#CC=arm-none-eabi-gcc --specs=nosys.specs --specs=nano.specs -Werror -Wno-unused-variable
+CC=arm-none-eabi-gcc --specs=nosys.specs --specs=nano.specs -fno-builtin-printf -Werror -Wno-unused-variable 
 #GDB=arm-none-eabi-gdb
 GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy
@@ -31,7 +32,7 @@ LDFLAGS = -Wl,-Map,$(OBJDIR)/$(PROJ_NAME).map -g -T$(CMSISROOT)/devicesupport/gc
 DEFINES =  -DAT32F403ACGU7 -DAT_START_F403A_V1	# device & board selection, use APPLICATION
 export DEFINES
 
-LITTLEFSINC = -Iuser/littlefs
+LITTLEFSINC = -Iuser/littlefs -DLFS_NO_MALLOC # -DLFS_YES_TRACE
 CANOPENINC = -I$(CANOPENROOT) -Iuser/canopen -Iuser/canopen/driver -Iuser/canopen/application -Iuser/canopen/module
 CFLAGS += $(DEFINES) -Iuser -Iuser/subsystem -I$(CMSISROOT)/coresupport -I$(CMSISROOT)/devicesupport -I$(DRIVERROOT)/inc $(CANOPENINC) $(LITTLEFSINC)
 

@@ -25,6 +25,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <inttypes.h>
+#include "log.h"
 
 #ifndef LFS_NO_MALLOC
 #include <stdlib.h>

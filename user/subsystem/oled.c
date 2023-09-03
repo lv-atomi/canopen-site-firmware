@@ -20,13 +20,19 @@ void oled_write_register_byte(OLEDPort * devport, uint8_t dat, uint8_t mode) {
 }
 
 void init_oled(OLEDPort *devport) {
+  /* printf("6.1.1:%p %p %p %p\n", OD, &OD->list[9], OD->list[9].extension, OD->list[9].extension->write); */
+  /* printf("6.1.2:%p %p %p %p\n", OD, &OD->list[9], OD->list[9].extension, OD->list[9].extension->write); */
+  /* printf("6.1.3:%p %p %p %p\n", OD, &OD->list[9], OD->list[9].extension, OD->list[9].extension->write); */
   ASSERT(devport);
 
   init_gpio_output(&devport->en,
 		   GPIO_OUTPUT_PUSH_PULL,
 		   GPIO_DRIVE_STRENGTH_STRONGER);
+  /* printf("6.2.init 1010h extension write:%p\n", OD->list[9].extension->write); */
   gpio_set(&devport->en, 0);	/* OLED EN pin ON */
+  /* printf("6.3.init 1010h extension write:%p\n", OD->list[9].extension->write); */
   init_i2c_soft(&devport->i2c);
+  /* printf("6.4.init 1010h extension write:%p\n", OD->list[9].extension->write); */
   
   oled_write_register_byte(devport, 0xAE, OLED_CMD); /*display off*/
   oled_write_register_byte(devport, 0xD5, OLED_CMD); /*set osc division*/
@@ -56,9 +62,14 @@ void init_oled(OLEDPort *devport) {
   oled_write_register_byte(devport, 0xA6, OLED_CMD); /*normal / reverse*/
   oled_write_register_byte(devport, 0x0C, OLED_CMD); /*set lower column address*/
   oled_write_register_byte(devport, 0x11, OLED_CMD); /*set higher column address*/
+  /* printf("6.5.init 1010h extension write:%p\n", OD->list[9].extension->write); */
 
   oled_write_register_byte(devport, 0xAF, OLED_CMD); /*display ON*/
+  /* printf("6.6.init 1010h extension write:%p\n", OD->list[9].extension->write); */
+
   oled_clear(devport);
+  /* printf("6.7.init 1010h extension write:%p\n", OD->list[9].extension->write); */
+
 }
 
 //画点
@@ -67,7 +78,8 @@ void init_oled(OLEDPort *devport) {
 // t:1 填充 0,清空
 void oled_drawpoint(OLEDPort * devport, uint8_t x, uint8_t y, uint8_t t) {
   uint8_t i, m, n;
-  i = y / 8;
+  i = (y / 8) % OLED_GRAM_MAX_Y;
+  x = x % OLED_GRAM_MAX_X;
   m = y % 8;
   n = 1 << m;
   if (t) {
@@ -174,12 +186,8 @@ void oled_showstring(OLEDPort *devport,
 }
 
 void oled_clear(OLEDPort * devport) {
-  uint8_t i, n;
+  //uint8_t i, n;
+  
   memset(&devport->OLED_GRAM[0][0], 0, sizeof(devport->OLED_GRAM));
-  /* for (i = 0; i < 5; i++) { */
-  /*   for (n = 0; n < 72; n++) { */
-  /*     devport->OLED_GRAM[i][n] = 0; //清除所有数据 */
-  /*   } */
-  /* } */
   oled_refresh(devport); //更新显示
 }

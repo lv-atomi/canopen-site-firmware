@@ -15,7 +15,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile3.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-09-02" fileModificationTime="05:00:51.6834040+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q1="http://www.canopen.org/xml/1.1" xsi:type="q1:ProfileBody_Device_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile3.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModifiedBy="Janez Paternoster" fileModificationDate="2023-09-03" fileModificationTime="01:47:21.8567310+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <q1:DeviceIdentity>
         <q1:vendorName>lv</q1:vendorName>
         <q1:vendorID>1234</q1:vendorID>
@@ -965,7 +965,11 @@
             <STRING />
           </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_1010">
-            <label lang="en">Store parameters</label>
+            <description lang="en">Sub-indexes 1 and above:
+* Reading provides information about its storage functionality:
+  * bit 1: If set, CANopen device saves parameters autonomously
+  * bit 0: If set, CANopen device saves parameters on command
+* Writing value 0x65766173 ('s','a','v','e' from LSB to MSB) stores corresponding data.</description>
             <q1:dataTypeIDRef uniqueIDRef="UID_ARR_1010" />
             <q1:property name="CO_countLabel" value="STORAGE" />
           </q1:parameter>
@@ -1005,7 +1009,10 @@
             <q1:defaultValue value="0x00000003" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_OBJ_1011">
-            <label lang="en">Restore default parameters</label>
+            <description lang="en">Sub-indexes 1 and above:
+* Reading provides information about its restoring capability:
+  * bit 0: If set, CANopen device restores parameters
+* Writing value 0x64616F6C ('l','o','a','d' from LSB to MSB) restores corresponding data.</description>
             <q1:dataTypeIDRef uniqueIDRef="UID_ARR_1011" />
           </q1:parameter>
           <q1:parameter uniqueID="UID_SUB_101100">
@@ -3101,7 +3108,7 @@
         <ProfileTechnology>CANopen</ProfileTechnology>
       </ISO15745Reference>
     </ProfileHeader>
-    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile3.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-09-02" fileModificationTime="05:00:51.6834040+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
+    <ProfileBody xmlns:q2="http://www.canopen.org/xml/1.1" xsi:type="q2:ProfileBody_CommunicationNetwork_CANopen" formatName="CANopen" formatVersion="1.0" fileName="DS301_profile3.xdd" fileCreator="Janez Paternoster" fileCreationDate="2020-11-28" fileCreationTime="13:37:00.0000000+08:00" fileModificationDate="2023-09-03" fileModificationTime="01:47:21.8567310+08:00" fileVersion="1" supportedLanguages="en" xmlns="">
       <ApplicationLayers>
         <q2:CANopenObjectList>
           <CANopenObject index="1000" name="Device type" objectType="7" PDOmapping="no" uniqueIDRef="UID_OBJ_1000" />

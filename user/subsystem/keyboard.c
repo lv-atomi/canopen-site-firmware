@@ -1,6 +1,8 @@
 #include "keyboard.h"
 #include "gpio.h"
+#include "timer.h"
 #include <stdint.h>
+#include "log.h"
 
 KeyboardPort * monitor[KEYBOARD_MAX_KEYS];
 uint8_t keyboard_monitor_num=0;
@@ -58,23 +60,6 @@ uint16_t queue_size(CircularQueue *queue) {
 
 CircularQueue keyboard_event_queue;
 
-/* keyboard handling */
-void init_keyboard(KeyboardPort *devport) {
-  init_gpio_input(&devport->port,
-		  devport->capture == KEY_ACTIVE_LOW ? GPIO_PULL_UP : GPIO_PULL_DOWN,
-		  GPIO_DRIVE_STRENGTH_STRONGER);
-  devport->key_last_val = KEY_DUMMY;
-  devport->restart = 1;
-  if (!queue_inited){
-    init_queue(&keyboard_event_queue);
-    queue_inited = 1;
-  }
-  monitor[keyboard_monitor_num++] = devport;
-  if (keyboard_monitor_num == KEYBOARD_MAX_KEYS){
-    printf("Too many monitored keys\n");
-    keyboard_monitor_num = 0;
-  }
-}
 
 void keyboard_tick(){		/* called every 1ms */
   uint8_t i;
@@ -137,6 +122,28 @@ void keyboard_tick(){		/* called every 1ms */
   if (queue_inited && (status != KEY_DUMMY)) {
     queue_put(&keyboard_event_queue, status, triggered_port);
   }
+}
+
+/* keyboard handling */
+void init_keyboard(KeyboardPort *devport) {
+  
+  init_gpio_input(&devport->port,
+		  devport->capture == KEY_ACTIVE_LOW ? GPIO_PULL_UP : GPIO_PULL_DOWN,
+		  GPIO_DRIVE_STRENGTH_STRONGER);
+  devport->key_last_val = KEY_DUMMY;
+  devport->restart = 1;
+  if (!queue_inited){
+    init_queue(&keyboard_event_queue);
+    queue_inited = 1;
+  }
+  timer_pause();
+  monitor[keyboard_monitor_num++] = devport;
+  if (keyboard_monitor_num == KEYBOARD_MAX_KEYS){
+    printf("Too many monitored keys\n");
+    keyboard_monitor_num = 0;
+  }
+  timer_add_tick(keyboard_tick);
+  timer_resume();
 }
 
 void keyboard_suppress_longpress(KeyboardPort *port){

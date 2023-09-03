@@ -23,6 +23,7 @@
  */
 
 #include "storage/CO_storage.h"
+#include "log.h"
 
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
 
@@ -48,6 +49,7 @@ static ODR_t OD_write_1010(OD_stream_t *stream, const void *buf,
     }
 
     uint32_t val = CO_getUint32(buf);
+    /* printf("in od_write_1010:%ld\n", val);  */
     if (val != 0x65766173) {
         return ODR_DATA_TRANSF;
     }
@@ -103,6 +105,7 @@ static ODR_t OD_write_1011(OD_stream_t *stream, const void *buf,
         return ODR_DATA_TRANSF;
     }
 
+    /* printf("in od_write_1011:%ld\n", val); */
     /* loop through entries and store relevant */
     uint8_t found = 0;
     ODR_t returnCode = ODR_OK;
@@ -156,6 +159,7 @@ CO_ReturnError_t CO_storage_init(CO_storage_t *storage,
         storage->OD_1010_extension.object = storage;
         storage->OD_1010_extension.read = OD_readOriginal;
         storage->OD_1010_extension.write = OD_write_1010;
+	/* printf("0.init 1010h extension write:%p\n", storage->OD_1010_extension.write); */
         OD_extension_init(OD_1010_StoreParameters, &storage->OD_1010_extension);
     }
 

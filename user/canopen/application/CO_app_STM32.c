@@ -26,7 +26,6 @@
  */
 #include "CO_app_STM32.h"
 #include "CANopen.h"
-#include <stdio.h>
 #include <inttypes.h>
 
 #include "CO_storageLittleFS.h"
@@ -66,9 +65,9 @@ CO_ReturnError_t err;
 
 
 CO_ReturnError_t app_programStart() {
-  ASSERT(app_psu_init() == CO_ERROR_NO);
+  //ASSERT(app_psu_init() == CO_ERROR_NO);
   
-  ASSERT(app_stackable_module_init() == CO_ERROR_NO);
+  //ASSERT(app_stackable_module_init() == CO_ERROR_NO);
   return CO_ERROR_NO;
 }
 
@@ -87,8 +86,8 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
   canopenNodeSTM32 = _canopenNodeSTM32;
 
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
-  CO_storage_t storage;
-  CO_storage_entry_t storageEntries[] = {
+  static CO_storage_t storage;
+  static CO_storage_entry_t storageEntries[] = {
       {.addr = &OD_PERSIST_COMM,
        .len = sizeof(OD_PERSIST_COMM),
        .subIndexOD = 2,
@@ -119,7 +118,7 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
     log_printf("Error: Can't allocate memory\n");
     return 1;
   } else {
-    log_printf("Allocated %lu bytes for CANopen objects\n", heapMemoryUsed);
+    log_printf("Allocated %ld bytes for CANopen objects\n", heapMemoryUsed);
   }
 
   canopenNodeSTM32->canOpenStack = CO;
@@ -154,6 +153,7 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
   
   app_communicationReset(CO);
   canopen_app_resetCommunication();
+  timer_add_tick(canopen_app_interrupt);
   return 0;
 }
 
@@ -249,7 +249,7 @@ int canopen_app_resetCommunication() {
   CO_CANsetNormalMode(CO->CANmodule);
 
   log_printf("CANopenNode - Running...\n");
-  fflush(stdout);
+  //fflush(stdout);
   time_old = time_current = get_ticks();
   return 0;
 }
@@ -313,5 +313,4 @@ void canopen_app_interrupt(void) {
   }
   CO_UNLOCK_OD(CO->CANmodule);
   /* log_printf("leave app_interrupt\n"); */
-
 }
