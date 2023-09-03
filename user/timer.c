@@ -22,13 +22,6 @@ uint16_t TimerCountms   = 0;
 uint16_t TimerCount = 0;
 uint32_t TimerTick = 0;
 
-/* extern KeyPressMode keySta; */
-/* error_status err_status; */
-/* extern uint16_t buffer_write[TEST_BUFEER_SIZE]; */
-/* extern uint16_t buffer_read[TEST_BUFEER_SIZE]; */
-extern SysEprom_TypeDef gSysEpromData;
-
-extern void systick_handler(void);
 
 void Timer_Init()
 {
@@ -47,16 +40,14 @@ void Timer_Init()
 
   /* tmr1 overflow interrupt nvic init */
   nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
-  nvic_irq_enable(TMR6_GLOBAL_IRQn, 0, 0);
+  nvic_irq_enable(TMR6_GLOBAL_IRQn, 7, 7);
 
 
   timer_ticks_cb_num = 0;
   
-  /* enable tmr1 */
+  /* enable tmr6 */
   tmr_counter_enable(TMR6, TRUE);
 }
-
-extern void canopen_app_interrupt(void);
 
 uint32_t get_ticks(void) {
   return TimerTick;
@@ -88,5 +79,5 @@ void timer_pause(void) {
 }
 
 void timer_resume(void){
-  nvic_irq_enable(TMR6_GLOBAL_IRQn, 0, 0);
+  nvic_irq_enable(TMR6_GLOBAL_IRQn, 7, 7);
 }

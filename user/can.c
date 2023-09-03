@@ -6,15 +6,6 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-/* uint16_t testkey1 = 0, testkey2 = 0; */
-//extern uint8_t need_reconfigure_can;
-
-SysParm_TypeDef gSysParm;
-SysEprom_TypeDef gSysEpromData;
-uint16_t buffer_write[TEST_BUFEER_SIZE]; //[0]:ID; [1]:Voltage
-uint16_t buffer_read[TEST_BUFEER_SIZE];  //[0]:ID; [1]:Voltage
-can_type hcan;
-
 void can_gpio_config(void) {
   gpio_init_type gpio_init_struct;
 
@@ -106,78 +97,17 @@ void can_configuration(void) {
   can_interrupt_enable(CAN1, CAN_EOIEN_INT, TRUE);
 }
 
-/* void can_transmit_data(void) { */
-/*   uint8_t transmit_mailbox; */
-/*   can_tx_message_type tx_message_struct; */
-/*   tx_message_struct.standard_id = gSysParm.basePara.CanDataId; */
-/*   tx_message_struct.extended_id = 0; */
-/*   tx_message_struct.id_type = CAN_ID_STANDARD; */
-/*   tx_message_struct.frame_type = CAN_TFT_DATA; */
-/*   tx_message_struct.dlc = 8; */
-/*   tx_message_struct.data[0] = testkey1; // gSysParm.canRxBuf[0]; */
-/*   tx_message_struct.data[1] = testkey2; // gSysParm.canRxBuf[1]; */
-/*   tx_message_struct.data[2] = gSysParm.canRxBuf[2]; */
-/*   tx_message_struct.data[3] = gSysParm.canRxBuf[3]; */
-/*   tx_message_struct.data[4] = gSysParm.canRxBuf[4]; */
-/*   tx_message_struct.data[5] = gSysParm.canRxBuf[5]; */
-/*   tx_message_struct.data[6] = gSysParm.canRxBuf[6]; */
-/*   tx_message_struct.data[7] = gSysParm.canRxBuf[7]; */
-/*   transmit_mailbox = can_message_transmit(CAN1, &tx_message_struct); */
-/*   //  while(can_transmit_status_get(CAN1, */
-/*   //  (can_tx_mailbox_num_type)transmit_mailbox) != CAN_TX_STATUS_SUCCESSFUL); */
-/* } */
-
-
-void canopen_init(uint8_t station_id){
+void canopen_init(){
   static CANopenNodeSTM32 canOpenNodeSTM32;
   canOpenNodeSTM32.CANHandle = CAN1;
   canOpenNodeSTM32.HWInitFunction = can_configuration;
-  canOpenNodeSTM32.desiredNodeID = station_id;
+  canOpenNodeSTM32.desiredNodeID = 1;
   canOpenNodeSTM32.baudrate = 500;
   canopen_app_init(&canOpenNodeSTM32);
-  log_printf("init, station id:%d baudrate:%d\n",
+  
+  log_printf("init, desired station id:%d baudrate:%d\n",
 	     canOpenNodeSTM32.desiredNodeID,
 	     canOpenNodeSTM32.baudrate);
   timer_add_tick(canopen_app_interrupt);
 }
 
-/* uint8_t can_read_para(void) { */
-/*   uint8_t checkSum = 0, i = 0; */
-
-/*   for (i = 0; i < 7; i++) { */
-/*     checkSum += gSysParm.canRxBuf[i]; */
-/*   } */
-/*   if (checkSum != */
-/*       gSysParm.canRxBuf[7]) // check checksum is right or not, 1: wrong;0:right */
-/*   { */
-/*     return 1; */
-/*   } */
-
-/*   // analyze CMD command */
-/*   gSysParm.basePara.RWCmd = (gSysParm.canRxBuf[3] & 0x03); */
-
-/*   // Write or Read command */
-/*   if (gSysParm.basePara.RWCmd == BASE_READ) // Read command */
-/*   { */
-
-/*   } else if (gSysParm.basePara.RWCmd == BASE_WRITE) // Write command */
-/*   { */
-
-/*   } else { */
-/*     return 1; // illegal commond */
-/*   } */
-/*   return 0; */
-/* } */
-
-/* void CAN_DataInit() { */
-/*   uint16_t i; */
-/*   gSysParm.basePara.CanDataId = SLAVEBOARD_ID; */
-/*   keySta.Dismode = 0; // Display normal */
-/*   keySta.KeyCnt10s = 0; */
-
-/*   for (i = 0; i < TEST_BUFEER_SIZE; i++) // data buffer clear */
-/*   { */
-/*     buffer_read[i] = 0x00; */
-/*     buffer_write[i] = 0x00; */
-/*   } */
-/* } */

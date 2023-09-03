@@ -119,37 +119,34 @@ void init_ui(store_id_cb f1, get_id_cb f2, store_timeout_cb f3, get_timeout_cb f
   
   init_keyboard(&ui_enter);
   init_keyboard(&ui_select);
-  /* printf("6.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
   init_oled(&ui_oled);
-  /* printf("7.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
   ui_state = UI_INIT;
   last_ui_state = UI_INIT;
-  /* printf("11.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
   timer_add_tick(ui_tick_wrap);
 }
 
 void dump_keystate(KeyboardPort * port, enum KEYSTATUS status){
-  printf("State:%s, Key:%s  evt:%s\n",
-	 ui_state == UI_INIT ? "init" :					\
-	 ui_state == UI_DO_SHOW_STATUS ? "prepare to show status" :	\
-	 ui_state == UI_SHOW_STATUS ? "show status" :			\
-	 ui_state == UI_MENU_STATUS ? "menu status" :			\
-	 ui_state == UI_MENU_SETUP ? "menu setup" :			\
-	 ui_state == UI_MENU_SCREENOFF ? "menu screenoff" :		\
-	 ui_state == UI_MENU_SCREENOFF_TIMEOUT ? "screen timeout":	\
-	 ui_state == UI_DO_SCREENOFF ? "do screenoff" :			\
-	 ui_state == UI_WAITING_FOR_WAKEUP ? "waiting for wakeup" :	\
-	 ui_state == UI_SETTING_STATION_ID ? "setting station id" :	\
-	 ui_state == UI_DO_WRITE_STATION_ID ? "do write station id" :	\
-	 ui_state == UI_SETTING_SCREEN_TIMEOUT ? "setting timeout":	\
-	 "unknown",
-	 
-	 port == &ui_enter ? "enter" : "select",
-	 status == KEY_PRESS ? "PRESS" :		\
-	 status == KEY_RELEASE ? "RELEASE" :			\
-	 status == KEY_CLICKED ? "CLICK" :			\
-	 status == KEY_LONGPRESS ? "LONGPRESS" : "DUMMY"
-	 );
+  log_printf("State:%s, Key:%s  evt:%s\n",
+             ui_state == UI_INIT                     ? "init"
+             : ui_state == UI_DO_SHOW_STATUS         ? "prepare to show status"
+             : ui_state == UI_SHOW_STATUS            ? "show status"
+             : ui_state == UI_MENU_STATUS            ? "menu status"
+             : ui_state == UI_MENU_SETUP             ? "menu setup"
+             : ui_state == UI_MENU_SCREENOFF         ? "menu screenoff"
+             : ui_state == UI_MENU_SCREENOFF_TIMEOUT ? "screen timeout"
+             : ui_state == UI_DO_SCREENOFF           ? "do screenoff"
+             : ui_state == UI_WAITING_FOR_WAKEUP     ? "waiting for wakeup"
+             : ui_state == UI_SETTING_STATION_ID     ? "setting station id"
+             : ui_state == UI_DO_WRITE_STATION_ID    ? "do write station id"
+             : ui_state == UI_SETTING_SCREEN_TIMEOUT ? "setting timeout"
+                                                     : "unknown",
+
+             port == &ui_enter ? "enter" : "select",
+             status == KEY_PRESS       ? "PRESS"
+             : status == KEY_RELEASE   ? "RELEASE"
+             : status == KEY_CLICKED   ? "CLICK"
+             : status == KEY_LONGPRESS ? "LONGPRESS"
+                                       : "DUMMY");
 }
 
 void ui_update(void){
@@ -210,7 +207,7 @@ void ui_update(void){
     break;
   case UI_SETTING_SCREEN_TIMEOUT:
     oled_showstring(&ui_oled, 0, 0, "Set screen", 0, 8, 1);
-    sprintf(buf, "timeout::");
+    sprintf(buf, "timeout:");
     oled_showstring(&ui_oled, 0, 10, buf, strlen(buf), 8, 1);
     sprintf(buf, "%s",
 	     screen_timeout == SECOND_5 ? "5 sec" :	\
@@ -308,7 +305,6 @@ void keyboard_triggered_state_transfer(KeyboardPort * port, enum KEYSTATUS statu
       ui_state = UI_DO_SHOW_STATUS;
     else if ((port == &ui_enter) && (status == KEY_LONGPRESS)) {
       ui_state = UI_DO_SHOW_STATUS;
-      //screen_timeout_stored = screen_timeout;
       func_store_timeout_cb != NULL ? (*func_store_timeout_cb)(screen_timeout) : 0;
       keyboard_suppress_longpress(&ui_enter);
     }
@@ -325,7 +321,6 @@ void tick_triggered_state_transfer(){
     break;
   case UI_DO_WRITE_STATION_ID:
     ui_state = UI_DO_SHOW_STATUS;
-    //station_id_stored = station_id;
     func_store_id_cb != NULL ? (*func_store_id_cb)(station_id) : 0;
     break;
   case UI_DO_SHOW_STATUS:

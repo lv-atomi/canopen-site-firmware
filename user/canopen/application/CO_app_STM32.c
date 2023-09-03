@@ -30,6 +30,7 @@
 
 #include "CO_storageLittleFS.h"
 #include "OD.h"
+#include "log.h"
 #include "timer.h"
 
 #include "psu.h"
@@ -65,7 +66,7 @@ CO_ReturnError_t err;
 
 
 CO_ReturnError_t app_programStart() {
-  //ASSERT(app_psu_init() == CO_ERROR_NO);
+  ASSERT(app_psu_init() == CO_ERROR_NO);
   
   //ASSERT(app_stackable_module_init() == CO_ERROR_NO);
   return CO_ERROR_NO;
@@ -313,4 +314,19 @@ void canopen_app_interrupt(void) {
   }
   CO_UNLOCK_OD(CO->CANmodule);
   /* log_printf("leave app_interrupt\n"); */
+}
+
+void canopen_update_node_id(uint8_t id){
+  if (id != canopenNodeSTM32->activeNodeID){ /* FIXME: maybe we need to do something */
+    log_printf("canopen node id set to:%d\n", id);
+    canopenNodeSTM32->desiredNodeID = id;
+    canopenNodeSTM32->activeNodeID = id;
+
+    /* delete objects from memory */
+    CO_CANsetConfigurationMode((void *)canopenNodeSTM32);
+    CO_delete(CO);
+    log_printf("CANopenNode Reset Communication request\n");
+    canopen_app_resetCommunication(); // Reset Communication routine
+
+  }
 }

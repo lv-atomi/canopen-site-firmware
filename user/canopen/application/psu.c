@@ -207,7 +207,7 @@ void psu_adc_init(){
   adc_base_config_type adc_base_struct;
   crm_periph_clock_enable(CRM_ADC1_PERIPH_CLOCK, TRUE);
   crm_adc_clock_div_set(CRM_ADC_DIV_6);
-  nvic_irq_enable(ADC1_2_IRQn, 0, 0);
+  nvic_irq_enable(ADC1_2_IRQn, 4, 0);
 
   /* select combine mode */
   adc_combine_mode_select(ADC_INDEPENDENT_MODE);

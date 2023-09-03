@@ -1,10 +1,12 @@
 #include "301/CO_ODinterface.h"
+#include "305/CO_LSS.h"
 #include "at32f403a_407_board.h"
 #include "at32f403a_407_clock.h"
 #include "bmp.h"
 /* #include "can.h" */
 #include "can.h"
 #include "flash.h"
+#include "log.h"
 #include "timer.h"
 #include "ui.h"
 #include "CO_app_STM32.h"
@@ -23,7 +25,7 @@ void ui_store_id_cb(uint8_t id) {
   OD_set_u32(OD_ENTRY_H1010,
 	     1, 0x65766173, false); /* 0x65766173 -> "SAVE" */
 
-  canopenNodeSTM32->activeNodeID = id;
+  canopen_update_node_id(id);
 }
 
 uint8_t ui_get_id_cb(void) {
@@ -34,8 +36,13 @@ uint8_t ui_get_id_cb(void) {
 	       1, 0x64616F6C, false); /* 0x64616F6C -> "LOAD" */
     persist_dirty = 0;
   }
+  
   OD_get_u8(OD_ENTRY_H2114, //stationID
 	    0, &stored_id, true);
+
+  stored_id = CO_LSS_NODE_ID_VALID(stored_id) ? stored_id : 1; /* ensure we return a valid id, which by default is 1. THIS IS IMPORTANT */
+  
+  canopen_update_node_id(stored_id);
   return stored_id;
 }
 
@@ -69,20 +76,12 @@ int main(void) {
   /* printf("System clock: %d\n", system_core_clock); */
   /* printf("AHBDIV: %d apb1div:%d apb2div:%d\n", */
 	 /* CRM->cfg_bit.ahbdiv, CRM->cfg_bit.apb1div, CRM->cfg_bit.apb2div); */
-  /* printf("1.init 1010h extension write:%p\n", OD->list[9].extension->write); */
   can_gpio_config();
-  /* printf("2.init 1010h extension write:%p\n", OD->list[9].extension->write); */
-  canopen_init(1);
-  /* printf("3.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
+  canopen_init();
   init_ui(ui_store_id_cb, ui_get_id_cb, ui_store_timeout_cb, ui_get_timeout_cb);
-  /* printf("4.init 1010h extension write:%p %p\n", OD, OD->list[9].extension->write); */
   
-
-  printf("start\n");
-  /* printf("1010 extension write:%p\n", OD->list[9].extension->write); */
-  /* printf("1011 extension write:%p\n", OD->list[10].extension->write); */
+  log_printf("start\n");
   while (1) {
     canopen_app_process();
-    //delay_ms(500);
   }
 }

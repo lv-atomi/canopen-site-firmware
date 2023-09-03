@@ -52,12 +52,7 @@ typedef struct {
   /* Pass in the CAN Handle to this function and it wil be used for all CAN
    * Communications. It can be FDCan or CAN
    * and CANOpenSTM32 Driver will take of care of handling that */
-#ifdef CO_STM32_FDCAN_Driver
-#error fdcan seems not supported by at32?
-  // FDCAN_HandleTypeDef* CANHandle;
-#else
   can_type *CANHandle;
-#endif
 
   void (*HWInitFunction)(); /* Pass in the function that initialize the CAN
                                peripheral, usually MX_CAN_Init */
@@ -87,6 +82,8 @@ void canopen_app_process();
 /* Thread function executes in constant intervals, this function can be called
  * from FreeRTOS tasks or Timers ********/
 void canopen_app_interrupt(void);
+
+void canopen_update_node_id(uint8_t id);
 
 #ifdef __cplusplus
 }
