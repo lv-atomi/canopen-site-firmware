@@ -49,8 +49,17 @@ void Timer_Init()
   tmr_counter_enable(TMR6, TRUE);
 }
 
-uint32_t get_ticks(void) {
-  return TimerTick;
+uint32_t get_ticks(void) { return TimerTick; }
+
+uint32_t ticks_diff(uint32_t *last_ticks){
+  ASSERT(last_ticks);
+
+  uint32_t tick = get_ticks();
+  uint32_t last = (*last_ticks);
+  (*last_ticks) = tick;
+  if ((tick < last) && (last - tick > 2147483647)) /* tick rotation detected */
+    return 4294967295 - last + tick;
+  return tick - last;
 }
 
 void timer_add_tick(tick_cb cb) {

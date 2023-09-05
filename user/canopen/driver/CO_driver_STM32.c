@@ -364,7 +364,7 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
       CANmodule->CANerrorStatus |= CO_CAN_ERRTX_OVERFLOW;
     }
     err = CO_ERROR_TX_OVERFLOW;
-    log_printf("buffer overflow\n");
+    /* log_printf("buffer overflow\n"); */
   }
 
   /*
@@ -374,11 +374,11 @@ CO_ReturnError_t CO_CANsend(CO_CANmodule_t *CANmodule, CO_CANtx_t *buffer) {
    */
   CO_LOCK_CAN_SEND(CANmodule);
   if (prv_send_can_message(CANmodule, buffer)) {
-    log_printf("send can message...\n");
-    DumpHex(buffer->data, buffer->DLC);
+    /* log_printf("send can message...\n"); */
+    /* DumpHex(buffer->data, buffer->DLC); */
     CANmodule->bufferInhibitFlag = buffer->syncFlag;
   } else {
-    log_printf("send can message failed\n");
+    /* log_printf("send can message failed\n"); */
     buffer->bufferFull = true;
     CANmodule->CANtxCount++;
   }
@@ -502,8 +502,8 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
   rcvMsg.dlc = rx_hdr.dlc;
   rcvMsgIdent = rcvMsg.ident;
   memcpy(rcvMsg.data, rx_hdr.data, min(8, rx_hdr.dlc));
-  log_printf("rx: id:%ld, len:%d\n", rcvMsg.ident, rcvMsg.dlc);
-  DumpHex(rcvMsg.data, rcvMsg.dlc);
+  /* log_printf("rx: id:%ld, len:%d\n", rcvMsg.ident, rcvMsg.dlc); */
+  /* DumpHex(rcvMsg.data, rcvMsg.dlc); */
 
   /*
    * Hardware filters are not used for the moment
@@ -519,7 +519,7 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
     
     buffer = CANModule_local->rxArray;
     for (index = CANModule_local->rxSize; index > 0U; --index, ++buffer) {
-      /* log_printf("filter: idx:%d, rcvid:%ld, ident:%d, mask:%d, found:%d\n", */
+      /* log_printf("filter: idx:%d, rcvid:0x%lx, ident:0x%x, mask:0x%x, found:%d\n", */
       /* 		 index, rcvMsgIdent, */
       /* 		 buffer->ident, buffer->mask, */
       /* 		 (((rcvMsgIdent ^ buffer->ident) & buffer->mask) == 0U) */
@@ -529,13 +529,12 @@ static void prv_read_can_received_msg(can_type *hcan, uint32_t fifo,
         break;
       }
     }
-    log_printf("msg found:%d\n", messageFound);
-
+    //log_printf("msg found:%d\n", messageFound);
   }
 
   /* Call specific function, which will process the message */
   if (messageFound && buffer != NULL && buffer->CANrx_callback != NULL) {
-    log_printf("canrx_callback\n");
+    //log_printf("canrx_callback\n");
     buffer->CANrx_callback(buffer->object, (void *)&rcvMsg);
   }
 }
@@ -623,13 +622,13 @@ void CAN1_SE_IRQHandler(void) {
   if (can_flag_get(CAN1, CAN_ETR_FLAG) != RESET) {
     err_index = (CAN1->ests & 0x70) >> 4;
     can_flag_clear(CAN1, CAN_ETR_FLAG);
-    log_printf("xfguo||clear etr, ERC:%ld, tec:%d, rec:%d\n",
-	       err_index, CAN1->ests_bit.tec, CAN1->ests_bit.rec);
+    /* log_printf("xfguo||clear etr, ERC:%ld, tec:%d, rec:%d\n", */
+    /* 	       err_index, CAN1->ests_bit.tec, CAN1->ests_bit.rec); */
     /* error type is stuff error */
     if (err_index == 0x00000010) {
       /* when stuff error occur: in order to ensure communication normally,
       user must restart can or send a frame of highest priority message here */
-      printf("reconfigure can\n");
+      //printf("reconfigure can\n");
       can_reset(CAN1);
       can_configuration();
     }
@@ -637,14 +636,14 @@ void CAN1_SE_IRQHandler(void) {
   }
   if (can_flag_get(CAN1, CAN_EOIF_FLAG) != RESET) {
     err_index=2;
-    log_printf("can1.eoif set, cleared\n");
+    //log_printf("can1.eoif set, cleared\n");
     can_flag_clear(CAN1, CAN_EOIF_FLAG);
   }
   if (err_index == 0){
-    log_printf("unknown err set, can1.msts:%ld can1.ests:%ld eaf:%d, epf:%d, bof:%d, etr:%d, tec:%d, rec:%d\n",
-	       CAN1->msts, CAN1->ests,
-	       CAN1->ests_bit.eaf, CAN1->ests_bit.epf, CAN1->ests_bit.bof,
-	       CAN1->ests_bit.etr, CAN1->ests_bit.tec, CAN1->ests_bit.rec);
+    /* log_printf("unknown err set, can1.msts:%ld can1.ests:%ld eaf:%d, epf:%d, bof:%d, etr:%d, tec:%d, rec:%d\n", */
+    /* 	       CAN1->msts, CAN1->ests, */
+    /* 	       CAN1->ests_bit.eaf, CAN1->ests_bit.epf, CAN1->ests_bit.bof, */
+    /* 	       CAN1->ests_bit.etr, CAN1->ests_bit.tec, CAN1->ests_bit.rec); */
 
     /* log_printf("call canmodule process to handle the error?\n"); */
     /* CO_CANmodule_process(CANModule_local); */
@@ -665,7 +664,7 @@ void USBFS_H_CAN1_TX_IRQHandler(void){
 }
 
 void USBFS_L_CAN1_RX0_IRQHandler(void) { // CAN Receive interrupt handle function
-  log_printf("can msg\n");
+  /* log_printf("can msg\n"); */
   if (can_flag_get(CAN1, CAN_RF0MN_FLAG) != RESET) {
     HAL_CAN_RxFifo0MsgPendingCallback(CAN1);
   }

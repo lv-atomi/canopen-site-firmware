@@ -715,9 +715,9 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
     }
     /* CAN data received ******************************************************/
     else if (isNew) {
-      log_printf("can data recved: sdo->state:%d\n",
-		 SDO->state);
-      DumpHex(SDO->CANrxData, SDO->OD_IO.stream.dataLength);
+      /* log_printf("can data recved: sdo->state:%d\n", */
+      /* 		 SDO->state); */
+      /* DumpHex(SDO->CANrxData, SDO->OD_IO.stream.dataLength); */
 
         if (SDO->state == CO_SDO_ST_IDLE) { /* new SDO communication? */
             bool_t upload = false;
@@ -1347,7 +1347,7 @@ CO_SDO_return_t CO_SDOserver_process(CO_SDOserver_t *SDO,
 #endif /* (CO_CONFIG_SDO_SRV) & CO_CONFIG_SDO_SRV_SEGMENTED */
 
 	    /* log_printf("send msg...\n"); */
-	    DumpHex(SDO->CANtxBuff->data, 8);
+	    /* DumpHex(SDO->CANtxBuff->data, 8); */
             /* send message */
             SDO->CANtxBuff->data[1] = (uint8_t)SDO->index;
             SDO->CANtxBuff->data[2] = (uint8_t)(SDO->index >> 8);

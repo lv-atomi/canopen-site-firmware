@@ -147,31 +147,19 @@ def test_servo_position_mode(nid=124):
 def test_servo_position_mode_pdo(nid=124):
     cos = CanOpenStack()
     node = cos.add_node(nid, 'ASDA_A2_1042sub980_C.eds')
-
+    node.sdo['Controlword'].write(0)
+    
     # set operation mode
     data = node.sdo[0x6060]     # modes of operation
     print(f"{data.od.name}[{hex(data.od.index)}]: {data.data} {data.read()}")
 
+   
     mode_of_operation = node.sdo['Modes of operation']
     print("Modes of operation set to:", 7, "   # 7:interpolated position mode")
     mode_of_operation.write(7)  # interpolated position mode
 
-    # # check status
-    # dump(node, 'Statusword', 'Controlword', 'P1-01')
-
-    # node.sdo['Fault reaction option code'].write(2)
-    # print("Fault reaction option code set to:", 2, "   # 2:slow down on quick stop ramp")
-    # dump(node, 'Statusword', 'Controlword', 'P1-01', 0x6060)
-    
-    # node.sdo['Controlword'].bits[7]=1 # fault reset
-    # print("Controlword bit 7 set to:", 1, "   # The rising edge of Bit 7 is used to reset a fault")
-
-    node.sdo['P1-01'].write(0xc)
     node.sdo[0x60C0].write(0) # Host does not send [60C1h Sub-3]. It could save calculating time of host and Drive could work also. 
         
-    print("P1-01[6060h] set to:", 0xc, "   #0xc => full can mode")
-    dump(node, 'Statusword', 'Controlword', 'P1-01', 0x60c0)
-
     # 设置通信周期
     node.sdo[0x1006].write(10000)  # 10000微秒，即10毫秒
 
@@ -185,8 +173,8 @@ def test_servo_position_mode_pdo(nid=124):
     node.rpdo[1].cob_id = 0x200 + 124
     node.rpdo[1].trans_type = 1  # 设置传输类型
     node.rpdo[1].event_timer = 1000  # 设置事件定时器
-    node.rpdo[1].add_variable('Target Position')
-    node.rpdo[1].add_variable('Controlword')
+    node.rpdo[1].add_variable("Interpolation data record", "Parameter1 of ip function")
+    node.rpdo[1].add_variable(0x6040)
     node.rpdo[1].enabled = True
 
     # 设置RPOD通信参数
@@ -203,37 +191,23 @@ def test_servo_position_mode_pdo(nid=124):
     # 保存新配置 (节点必须处于预操作状态)
     node.rpdo[1].save()
 
+    c = node.sdo[0x6064].read() # read current position
+    node.rpdo[1][0x6040].raw = 0x7
+    node.rpdo[1][0x6040].raw = 0xf
     # 启动RPDO1传输，间隔100ms
-    node.rpdo[1]['Target Position'].raw = 0x100000  # 例如，设置目标位置为0x100000
-    node.rpdo[1]['Controlword'].raw = 0x0F  # 例如，设置控制字为0x0F
+    node.rpdo[1]["Interpolation data record.Parameter1 of ip function"].raw = c  # 例如，设置目标位置为0x100000
+    node.rpdo[1][0x6040].raw = 0x1F  # 例如，设置控制字为0x0F
     node.rpdo[1].start(0.1)
     
     
     node.nmt.state = 'OPERATIONAL'
 
-    # cw = node.sdo['Controlword']
-    # cw.write(0x6)               # shutdown
-    # print("Controlword set to 0b110   # fire shutdown event")
-    # dump(node, 'Statusword', 'Controlword')
-
-    # node.sdo['Profile acceleration'].write(1000)
-    # node.sdo['Profile deceleration'].write(1000)
-    # node.sdo['Target velocity'].write(1000) # 100 rpm
-    # print("set acceleration,deceleration profile & target velocity...")
-
-    
-    # cw.write(0x7)               # switch on
-    # print("Controlword set to 0b111   # fire switch on event")
-    # dump(node, 'Statusword', 'Controlword')
-    
-    # cw.write(0xf)               # enable operation
-    # print("Controlword set to 0b1111   # fire enable operation event")
-    # dump(node, 'Statusword', 'Controlword')
-
 
     while True:
-        dump(node, 'Statusword', 'Controlword', 'Target Position', 'P0-46', 'P4-00', 'P4-06', 'P3-06')
-        time.sleep(1)
+        c += 10
+        #dump(node, 'Modes of operation', 'Statusword', 'Controlword')
+        time.sleep(.01)
+        node.rpdo[1]["Interpolation data record.Parameter1 of ip function"].raw = c
         #node.sdo['Target Position'].write(1000)
 
 def test_servo_pdo(nid=124):
@@ -250,8 +224,8 @@ def test_servo_pdo(nid=124):
 if __name__ == '__main__':
     #discovery()
     #test_delta_drive_sdo(124)
-    #test_servo_position_mode_pdo(124)
-    test_servo_position_mode(124)
+    test_servo_position_mode_pdo(124)
+    #test_servo_position_mode(124)
     #test_servo_pdo()
     #test_disable_drive(124)
     

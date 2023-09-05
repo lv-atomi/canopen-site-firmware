@@ -60,7 +60,7 @@ def discovery():
     cos = CanOpenStack()
     cos.scan_network(verbose=True)
 
-def dump(node, *names):
+def dump(node, *names, converter = hex):
     print('  '.join(
-        [f'{node.sdo[name].name}: {hex(node.sdo[name].read())}[{bin(node.sdo[name].read())}]' for name in names])
+        [f'{node.sdo[name].name}: {converter(node.sdo[name].read())}[{bin(node.sdo[name].read())}]' for name in names])
           )

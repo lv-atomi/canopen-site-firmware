@@ -125,7 +125,6 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
   canopenNodeSTM32->canOpenStack = CO;
 
 #if (CO_CONFIG_STORAGE) & CO_CONFIG_STORAGE_ENABLE
-  log_printf("init storage\n");
   err = CO_storageLittleFS_init(
     &storage, CO->CANmodule, OD_ENTRY_H1010_storeParameters,
     OD_ENTRY_H1011_restoreDefaultParameters, storageEntries,

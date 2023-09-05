@@ -25,6 +25,8 @@
 /* includes ------------------------------------------------------------------*/
 #include "at32f403a_407_int.h"
 
+#include "cap_displacement.h"
+
 /** @addtogroup AT32F403A_periph_examples
   * @{
   */
@@ -131,6 +133,22 @@ extern void systick_handler(void);
 void SysTick_Handler(void) {
 }
 
+
+void SPI1_IRQHandler(void){
+  cap_irq_handler(1);
+}
+
+void SPI2_I2S2EXT_IRQHandler(void) {
+  cap_irq_handler(2);
+}
+
+void SPI3_I2S3EXT_IRQHandler(void) {
+  cap_irq_handler(3);
+}
+
+void SPI4_IRQHandler(void) {
+  cap_irq_handler(4);
+}
 
 /**
   * @}
