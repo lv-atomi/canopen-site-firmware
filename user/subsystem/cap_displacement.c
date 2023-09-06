@@ -39,11 +39,10 @@ int32_t read_displacement(CapacitorDisplacementMeasurePort * devport,
 }
 
 void cap_irq_handler(int spi_index) {
-  printf("in spi irq:%d\n", spi_index);
+  /* printf("in spi irq:%d\n", spi_index); */
   if ((spi_index <= MAX_SPI_PORT) && (spi_index > 0) && (cached_displacement_port[spi_index] != NULL)) {
     CapacitorDisplacementMeasurePort * port = cached_displacement_port[spi_index];
     if(spi_i2s_flag_get(port->spi.controller, SPI_I2S_RDBF_FLAG) != RESET) {
-      
       port->spi.rx_buf[port->recv_idx] = spi_i2s_data_receive(port->spi.controller);
       if (port->recv_idx == 0) {
         uint32_t delay = ticks_diff(&port->last_ticks);
@@ -51,7 +50,9 @@ void cap_irq_handler(int spi_index) {
           port->recv_idx = 0;
           return;
         }
-      } else if (port->recv_idx == 2) { /* update displacement value */
+      }
+
+      if (port->recv_idx == 2) { /* update displacement value */
         port->last_value =
             ((int32_t)port->spi.rx_buf[1] << 8) | port->spi.rx_buf[0];
         if (port->spi.rx_buf[2] == 0x10) {

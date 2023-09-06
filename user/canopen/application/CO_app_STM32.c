@@ -34,7 +34,7 @@
 #include "timer.h"
 
 #include "psu.h"
-#include "slavestation_model_3.h"
+/* #include "slavestation_model_3.h" */
 
 
 #define DBG_OD_ENTRY              "(%s) Error in Object Dictionary entry: 0x%" PRIx32 "\n", __func__
