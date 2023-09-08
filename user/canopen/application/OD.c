@@ -279,7 +279,8 @@ OD_ATTR_RAM OD_RAM_t OD_RAM = {
     .x6400_triggerInputX2 = {true, true},
     .x6401_triggerOutputX2_sub0 = 0x02,
     .x6401_triggerOutputX2 = {true, true},
-    .x6402_capacitorDisplacement = 0x00000000,
+    .x6402_capacitorDisplacement_sub0 = 0x03,
+    .x6402_capacitorDisplacement = {0, 0, 0},
     .x6403_thermocouplePT100X2_sub0 = 0x02,
     .x6403_thermocouplePT100X2 = {0, 0},
     .x6404_motor = {
@@ -442,7 +443,7 @@ typedef struct {
     OD_obj_var_t o_6305_airConditionStatus;
     OD_obj_array_t o_6400_triggerInputX2;
     OD_obj_array_t o_6401_triggerOutputX2;
-    OD_obj_var_t o_6402_capacitorDisplacement;
+    OD_obj_array_t o_6402_capacitorDisplacement;
     OD_obj_array_t o_6403_thermocouplePT100X2;
     OD_obj_record_t o_6404_motor[4];
     OD_obj_record_t o_6500_stackableModule0[7];
@@ -1701,9 +1702,12 @@ static CO_PROGMEM ODObjs_t ODObjs = {
         .dataElementSizeof = sizeof(bool_t)
     },
     .o_6402_capacitorDisplacement = {
-        .dataOrig = &OD_RAM.x6402_capacitorDisplacement,
-        .attribute = ODA_SDO_R | ODA_MB,
-        .dataLength = 4
+        .dataOrig0 = &OD_RAM.x6402_capacitorDisplacement_sub0,
+        .dataOrig = &OD_RAM.x6402_capacitorDisplacement[0],
+        .attribute0 = ODA_SDO_R,
+        .attribute = ODA_SDO_RW | ODA_MB,
+        .dataElementLength = 4,
+        .dataElementSizeof = sizeof(int32_t)
     },
     .o_6403_thermocouplePT100X2 = {
         .dataOrig0 = &OD_RAM.x6403_thermocouplePT100X2_sub0,
@@ -2213,7 +2217,7 @@ static OD_ATTR_OD OD_entry_t ODList[] = {
     {0x6305, 0x01, ODT_VAR, &ODObjs.o_6305_airConditionStatus, NULL},
     {0x6400, 0x03, ODT_ARR, &ODObjs.o_6400_triggerInputX2, NULL},
     {0x6401, 0x03, ODT_ARR, &ODObjs.o_6401_triggerOutputX2, NULL},
-    {0x6402, 0x01, ODT_VAR, &ODObjs.o_6402_capacitorDisplacement, NULL},
+    {0x6402, 0x04, ODT_ARR, &ODObjs.o_6402_capacitorDisplacement, NULL},
     {0x6403, 0x03, ODT_ARR, &ODObjs.o_6403_thermocouplePT100X2, NULL},
     {0x6404, 0x04, ODT_REC, &ODObjs.o_6404_motor, NULL},
     {0x6500, 0x07, ODT_REC, &ODObjs.o_6500_stackableModule0, NULL},

@@ -16,7 +16,7 @@
 
         Created:      2020/11/28 13:37:00
         Created By:   Janez Paternoster
-        Modified:     2023/9/2 5:00:51
+        Modified:     2023/9/7 1:32:20
         Modified By:  Janez Paternoster
 
     Device Info:
@@ -63,6 +63,7 @@
 #define OD_CNT_ARR_6303 4
 #define OD_CNT_ARR_6400 2
 #define OD_CNT_ARR_6401 2
+#define OD_CNT_ARR_6402 3
 #define OD_CNT_ARR_6403 2
 #define OD_CNT_ARR_6600 4
 
@@ -329,7 +330,8 @@ typedef struct {
     bool_t x6400_triggerInputX2[OD_CNT_ARR_6400];
     uint8_t x6401_triggerOutputX2_sub0;
     bool_t x6401_triggerOutputX2[OD_CNT_ARR_6401];
-    uint32_t x6402_capacitorDisplacement;
+    uint8_t x6402_capacitorDisplacement_sub0;
+    int32_t x6402_capacitorDisplacement[OD_CNT_ARR_6402];
     uint8_t x6403_thermocouplePT100X2_sub0;
     int32_t x6403_thermocouplePT100X2[OD_CNT_ARR_6403];
     struct {

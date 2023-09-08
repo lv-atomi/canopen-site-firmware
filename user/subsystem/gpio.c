@@ -1,4 +1,5 @@
 #include "gpio.h"
+#include "at32f403a_407_gpio.h"
 #include "log.h"
 
 void init_gpio_clock(IOPort* devport){
@@ -69,7 +70,11 @@ void init_gpio_mux(IOPort * devport,
 
 #if defined (__AT32F421_GPIO_H)
   gpio_pin_mux_config(devport->port, devport->pin_source, devport->mux_sel);
-#endif  
+#endif
+  if (devport->gpio_remap != 0){
+    crm_periph_clock_enable(CRM_IOMUX_PERIPH_CLOCK, TRUE);
+    gpio_pin_remap_config(devport->gpio_remap, TRUE);
+  }
 }
 
 void init_gpio_input(IOPort * devport,

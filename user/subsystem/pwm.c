@@ -125,11 +125,23 @@ void init_pwm_output(PWMPort * devport, uint32_t freq, uint16_t duty){
   if (devport->complementary) {
     tmr_oc_init_structure.occ_output_state = TRUE;
     tmr_oc_init_structure.occ_polarity = tmr_oc_init_structure.oc_polarity;
-    tmr_oc_init_structure.occ_idle_state = FALSE;
+    tmr_oc_init_structure.occ_idle_state = !tmr_oc_init_structure.oc_idle_state;
   }
 
   tmr_output_channel_config(devport->tmr, devport->channel, &tmr_oc_init_structure);
   pwm_output_update_duty(devport, duty);
+
+  /* automatic output enable, stop, dead time and lock configuration */
+  tmr_brkdt_config_type tmr_brkdt_config_struct = {0};
+  tmr_brkdt_default_para_init(&tmr_brkdt_config_struct);
+  tmr_brkdt_config_struct.brk_enable = TRUE;
+  tmr_brkdt_config_struct.auto_output_enable = TRUE;
+  tmr_brkdt_config_struct.deadtime = devport->deadtime;
+  tmr_brkdt_config_struct.fcsodis_state = TRUE;
+  tmr_brkdt_config_struct.fcsoen_state = TRUE;
+  tmr_brkdt_config_struct.brk_polarity = TMR_BRK_INPUT_ACTIVE_HIGH;
+  tmr_brkdt_config_struct.wp_level = TMR_WP_LEVEL_3;
+  tmr_brkdt_config(devport->tmr, &tmr_brkdt_config_struct);
 
   tmr_output_enable(devport->tmr, TRUE);
 

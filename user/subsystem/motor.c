@@ -37,20 +37,9 @@ void init_motor_brush(MotorUnified * motor){
   gpio_set(&motor->brush.disable, 0);
 
   /* set timer for pwm */
-  init_pwm_output(&motor->brush.pwm_a, 100000, 50); /* 100khz, 50% */
-  init_pwm_output(&motor->brush.pwm_b, 100000, 50); /* 100khz, 50% */
+  init_pwm_output(&motor->brush.pwm_a, 15000, 50); /* 50khz, 50% */
+  init_pwm_output(&motor->brush.pwm_b, 15000, 50); /* 50khz, 50% */
   
-  /* automatic output enable, stop, dead time and lock configuration */
-  tmr_brkdt_config_type tmr_brkdt_config_struct = {0};
-  tmr_brkdt_default_para_init(&tmr_brkdt_config_struct);
-  tmr_brkdt_config_struct.brk_enable = TRUE;
-  tmr_brkdt_config_struct.auto_output_enable = TRUE;
-  tmr_brkdt_config_struct.deadtime = 11;
-  tmr_brkdt_config_struct.fcsodis_state = TRUE;
-  tmr_brkdt_config_struct.fcsoen_state = TRUE;
-  tmr_brkdt_config_struct.brk_polarity = TMR_BRK_INPUT_ACTIVE_HIGH;
-  tmr_brkdt_config_struct.wp_level = TMR_WP_LEVEL_3;
-  tmr_brkdt_config(TMR1, &tmr_brkdt_config_struct);
 }
 
 void motor_set_speed(MotorUnified *motor, int8_t speed){
@@ -66,6 +55,7 @@ void motor_set_speed(MotorUnified *motor, int8_t speed){
       pwm_output_update_duty(&motor->brushless.speed_set, 0);
     }
   } else {
+    log_printf("set motor speed:%d\n", speed);
     pwm_output_update_duty(&motor->brush.pwm_a, 50 + speed/2);
   }
   

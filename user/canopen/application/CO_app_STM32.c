@@ -33,7 +33,7 @@
 #include "log.h"
 #include "timer.h"
 
-#include "psu.h"
+#include "mod_psu.h"
 /* #include "slavestation_model_3.h" */
 
 

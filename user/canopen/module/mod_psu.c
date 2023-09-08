@@ -1,6 +1,6 @@
 //#include "CO_app_STM32.h"
 #include "app_common.h"
-#include "psu.h"
+#include "mod_psu.h"
 //#include "at32f403a_407_board.h"
 
 /*

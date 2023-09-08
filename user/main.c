@@ -18,23 +18,6 @@
 
 extern unsigned int system_core_clock; /*!< system clock frequency (core clock) */
 
-CapacitorDisplacementMeasurePort displacement = {
-  .spi={
-    .miso = {GPIOB, GPIO_PINS_SOURCE15},
-    .clk = {GPIOB, GPIO_PINS_SOURCE13},
-    .controller = SPI2,
-    .init_type = {
-      .transmission_mode = SPI_TRANSMIT_SIMPLEX_RX,
-      .master_slave_mode = SPI_MODE_SLAVE,
-      .mclk_freq_division = SPI_MCLK_DIV_32,
-      .first_bit_transmission = SPI_FIRST_BIT_LSB,
-      .frame_bit_num = SPI_FRAME_8BIT,
-      .clock_polarity = SPI_CLOCK_POLARITY_HIGH,
-      .clock_phase = SPI_CLOCK_PHASE_2EDGE,
-      .cs_mode_selection = SPI_CS_SOFTWARE_MODE,
-    }
-  }
-};
 
 uint8_t persist_dirty = 1;
 
@@ -101,13 +84,8 @@ int main(void) {
   init_ui(ui_store_id_cb, ui_get_id_cb, ui_store_timeout_cb, ui_get_timeout_cb);
   
   log_printf("start\n");
-  init_capacitor_displacement_measurement(&displacement);
   
   while (1) {
-    uint32_t delay = 0;
     canopen_app_process();
-    int32_t pos = read_displacement(&displacement, &delay, 1);
-    printf("displace: %ld, delay:%ld\n", pos, delay);
-    delay_ms(100);
   }
 }

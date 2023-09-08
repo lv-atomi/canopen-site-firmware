@@ -8,8 +8,8 @@ Description=Demo CANopen device with example usage.
 CreationTime=1:37PM
 CreationDate=11-28-2020
 CreatedBy=Janez Paternoster
-ModificationTime=4:55AM
-ModificationDate=09-02-2023
+ModificationTime=1:32AM
+ModificationDate=09-07-2023
 ModifiedBy=Janez Paternoster
 
 [DeviceInfo]
@@ -2722,10 +2722,43 @@ PDOMapping=1
 
 [6402]
 ParameterName=Capacitor displacement
+ObjectType=0x8
+;StorageLocation=RAM
+SubNumber=0x4
+
+[6402sub0]
+ParameterName=Highest sub-index supported
 ObjectType=0x7
 ;StorageLocation=RAM
-DataType=0x0007
+DataType=0x0005
 AccessType=ro
+DefaultValue=0x03
+PDOMapping=0
+
+[6402sub1]
+ParameterName=Displacement
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0004
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[6402sub2]
+ParameterName=Delay
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0004
+AccessType=rw
+DefaultValue=0
+PDOMapping=0
+
+[6402sub3]
+ParameterName=SetZero
+ObjectType=0x7
+;StorageLocation=RAM
+DataType=0x0004
+AccessType=rw
 DefaultValue=0
 PDOMapping=0
 

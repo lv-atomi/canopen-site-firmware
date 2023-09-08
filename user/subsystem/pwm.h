@@ -10,6 +10,7 @@ typedef struct{
   tmr_type * tmr;
   tmr_channel_select_type channel;
   uint8_t complementary;
+  uint8_t deadtime;
 } PWMPort;
 
 void tmr_clock_enable(tmr_type *tmr_x);
