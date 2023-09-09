@@ -25,6 +25,7 @@
 /* includes ------------------------------------------------------------------*/
 #include "at32f403a_407_int.h"
 
+#include "ad7705.h"
 #include "cap_displacement.h"
 
 /** @addtogroup AT32F403A_periph_examples
@@ -136,19 +137,29 @@ void SysTick_Handler(void) {
 
 void SPI1_IRQHandler(void){
   cap_irq_handler(1);
+  ad7705_irq_handler(1);
 }
 
+#ifdef SPI2
 void SPI2_I2S2EXT_IRQHandler(void) {
   cap_irq_handler(2);
+  ad7705_irq_handler(2);
 }
+#endif
 
+#ifdef SPI3
 void SPI3_I2S3EXT_IRQHandler(void) {
   cap_irq_handler(3);
+  ad7705_irq_handler(3);
 }
+#endif
 
+#ifdef SPI4
 void SPI4_IRQHandler(void) {
   cap_irq_handler(4);
+  ad7705_irq_handler(4);
 }
+#endif
 
 /**
   * @}

@@ -32,6 +32,7 @@ void gpio_set_input_mode(IOPort *devport, bool_t is_input);
 
 void gpio_set(IOPort * devport, bool_t bit);
 bool_t gpio_read(IOPort *devport);
+uint8_t waiting_for_timeout(IOPort * devport, bool_t current_bit, uint32_t timeout_us);
 
 
 #endif

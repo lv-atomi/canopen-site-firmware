@@ -1,6 +1,9 @@
 #include "gpio.h"
-#include "at32f403a_407_gpio.h"
+#include "at32f403a_407_board.h"
 #include "log.h"
+
+IOPort *global_devport;
+bool_t global_waiting_bit;
 
 void init_gpio_clock(IOPort* devport){
   ASSERT(devport);
@@ -21,13 +24,17 @@ void init_gpio_clock(IOPort* devport){
     crm_periph_clock_enable(CRM_GPIOE_PERIPH_CLOCK, TRUE);
   }
 #endif
+
+  if (devport->gpio_remap != 0){
+    crm_periph_clock_enable(CRM_IOMUX_PERIPH_CLOCK, TRUE);
+    gpio_pin_remap_config(devport->gpio_remap, TRUE);
+  }
 }
 
 void init_gpio_output(IOPort * devport,
 		      gpio_output_type output_type,
 		      gpio_drive_type drive_strength) {
   init_gpio_clock(devport);
-  
   gpio_init_type gpio_initstructure;
 
   /* gpio configuration for output pins */
@@ -38,6 +45,12 @@ void init_gpio_output(IOPort * devport,
   gpio_initstructure.gpio_mode = GPIO_MODE_OUTPUT;
   gpio_initstructure.gpio_pins = 1 << devport->pin_source;
   gpio_init(devport->port, &gpio_initstructure);
+
+  /* /\* for debug purpose *\/ */
+  /* gpio_set(devport, 1); */
+  /* delay_ms(1); */
+  /* gpio_set(devport, 0); */
+  /* delay_ms(1);    */
 }
 
 void gpio_set_input_mode(IOPort * devport, bool_t is_input){
@@ -56,6 +69,7 @@ void init_gpio_mux(IOPort * devport,
 		   gpio_pull_type pull_type,
 		   gpio_drive_type drive_strength) {
   init_gpio_clock(devport);
+  
   gpio_init_type gpio_initstructure;
   
   /* gpio configuration for output pins */
@@ -71,10 +85,6 @@ void init_gpio_mux(IOPort * devport,
 #if defined (__AT32F421_GPIO_H)
   gpio_pin_mux_config(devport->port, devport->pin_source, devport->mux_sel);
 #endif
-  if (devport->gpio_remap != 0){
-    crm_periph_clock_enable(CRM_IOMUX_PERIPH_CLOCK, TRUE);
-    gpio_pin_remap_config(devport->gpio_remap, TRUE);
-  }
 }
 
 void init_gpio_input(IOPort * devport,
@@ -82,7 +92,7 @@ void init_gpio_input(IOPort * devport,
 		     gpio_drive_type drive_strength) {
   init_gpio_clock(devport);
   gpio_init_type gpio_initstructure;
-  
+
   /* gpio configuration for output pins */
   gpio_default_para_init(&gpio_initstructure);
   gpio_initstructure.gpio_pull = pull_type;
@@ -118,4 +128,34 @@ void gpio_set(IOPort * devport, bool_t bit) {
 bool_t gpio_read(IOPort * devport) {
   ASSERT(devport);
   return gpio_input_data_bit_read(devport->port, 1 << devport->pin_source);
+}
+
+uint8_t gpio_waiting_closure_cb(){
+  return gpio_read(global_devport) == global_waiting_bit;
+}
+
+uint8_t waiting_for_timeout(IOPort * devport, bool_t waiting_bit, uint32_t timeout_us){
+  ASSERT(devport);
+  global_devport = devport;
+  global_waiting_bit = waiting_bit;
+  if (timeout_us < 1000){
+    /* log_printf("waiting in us..., us:%ld\n", timeout_us); */
+    return waiting_us_while(timeout_us, gpio_waiting_closure_cb);
+  }
+  if (timeout_us < 1000000){
+    /* log_printf("waiting in ms..., us:%ld\n", timeout_us/1000); */
+    return waiting_ms_while(timeout_us/1000, gpio_waiting_closure_cb);
+  }
+  /* log_printf("waiting in s..., us:%ld\n", timeout_us/1000000); */
+  uint32_t nms = timeout_us/1000;
+  while (nms>0){
+    uint16_t wait = nms > 500? 500: nms;
+    /* log_printf("sub waiting in ms..., %d\n", wait); */
+    
+    uint8_t ret = waiting_ms_while(wait, gpio_waiting_closure_cb);
+    /* log_printf("ret: %d\n", ret); */
+    if (ret == 0) return ret;
+    nms -= wait;
+  }
+  return 1;
 }

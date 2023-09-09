@@ -25,6 +25,7 @@
 
 #include "at32f403a_407_board.h"
 #include <stddef.h>
+#include <stdint.h>
 #include "log.h"
 
 /** @addtogroup AT32F403A_407_board
@@ -314,13 +315,8 @@ void delay_init()
   fac_ms = fac_us * (1000U);
 }
 
-/**
-  * @brief  inserts a delay time.
-  * @param  nus: specifies the delay time length, in microsecond.
-  * @retval none
-  */
-void delay_us(uint32_t nus)
-{
+
+uint8_t waiting_us_while(uint32_t nus, uint8_t (*cb)()){
   uint32_t temp = 0;
   SysTick->LOAD = (uint32_t)(nus * fac_us);
   SysTick->VAL = 0x00;
@@ -328,19 +324,15 @@ void delay_us(uint32_t nus)
   do
   {
     temp = SysTick->CTRL;
+    if (cb && cb()) return 0;
   }while((temp & 0x01) && !(temp & (1 << 16)));
 
   SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
   SysTick->VAL = 0x00;
+  return 1;
 }
 
-/**
-  * @brief  inserts a delay time.
-  * @param  nms: specifies the delay time length, in milliseconds.
-  * @retval none
-  */
-void delay_ms(uint16_t nms)
-{
+uint8_t waiting_ms_while(uint16_t nms, uint8_t (*cb)()){
   uint32_t temp = 0;
   while(nms)
   {
@@ -359,11 +351,30 @@ void delay_ms(uint16_t nms)
     do
     {
       temp = SysTick->CTRL;
+      if (cb && cb()) return 0;
     }while((temp & 0x01) && !(temp & (1 << 16)));
 
     SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
     SysTick->VAL = 0x00;
   }
+  return 1;
+}
+
+/**
+  * @brief  inserts a delay time.
+  * @param  nus: specifies the delay time length, in microsecond.
+  * @retval none
+  */
+void delay_us(uint32_t nus){
+  waiting_us_while(nus, NULL);
+}
+/**
+  * @brief  inserts a delay time.
+  * @param  nms: specifies the delay time length, in milliseconds.
+  * @retval none
+  */
+void delay_ms(uint16_t nms){
+  waiting_ms_while(nms, NULL);
 }
 
 /**

@@ -196,6 +196,12 @@ void delay_us(uint32_t nus);
 void delay_ms(uint16_t nms);
 void delay_sec(uint16_t sec);
 
+/* waiting something to happen with timeout.
+   cb: callback function, return 1 if condition happen 
+   returns: 1 if timeout, 0 if condition happened */
+uint8_t waiting_ms_while(uint16_t nms, uint8_t (*cb)());
+uint8_t waiting_us_while(uint32_t nus, uint8_t (*cb)());
+
 /* printf uart init function */
 void uart_print_init(uint32_t baudrate);
 

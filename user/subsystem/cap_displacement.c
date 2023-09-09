@@ -1,5 +1,4 @@
 #include "cap_displacement.h"
-#include "at32f403a_407_spi.h"
 #include "log.h"
 #include "spi.h"
 #include "timer.h"
