@@ -1,6 +1,4 @@
-#include "at32f403a_407_board.h"
-#include "at32f403a_407_clock.h"
-#include "at32f403a_407_gpio.h"
+#include "board.h"
 #include "timer.h"
 #include "ad7705.h"
 #include "log.h"
