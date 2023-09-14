@@ -15,16 +15,9 @@ void init_system(void){
 }
 
 void main_logic(){
-  //adc_config(senses, 2);
+  init_system();
+
   
-  /* delay_ms(1000); */
-  /* uint16_t position = sense_position(senses, 2); */
-  /* i2c.address += position * 2; */
-  /* i2c_config(&i2c); */
-
-  /* init_motor_brushless(&motor); */
-
-  log_printf("software_trigger_repeat\n");
 
   while(1) {
     adc_ordinary_software_trigger_enable(ADC1, TRUE);
@@ -35,12 +28,15 @@ void main_logic(){
 
 }
 
-int main(void) {
+int main_test(void) {
   init_system();
   /* test_led();			/\* pass *\/ */
   /* test_gpin();			/\* pass, but pulse det not connected to adc *\/ */
   /* test_adc();			/\* adc pass *\/ */
   /* test_pwm();			/\* pass *\/ */
-  
 }
 
+int main(void){
+  main_logic();
+  /* main_test(); */
+}
