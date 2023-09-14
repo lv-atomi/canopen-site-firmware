@@ -8,12 +8,14 @@
 Motor485 motor_485 = {
   .port = {
     .DE_nRE={GPIOB, GPIO_PINS_SOURCE12},
-    .TX={GPIOB, GPIO_PINS_SOURCE10},
-    .RX={GPIOB, GPIO_PINS_SOURCE11},
-    .controller=USART3,
-    .baud_rate=38400,
-    .data_bit=USART_DATA_8BITS,
-    .stop_bit=USART_STOP_1_BIT
+    .port = {
+      .TX={GPIOB, GPIO_PINS_SOURCE10},
+      .RX={GPIOB, GPIO_PINS_SOURCE11},
+      .controller=USART3,
+      .baud_rate=38400,
+      .data_bit=USART_DATA_8BITS,
+      .stop_bit=USART_STOP_1_BIT
+    }
   },
   .addr=1,
   .limit_left={GPIOA, GPIO_PINS_SOURCE0},

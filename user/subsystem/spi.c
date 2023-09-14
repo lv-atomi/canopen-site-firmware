@@ -1,9 +1,5 @@
 #include "spi.h"
-#include "at32f403a_407.h"
-#include "at32f403a_407_gpio.h"
-#include "at32f403a_407_misc.h"
 #include <stdint.h>
-#include "at32f403a_407_spi.h"
 #include "gpio.h"
 #include "log.h"
 
@@ -53,7 +49,12 @@ void enable_spi_irq(spi_type * dev, uint32_t preempt_priority, uint32_t sub_prio
   }
 #if defined(SPI2)
   else if (dev == SPI2){
+#if defined (AT32F403Axx)
     nvic_irq_enable(SPI2_I2S2EXT_IRQn, preempt_priority, sub_priority);
+#elif defined (__AT32F421_GPIO_H)
+    nvic_irq_enable(SPI2_IRQn, preempt_priority, sub_priority);
+#endif
+    
     spi_i2s_interrupt_enable(dev, SPI_I2S_RDBF_INT, TRUE);
     //printf("spi2 irq enabled\n");
   }

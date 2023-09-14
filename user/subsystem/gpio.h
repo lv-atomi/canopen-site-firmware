@@ -12,7 +12,9 @@ typedef struct {
 #if defined (__AT32F421_GPIO_H)
   gpio_mux_sel_type mux_sel;
 #endif
+#if defined (AT32F403Axx)
   uint32_t gpio_remap;
+#endif
 } IOPort;
 
 void init_gpio_output(IOPort * devport,

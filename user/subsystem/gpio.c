@@ -1,5 +1,4 @@
 #include "gpio.h"
-#include "at32f403a_407_board.h"
 #include "log.h"
 
 IOPort *global_devport;
@@ -24,11 +23,12 @@ void init_gpio_clock(IOPort* devport){
     crm_periph_clock_enable(CRM_GPIOE_PERIPH_CLOCK, TRUE);
   }
 #endif
-
+#if defined (AT32F403Axx)
   if (devport->gpio_remap != 0){
     crm_periph_clock_enable(CRM_IOMUX_PERIPH_CLOCK, TRUE);
     gpio_pin_remap_config(devport->gpio_remap, TRUE);
   }
+#endif
 }
 
 void init_gpio_output(IOPort * devport,
@@ -54,6 +54,7 @@ void init_gpio_output(IOPort * devport,
 }
 
 void gpio_set_input_mode(IOPort * devport, bool_t is_input){
+#if defined (AT32F403Axx)
   uint32_t pinval = is_input ? 0b01 : 0b0101;
   if (devport->pin_source < 8) {
     devport->port->cfglr &= (uint32_t)~(0xf << (devport->pin_source * 4));
@@ -62,6 +63,12 @@ void gpio_set_input_mode(IOPort * devport, bool_t is_input){
     devport->port->cfghr &= (uint32_t)~(0xf << ((devport->pin_source - 8) * 4));
     devport->port->cfghr |= (uint32_t)(pinval << ((devport->pin_source - 8) * 4));
   }
+#endif
+#if defined (__AT32F421_GPIO_H)
+  uint32_t pinval = is_input ? 0b00 : 0b01;
+  devport->port->cfgr &= (uint32_t)~(0x3 << (devport->pin_source * 2));
+  devport->port->cfgr |= (uint32_t)(pinval << (devport->pin_source * 2));
+#endif
 }
 
 void init_gpio_mux(IOPort * devport,
