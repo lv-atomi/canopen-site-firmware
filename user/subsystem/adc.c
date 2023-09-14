@@ -5,12 +5,34 @@
 
 #define MAX_ADC_PORTS 16
 
+__IO uint16_t adc1_ordinary_valuetab[MAX_ADC_PORTS] = {0};
+
 /* init adc, ADC1 only */
 void init_adcs(ADCPort *ports, uint8_t num_ports) {
   uint8_t i;
-
+  dma_init_type dma_init_struct;
+  
   ASSERT(num_ports < MAX_ADC_PORTS);
 
+  /* init dma */
+  crm_periph_clock_enable(CRM_DMA1_PERIPH_CLOCK, TRUE);
+  nvic_irq_enable(DMA1_Channel1_IRQn, 0, 0);
+  dma_reset(DMA1_CHANNEL1);
+  dma_default_para_init(&dma_init_struct);
+  dma_init_struct.buffer_size = num_ports;
+  dma_init_struct.direction = DMA_DIR_PERIPHERAL_TO_MEMORY;
+  dma_init_struct.memory_base_addr = (uint32_t)adc1_ordinary_valuetab;
+  dma_init_struct.memory_data_width = DMA_MEMORY_DATA_WIDTH_HALFWORD;
+  dma_init_struct.memory_inc_enable = TRUE;
+  dma_init_struct.peripheral_base_addr = (uint32_t)&(ADC1->odt);
+  dma_init_struct.peripheral_data_width = DMA_PERIPHERAL_DATA_WIDTH_HALFWORD;
+  dma_init_struct.peripheral_inc_enable = FALSE;
+  dma_init_struct.priority = DMA_PRIORITY_HIGH;
+  dma_init_struct.loop_mode_enable = TRUE;
+  dma_init(DMA1_CHANNEL1, &dma_init_struct);
+  dma_interrupt_enable(DMA1_CHANNEL1, DMA_FDT_INT, TRUE);
+  dma_channel_enable(DMA1_CHANNEL1, TRUE);
+  
   /* init adc ports */
   for (i=0; i<num_ports; i++) {
     init_gpio_analogy(&ports[i].port, GPIO_PULL_NONE, GPIO_DRIVE_STRENGTH_MODERATE);
@@ -46,28 +68,33 @@ void init_adcs(ADCPort *ports, uint8_t num_ports) {
   /* adc_voltage_monitor_single_channel_select(ADC1, ADC_CHANNEL_5); */
   /* adc_interrupt_enable(ADC1, ADC_VMOR_INT, TRUE); */
 
+  adc_dma_mode_enable(ADC1, TRUE);
   adc_enable(ADC1, TRUE);
-  log_printf("ADC enabled.\n");
+  /* log_printf("ADC enabled.\n"); */
   adc_calibration_init(ADC1);
-  log_printf("ADC calibration initialized.\n");
+  /* log_printf("ADC calibration initialized.\n"); */
   while(adc_calibration_init_status_get(ADC1));
-  log_printf("ADC calibration init status checked.\n");
+  /* log_printf("ADC calibration init status checked.\n"); */
   adc_calibration_start(ADC1);
-  log_printf("ADC calibration started.\n");
+  /* log_printf("ADC calibration started.\n"); */
   while(adc_calibration_status_get(ADC1));
-  log_printf("ADC calibration completed.\n");
-  
+  /* log_printf("ADC calibration completed.\n"); */
+
+  adc_ordinary_software_trigger_enable(ADC1, TRUE);
 }
 
 uint16_t * read_adcs(ADCPort * ports, uint8_t num_ports) {
   static uint16_t results[MAX_ADC_PORTS];
   uint8_t i;
   ASSERT(num_ports < MAX_ADC_PORTS);
-  adc_ordinary_software_trigger_enable(ADC1, TRUE);
 
-  for(i=0; i<num_ports; i++){
-    while(adc_ordinary_software_trigger_status_get(ADC1));
-    results[i] = adc_ordinary_conversion_data_get(ADC1);
+  /* for(i=0; i<num_ports; i++){ */
+  /*   while(adc_ordinary_software_trigger_status_get(ADC1)); */
+  /*   results[i] = adc_ordinary_conversion_data_get(ADC1); */
+  /* } */
+  for (i=0; i<num_ports; i++){
+    results[i] = adc1_ordinary_valuetab[i];
   }
   return results;
 }
+

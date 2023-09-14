@@ -1,18 +1,13 @@
 #ifndef RS485_H
 #define RS485_H
 
-#include "CO_driver_target.h"
-#include "gpio.h"
 #include "board.h"
+#include "rs232.h"
 #include <stdint.h>
 
 typedef struct {
   IOPort DE_nRE;
-  IOPort TX, RX;
-  usart_type * controller;
-  uint32_t baud_rate;
-  usart_data_bit_num_type data_bit;
-  usart_stop_bit_num_type stop_bit;
+  RS232Port port;
 } RS485Port;
 
 void init_rs485(RS485Port *);

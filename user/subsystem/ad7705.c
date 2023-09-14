@@ -1,5 +1,4 @@
 #include "ad7705.h"
-#include "at32f403a_407_board.h"
 #include "gpio.h"
 #include "spi.h"
 #include "log.h"

@@ -1,11 +1,9 @@
 #include "motor_485.h"
-#include "at32f403a_407.h"
-#include "at32f403a_407_flash.h"
-#include "at32f403a_407_gpio.h"
 #include "gpio.h"
 #include "log.h"
 #include "rs485.h"
 #include <stdint.h>
+#include <stdlib.h>
 
 uint32_t tobe32(uint32_t e){
   union {
