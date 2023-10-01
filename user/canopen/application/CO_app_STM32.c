@@ -153,7 +153,7 @@ int canopen_app_init(CANopenNodeSTM32 *_canopenNodeSTM32) {
   
   app_communicationReset(CO);
   canopen_app_resetCommunication();
-  timer_add_tick(canopen_app_interrupt);
+  timer_add_tick(canopen_app_interrupt, 0);
   return 0;
 }
 

@@ -2,9 +2,9 @@
 #define LOG_H
 
 /* #include "tiny_printf.h" */
-#include <stdio.h>
 #include "board.h"
-//#include <stdint.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stddef.h>
 
 #define log_printf(macropar_message, ...)                                      \
@@ -14,5 +14,8 @@
 
 void DumpHex(const void *data, size_t size);
 void DumpBinary(uint8_t *buf, size_t length);
+
+#define min(x, y) ((x) > (y) ? (x) : (y))
+#define max(x, y) ((x) < (y) ? (x) : (y))
 
 #endif

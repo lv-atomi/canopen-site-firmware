@@ -108,6 +108,6 @@ void canopen_init(){
   log_printf("init, desired station id:%d baudrate:%d\n",
 	     canOpenNodeSTM32.desiredNodeID,
 	     canOpenNodeSTM32.baudrate);
-  timer_add_tick(canopen_app_interrupt);
+  timer_add_tick(canopen_app_interrupt, 0);
 }
 

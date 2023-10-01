@@ -1,6 +1,7 @@
 #ifndef MOTOR_485_H
 #define MOTOR_485_H
 
+#include "motor.h"
 #include "rs485.h"
 #include <stdint.h>
 
@@ -51,6 +52,25 @@ typedef union {
   uint8_t raw[8];
 } position_cmd;
 
+typedef union {
+  struct __attribute__((__packed__)){
+    uint8_t func_code;
+    uint8_t dir_speed_high;
+    uint8_t speed_low;
+    uint8_t acceleration;
+  };
+  uint8_t raw[4];
+} speed_cmd;
+
+typedef union {
+  struct __attribute__((__packed__)){
+    uint8_t func_code;
+    int32_t position;
+    uint16_t ring;
+  };
+  uint8_t raw[7];
+} read_encoder_response;
+
 typedef struct {
   RS485Port port;
   uint8_t addr;
@@ -66,8 +86,8 @@ typedef enum{
 } HOMING_DIR;
 
 void init_motor_485(Motor485 *);
-void motor_485_homing(Motor485 *, HOMING_DIR);
-void motor_485_set_soft_limit(Motor485 *, int32_t min, int32_t max);
-void motor_go_pos(Motor485 *, int32_t pos, uint16_t speed, enum Acceleration acc);
+void stepper_set_speed(Motor485 *, int16_t speed, enum Acceleration acc);
+void stepper_go_pos(Motor485 *, int32_t pos, uint16_t speed, enum Acceleration acc);
+void stepper_read_position(Motor485 *devport, int32_t * pos, uint16_t * ring);
 
 #endif

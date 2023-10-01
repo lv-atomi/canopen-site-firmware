@@ -139,10 +139,10 @@ void init_keyboard(KeyboardPort *devport) {
   timer_pause();
   monitor[keyboard_monitor_num++] = devport;
   if (keyboard_monitor_num == KEYBOARD_MAX_KEYS){
-    printf("Too many monitored keys\n");
+    log_printf("Too many monitored keys\n");
     keyboard_monitor_num = 0;
   }
-  timer_add_tick(keyboard_tick);
+  timer_add_tick(keyboard_tick, 0);
   timer_resume();
 }
 

@@ -3,7 +3,7 @@ PROJ_NAME=main
 DEBUG=0
 
 #CC=arm-none-eabi-gcc --specs=nosys.specs --specs=nano.specs -Werror -Wno-unused-variable
-CC=arm-none-eabi-gcc --specs=nosys.specs --specs=nano.specs -fno-builtin-printf -Werror -Wno-unused-variable 
+CC=arm-none-eabi-gcc --specs=nosys.specs --specs=nano.specs -Werror -Wno-unused-variable 
 #GDB=arm-none-eabi-gdb
 GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy

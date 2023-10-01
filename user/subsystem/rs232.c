@@ -82,7 +82,7 @@ void rs232_transmit(RS232Port *devport, uint8_t *buf, uint16_t size) {
   while(usart_flag_get(devport->controller, USART_TDC_FLAG) == RESET);
 }
 
-bool_t rs232_receive(RS232Port *devport, uint16_t *buf, uint16_t size, uint32_t timeout) {
+bool_t rs232_receive(RS232Port *devport, uint8_t *buf, uint16_t size, uint32_t timeout) {
   ASSERT(devport);
 
   uint16_t idx = 0;

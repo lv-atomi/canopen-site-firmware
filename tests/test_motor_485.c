@@ -37,10 +37,10 @@ int main(void) {
     //printf("tick:%ld\n", get_ticks());
     //delay_sec(1);
     log_printf("move to +200\n");
-    motor_go_pos(&motor_485, 2000, 50, Acc2);
+    stepper_go_pos(&motor_485, 2000, 50, Acc2);
     delay_sec(1);
     log_printf("move to -200\n");
-    motor_go_pos(&motor_485, -2000, 100, Acc2);
+    stepper_go_pos(&motor_485, -2000, 100, Acc2);
     delay_sec(1);
   }
 }

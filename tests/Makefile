@@ -3,7 +3,7 @@ PROJ_NAME=test_$(test)
 DEBUG=1
 FILTER_OUT = $(foreach v,$(2),$(if $(findstring $(1),$(v)),,$(v)))
 
-CC=arm-none-eabi-gcc --specs=nosys.specs -Werror -Wno-unused-variable
+CC=arm-none-eabi-gcc --specs=nosys.specs --specs=nano.specs -Werror -Wno-unused-variable
 #GDB=arm-none-eabi-gdb
 GDB=gdb-multiarch
 OBJCOPY=arm-none-eabi-objcopy

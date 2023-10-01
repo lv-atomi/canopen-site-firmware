@@ -1,15 +1,19 @@
-#include "at32f403a_407_board.h"
-#include "at32f403a_407_clock.h"
-#include "at32f403a_407_spi.h"
-#include "bmp.h"
 /* #include "can.h" */
 #include "cap_displacement.h"
-#include "flash.h"
 #include "log.h"
 #include "timer.h"
-#include "ui.h"
+#include "oled.h"
 #include <stdint.h>
-//#include "app_common.h"
+#include <string.h>
+
+OLEDPort oled = {
+  .en = {GPIOC, GPIO_PINS_SOURCE13},
+  .i2c = {
+    .data = {GPIOA, GPIO_PINS_SOURCE12},
+    .clk = {GPIOB, GPIO_PINS_SOURCE7},
+    .address=0x78
+  },
+};
 
 extern unsigned int system_core_clock; /*!< system clock frequency (core clock) */
 
@@ -44,12 +48,36 @@ int main(void) {
 	 CRM->cfg_bit.ahbdiv, CRM->cfg_bit.apb1div, CRM->cfg_bit.apb2div);
   
   log_printf("start\n");
+  init_oled(&oled);
   init_capacitor_displacement_measurement(&displacement_test);
   
+  char buf[20];
+  uint16_t buflen = 0;
+  //uint32_t last_delay = 0;
   while (1) {
     uint32_t delay = 0;
     int32_t pos = read_displacement(&displacement_test, &delay, 1);
-    printf("displace: %ld, delay:%ld\n", pos, delay);
-    delay_ms(500);
+    //if (delay < last_delay)
+    {
+      printf("displace: %ld, delay:%ld\n", pos, delay);
+      snprintf(buf, 20, "%ld   ", pos);
+      buflen = strlen(buf);
+      oled_showstring(&oled, 0, 0, buf, buflen, 8, 1);
+      
+      snprintf(buf, 20, "%ld   ", delay);
+      buflen = strlen(buf);
+      oled_showstring(&oled, 0, 10, buf, buflen, 8, 1);
+
+      snprintf(buf, 20, "%X %X %X  ",
+	       displacement_test.buf[0],
+	       displacement_test.buf[1],
+	       displacement_test.buf[2]);
+      buflen = strlen(buf);
+      oled_showstring(&oled, 0, 20, buf, buflen, 8, 1);
+      
+      oled_refresh(&oled);
+    }
+    //last_delay = delay;
+    delay_ms(50);
   }
 }

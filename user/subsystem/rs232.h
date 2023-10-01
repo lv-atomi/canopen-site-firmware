@@ -15,7 +15,7 @@ typedef struct {
 
 void init_rs232(RS232Port *);
 void rs232_transmit(RS232Port *, uint8_t * buf, uint16_t size);
-bool_t rs232_receive(RS232Port *, uint16_t * buf, uint16_t size, uint32_t timeout);
+bool_t rs232_receive(RS232Port *, uint8_t * buf, uint16_t size, uint32_t timeout);
 
   
 #endif

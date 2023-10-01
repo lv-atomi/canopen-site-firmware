@@ -122,7 +122,7 @@ void init_ui(store_id_cb f1, get_id_cb f2, store_timeout_cb f3, get_timeout_cb f
   init_oled(&ui_oled);
   ui_state = UI_INIT;
   last_ui_state = UI_INIT;
-  timer_add_tick(ui_tick_wrap);
+  timer_add_tick(ui_tick_wrap, 0);
 }
 
 void dump_keystate(KeyboardPort * port, enum KEYSTATUS status){

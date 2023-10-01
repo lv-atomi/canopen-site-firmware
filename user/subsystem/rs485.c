@@ -21,7 +21,7 @@ void rs485_transmit(RS485Port *devport, uint8_t *buf, uint16_t size) {
   gpio_set(&devport->DE_nRE, RESET);
 }
 
-bool_t rs485_receive(RS485Port *devport, uint16_t *buf, uint16_t size, uint32_t timeout) {
+bool_t rs485_receive(RS485Port *devport, uint8_t *buf, uint16_t size, uint32_t timeout) {
   ASSERT(devport);
 
   return rs232_receive(&devport->port, buf, size, timeout);

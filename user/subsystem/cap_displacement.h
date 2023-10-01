@@ -13,6 +13,7 @@ typedef struct{
   int32_t zero_value;
   int32_t last_value;
   uint32_t last_ticks;
+  uint8_t buf[4];
   uint8_t recv_idx;
 } CapacitorDisplacementMeasurePort;
 

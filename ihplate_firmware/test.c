@@ -9,8 +9,8 @@
 #include "motor.h"
 #include "ihplate_base.h"
 #include <string.h>
-
 #include "portdef.h"
+
 
 void test_adc() {
   static ADCPort senses[4];

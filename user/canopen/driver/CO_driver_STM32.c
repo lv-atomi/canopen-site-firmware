@@ -82,8 +82,7 @@ Organization
 #include "301/CO_driver.h"
 #include "CO_app_STM32.h"
 #include "can.h"
-
-#define min(a, b) (a) > (b) ? (b) : (a)
+#include "log.h"
 
 extern char debug[];
 
