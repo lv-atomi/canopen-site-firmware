@@ -55,7 +55,7 @@ void motor_set_speed(MotorUnified *motor, int8_t speed){
       pwm_output_update_duty(&motor->brushless.speed_set, 0);
     }
   } else {
-    log_printf("set motor speed:%d\n", speed);
+    //log_printf("set motor speed:%d\n", speed);
     pwm_output_update_duty(&motor->brush.pwm_a, 50 + speed/2);
   }
   

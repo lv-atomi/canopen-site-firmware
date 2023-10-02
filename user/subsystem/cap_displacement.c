@@ -60,11 +60,9 @@ void cap_irq_handler(int spi_index) {
 
       if (port->recv_idx == 2) { /* update displacement value */
         port->last_value =
-            ((int32_t)port->spi.rx_buf[1] << 8) | port->spi.rx_buf[0];
-        if (port->spi.rx_buf[2] == 0x10) {
-          port->last_value *= -1;
-        } else if(port->spi.rx_buf[2] == 0x00) { /* OK */
-	} else {				 /* resync needed */
+	  ((int32_t)(port->spi.rx_buf[2] & 0xf) << 16) | ((int32_t)port->spi.rx_buf[1] << 8) | port->spi.rx_buf[0];
+
+	if (port->spi.rx_buf[2] & 0b11100000){ /* resync needed */
 	  /* printf("out of sync, resync...\n"); */
 	  spi_enable(port->spi.controller, FALSE);
 	  uint8_t clk_status = FALSE;
@@ -75,11 +73,13 @@ void cap_irq_handler(int spi_index) {
 	      clk_status = new_status;
 	      counter = get_ticks();
 	      /* printf("spi clk detected... %ld\n", counter); */
-
             }
 	  } while (get_ticks() - counter < 10);
 	  /* printf("spi clk gap detected, resync...\n"); */
 	  spi_enable(port->spi.controller, TRUE);
+	} else if (port->spi.rx_buf[2] & 0x10) { /* minus */
+          port->last_value *= -1;
+        } else {		/* OK */
 	}
 	port->buf[0] = port->spi.rx_buf[0];
 	port->buf[1] = port->spi.rx_buf[1];
