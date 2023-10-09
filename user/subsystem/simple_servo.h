@@ -108,7 +108,12 @@ int32_t ss_read_position(SimpleServo *devport, bool_t precise, uint32_t *delay);
 void ss_set_speed(SimpleServo *devport, uint8_t speed, bool_t dir);
 void ss_set_ori(SimpleServo *devport);  /* set current position to origin */
 void ss_set_stop(SimpleServo *devport);
+enum LimitedStatus ss_is_limited(SimpleServo *devport);
 
-enum LimitedStatus ss_is_limited(SimpleServo * devport);
-
+const char* TrackerTypeToString(enum TrackerType value);
+const char* LimitedStatusToString(enum LimitedStatus value);
+const char* HomingDirectionToString(enum HomingDirection value);
+const char* MotorTypeToString(enum MotorType value);
+const char* HomingResultToString(enum HomingResult value);
+  
 #endif

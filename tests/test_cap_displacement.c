@@ -39,8 +39,8 @@ int main(void) {
 
   uart_print_init(115200);	/* init debug uart */
 
-  printf("System clock: %d\n", system_core_clock);
-  printf("AHBDIV: %d apb1div:%d apb2div:%d\n",
+  log_printf("System clock: %d\n", system_core_clock);
+  log_printf("AHBDIV: %d apb1div:%d apb2div:%d\n",
 	 CRM->cfg_bit.ahbdiv, CRM->cfg_bit.apb1div, CRM->cfg_bit.apb2div);
   
   log_printf("start\n");
@@ -49,7 +49,7 @@ int main(void) {
   while (1) {
     uint32_t delay = 0;
     int32_t pos = read_displacement(&displacement_test, &delay, 1);
-    printf("displace: %ld, delay:%ld\n", pos, delay);
+    log_printf("displace: %ld, delay:%ld\n", pos, delay);
     delay_ms(500);
   }
 }

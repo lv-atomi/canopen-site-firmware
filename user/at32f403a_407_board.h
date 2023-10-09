@@ -205,6 +205,11 @@ uint8_t waiting_us_while(uint32_t nus, uint8_t (*cb)());
 /* printf uart init function */
 void uart_print_init(uint32_t baudrate);
 
+
+uint32_t tobe32u(uint32_t e);
+int32_t frombe32(const char *e);
+uint16_t frombe16u(const char *e);
+  
 /**
   * @}
   */

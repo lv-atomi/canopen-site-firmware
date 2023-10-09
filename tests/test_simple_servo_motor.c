@@ -1,3 +1,4 @@
+#include "at32f403a_407_board.h"
 #include "at32f403a_407_gpio.h"
 #include "timer.h"
 #include "log.h"
@@ -55,10 +56,27 @@ int main(void) {
   log_printf("start\n");
 
   init_simple_servo(&motor, 99);
-  log_printf("homing\n");
+  log_printf("homing workload\n");
+  delay_sec(1);
+  
+  log_printf("rewind...\n");
+  ss_set_speed(&motor, 90, 1);
+  log_printf("for 2 seconds\n");
+  delay_sec(2);
+  log_printf("done, waiting for 1 seconds\n");
+  ss_set_stop(&motor);
+  delay_sec(1);
+
+  log_printf("start homing...\n");  
   ss_home(&motor, FALSE);
   while (ss_is_homing(&motor)) delay_ms(1);
-  ASSERT(ss_is_homing(&motor) == HR_SUCCESS);
+  
+  log_printf("homing finished, checking result...\n");    
+  if (motor._homing_result == HR_SUCCESS){
+    log_printf("homing success\n");
+  } else {
+    log_printf("homing failed: %s\n", HomingResultToString(motor._homing_result));
+  }
   
   while (1) {
     ss_go_position_absolute(&motor, 20, 100);

@@ -153,7 +153,7 @@ void pwm_output_update_duty(PWMPort * devport, uint8_t duty){
   ASSERT(devport);
   uint32_t duty_32 = devport->tmr->pr * duty;
   duty_32 /= 100;
-  printf("duty set:%u, duty_32:%ld\n", duty, duty_32);
+  //log_printf("duty set:%u, duty_32:%ld\n", duty, duty_32);
   tmr_channel_value_set(devport->tmr, devport->channel,
 			(uint16_t)duty_32);
 }

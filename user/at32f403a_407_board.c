@@ -392,6 +392,30 @@ void delay_sec(uint16_t sec)
   }
 }
 
+uint32_t tobe32u(uint32_t e){
+  union {
+    uint32_t i;
+    char c[4];
+  } result;
+  result.c[0] = (e & 0xFF000000) >> 24;
+  result.c[1] = (e & 0x00FF0000) >> 16;
+  result.c[2] = (e & 0x0000FF00) >> 8;
+  result.c[3] = (e & 0x000000FF);
+  return result.i;
+}
+
+int32_t frombe32(const char *e) {
+  return ((int32_t)e[0] << 24) |
+          ((int32_t)(unsigned char)e[1] << 16) |
+          ((int32_t)(unsigned char)e[2] << 8) |
+          (int32_t)(unsigned char)e[3];
+}
+
+uint16_t frombe16u(const char *e) {
+  return ((uint16_t)(unsigned char)e[2] << 8) |
+          (uint16_t)(unsigned char)e[3];
+}
+
 /**
   * @}
   */

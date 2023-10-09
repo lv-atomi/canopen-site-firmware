@@ -1,10 +1,15 @@
 #include "simple_servo.h"
+#include "at32f403a_407.h"
+#include "at32f403a_407_debug.h"
+#include "at32f403a_407_usb.h"
 #include "gpio.h"
 #include "log.h"
 #include "motor.h"
 #include "motor_485.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include "pid.h"
+#include "pwm.h"
 #include "stall_detect.h"
 #include "timer.h"
 #include "homing_logic.h"
@@ -12,13 +17,48 @@
 #define MAX_TRACKER 10
 #define INT_MAX    2147483648
 
-
 Tracker tracker[MAX_TRACKER];
 uint8_t tracker_num = 0;
 
-
 bool_t tick_position(PositionTracker * pt);
-bool_t tick_homing(HomingTracker * ht);
+bool_t tick_homing(HomingTracker *ht);
+
+const char* HomingResultToString(enum HomingResult value) {
+    return value == HR_HOMING_NOT_INITED ? "HR_HOMING_NOT_INITED" :
+           value == HR_HIT_LIMIT_A       ? "HR_HIT_LIMIT_A"       :
+           value == HR_HIT_LIMIT_B       ? "HR_HIT_LIMIT_B"       :
+           value == HR_NO_MOVE           ? "HR_NO_MOVE"           :
+           value == HR_NO_SENSE          ? "HR_NO_SENSE"          :
+           value == HR_SUCCESS           ? "HR_SUCCESS"           :
+                                           "INVALID_VALUE";
+}
+
+const char* MotorTypeToString(enum MotorType value) {
+    return value == MT_Stepper        ? "MT_Stepper"        :
+           value == MT_MotorBrush     ? "MT_MotorBrush"     :
+           value == MT_MotorBrushless ? "MT_MotorBrushless" :
+                                        "INVALID_VALUE";
+}
+
+const char* HomingDirectionToString(enum HomingDirection value) {
+    return value == TOWARD_LIMIT_A ? "TOWARD_LIMIT_A" :
+           value == TOWARD_LIMIT_B ? "TOWARD_LIMIT_B" :
+                                     "INVALID_VALUE";
+}
+
+const char* LimitedStatusToString(enum LimitedStatus value) {
+    return value == NOT_LIMITED ? "NOT_LIMITED" :
+           value == LIMITED_A   ? "LIMITED_A"   :
+           value == LIMITED_B   ? "LIMITED_B"   :
+                                  "INVALID_VALUE";
+}
+
+const char* TrackerTypeToString(enum TrackerType value) {
+    return value == TT_UNDEFINED ? "TT_UNDEFINED" :
+           value == TT_POSITION  ? "TT_POSITION"  :
+           value == TT_HOMING    ? "TT_HOMING"    :
+                                    "INVALID_VALUE";
+}
 
 void start_homing(SimpleServo *devport, IOPort * port,
 		  bool_t dir, uint32_t travel_limit){
@@ -42,7 +82,7 @@ void start_homing(SimpleServo *devport, IOPort * port,
   devport->_cur_position_available = FALSE;
   devport->_homing_result = HR_HOMING_NOT_INITED;
   devport->_cur_tracker = &tracker[tracker_num];
-  
+  log_printf("reg tracker, num:%d .root/ptr:%p\n", tracker_num, devport->_cur_tracker);
   timer_pause();
   tracker_num += 1;
   timer_resume();
@@ -126,6 +166,7 @@ void tick_simple_servo(){
       finished = tick_position(&tracker[i].pt);
       break;
     case TT_HOMING:
+      log_printf("tracker num:%d, .root/ptr:%p, .ht/ptr:%p\n", i, &tracker[i], &tracker[i].ht);
       finished = tick_homing(&tracker[i].ht);
       break;
     }
@@ -268,7 +309,6 @@ void ss_go_position_absolute(SimpleServo * devport, int32_t position, uint32_t s
 
 void ss_go_position_relative(SimpleServo *devport, int32_t position_delta, uint32_t speed_F) {
   ASSERT(devport);
-   
 }
 
 int32_t ss_current_position(SimpleServo *devport) {

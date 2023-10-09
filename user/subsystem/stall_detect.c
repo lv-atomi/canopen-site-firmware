@@ -23,20 +23,21 @@ enum StallResult stall_detect_feed(StallDetect *sd, int32_t pos, uint32_t tick,
     return sr;
   }
 
-  log_printf("last_tick:%ld last_pos:%ld  cur_tick:%ld, cur_pos:%ld\n",
+  log_printf("last_tick:%ld last_pos:%ld  cur_tick:%ld, cur_pos:%ld, stop thres:%ld stall thres:%ld, %ld\n",
 	     sd->last_tick, sd->last_pos,
-	     tick-delay, pos
+	     tick-delay, pos,
+	     sd->_stop_tick_threshold, sd->_stall_tick_threshold,
+	     tick - delay - sd->last_tick
 	     );
 
   if (abs(pos - sd->last_pos) > sd->_stop_threshold) {
     sd->last_tick = tick-delay;
     sd->last_pos = pos;
     sr = SD_MOVING;
+  } else if (tick - delay - sd->last_tick > sd->_stall_tick_threshold) {
+    sr = SD_STALL;
   } else if (tick - delay - sd->last_tick > sd->_stop_tick_threshold) {
     sr = SD_STOP;
-  }
-  else if (tick - delay - sd->last_tick > sd->_stall_tick_threshold) {
-    sr = SD_STALL;
   }
 
   return sr;

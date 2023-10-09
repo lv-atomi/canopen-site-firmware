@@ -11,33 +11,6 @@
 #define REVERT_TIME 1000      /* 1000ms */
 #define REVERT_DISTANCE 1     /* 1mm */
 
-/* bool_t stage13_do_hit_endswitch(HomingTracker * ht){ */
-/*   ASSERT(ht); */
-
-/*   ht->cur_dir = !ht->cur_dir; */
-/*   ss_set_speed(ht->devport, ht->devport->_homing_speed, ht->cur_dir); */
-/*   if (ht->status == HS_HOMING_STAGE1) */
-/*     ht->status = HS_HOMING_STAGE2; */
-/*   else { /\* finish homing *\/ */
-/*     ht->devport->_homing_result = HR_SUCCESS; */
-/*     ss_set_stop(ht->devport); */
-/*     ss_set_ori(ht->devport); */
-/*     return TRUE; */
-/*   } */
-/*   return FALSE; */
-/* } */
-
-/* bool_t stage2_do_release_endswitch(HomingTracker * ht){ */
-/*   ASSERT(ht); */
-
-/*   ht->cur_dir = !ht->cur_dir; */
-/*   ss_set_speed(ht->devport, */
-/* 	       max(ht->devport->_homing_speed / 5, 1), /\* speed cannot be zero *\/ */
-/* 	       ht->cur_dir); */
-/*   ht->status = HS_HOMING_STAGE3; */
-/*   return FALSE; */
-/* } */
-
 bool_t tick_homing_with_signal_sensor_available(HomingTracker * ht) {
   ASSERT(ht);
 
@@ -101,7 +74,7 @@ const char* HomingStatusToString(enum HomingStatus value) {
 bool_t tick_homing_with_displace_sensor_only(HomingTracker * ht) {
   ASSERT(ht);
   ASSERT(ht->devport->_cur_tracker);
-  //log_printf("homing tick...\n");
+  log_printf("homing tick... .root/ptr:%p, cur_tracker/ptr:%p\n", ht, ht->devport->_cur_tracker);
   
   uint32_t delay;
   int32_t cur_pos = ss_read_position(ht->devport, FALSE, &delay);
