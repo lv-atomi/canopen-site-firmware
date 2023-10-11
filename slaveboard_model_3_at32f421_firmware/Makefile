@@ -1,4 +1,11 @@
-PROJ_NAME=main
+$(foreach app,$(APPS),$(eval $(call build-rule,$(app))))
+define build-rule
+$1: PROJ_NAME = $1
+$1: app/app_$1.c
+	$$(CC) -o $1 app/app_$1.c
+endef
+.PHONY: all $(APPS)
+
 
 DEBUG=1
 
