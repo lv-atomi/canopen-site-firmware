@@ -1,5 +1,5 @@
-#ifndef PORTDEF_H
-#define PORTDEF_H
+#ifndef PORTDEF_IHPLATE_H
+#define PORTDEF_IHPLATE_H
 
 #include "board.h"
 #include "rs232.h"

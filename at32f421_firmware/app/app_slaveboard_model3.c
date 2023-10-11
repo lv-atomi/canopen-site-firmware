@@ -71,15 +71,12 @@ void gpio_config(void) {
 }
 
 
-void init_system(void){
+int main(){
   nvic_priority_group_config(NVIC_PRIORITY_GROUP_4);
   system_clock_config();
   at32_board_init();
   uart_print_init(115200);  
-}
 
-int main(){
-  init_system();
   gpio_config();
   adc_config(senses, 2);
   

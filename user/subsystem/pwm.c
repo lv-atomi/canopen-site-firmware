@@ -234,6 +234,6 @@ void pwm_input_freq_duty_sense(PWMPort * devport, uint32_t * freq, uint8_t * dut
   *freq = system_core_clock / (devport->channel == TMR_SELECT_CHANNEL_1 ? ic1value : ic2value);
 
   uint32_t duty_32 = devport->channel == TMR_SELECT_CHANNEL_1 ? ic2value * 100 / ic1value : ic1value *100 / ic2value;
-  //printf("ch1:%u ch2:%u, duty:%ld\n", ic1value, ic2value, duty_32);
+  printf("ch1:%u ch2:%u, duty:%ld\n", ic1value, ic2value, duty_32);
   *duty = (uint8_t) duty_32;
 }

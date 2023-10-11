@@ -7,7 +7,7 @@
 #include "platform_base.h"
 /* include test.h **OR** portdef.h */
 /* #include "test.h" */
-#include "portdef.h"
+#include "portdef_ihplate.h"
 
 ADCPort senses[4];
 

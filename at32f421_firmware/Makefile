@@ -12,8 +12,10 @@ APPS = $(patsubst app/app_%.c,%,$(wildcard app/app_*.c))
 $(APPS):
 	@$(MAKE) PROJ_NAME=$@ proj
 
+$(addsuffix -gdb,$(APPS)):
+	@$(MAKE) PROJ_NAME=$(patsubst %-gdb,%,$@) gdb
 
-.PHONY: all proj list
+.PHONY: all proj list $(APPS) $(addsuffix -gdb,$(APPS))
 
 DEBUG=1
 
