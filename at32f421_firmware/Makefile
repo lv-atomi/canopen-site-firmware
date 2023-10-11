@@ -1,11 +1,19 @@
-$(foreach app,$(APPS),$(eval $(call build-rule,$(app))))
-define build-rule
-$1: PROJ_NAME = $1
-$1: app/app_$1.c
-	$$(CC) -o $1 app/app_$1.c
-endef
-.PHONY: all $(APPS)
+all: slaveboard_model3
 
+APPS = $(patsubst app/app_%.c,%,$(wildcard app/app_*.c))
+
+# .DEFAULT:
+# 	@if echo $(APPS) | grep -wq $(@); then \
+# 		$(MAKE) PROJ_NAME=$@ proj; \
+# 	else \
+# 		echo "Unknown target: $@"; exit 1; \
+# 	fi
+
+$(APPS):
+	@$(MAKE) PROJ_NAME=$@ proj
+
+
+.PHONY: all proj list
 
 DEBUG=1
 
@@ -53,7 +61,15 @@ OBJS := $(SRCS:.c=.o)
 OBJS := $(OBJS:.s=.o)
 OBJS := $(addprefix $(OBJDIR)/,$(OBJS)) $(LIBOBJS)
 
-all: proj
+ifdef PROJ_NAME
+OBJS += $(OBJDIR)/app_$(PROJ_NAME).o
+endif
+
+list:
+	@echo "Available apps:"
+	@for app in $(APPS); do \
+		echo $$app; \
+	done
 
 proj: $(OBJDIR)/$(PROJ_NAME).elf $(OBJDIR)/$(PROJ_NAME).hex $(OBJDIR)/$(PROJ_NAME).bin
 
@@ -65,6 +81,10 @@ $(OBJDIR)/%.elf: $(OBJS)
 
 %.bin: %.elf
 	$(OBJCOPY) -O binary $^ $@
+
+$(OBJDIR)/app_%.o: app/app_%.c
+	mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(OBJDIR)/lib/%.o: %.c
 	mkdir -p $(dir $@)

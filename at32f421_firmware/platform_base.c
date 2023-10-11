@@ -1,4 +1,4 @@
-#include "slave_board_base.h"
+#include "platform_base.h"
 #include "log.h"
 
 int32_t my_round(uint32_t val){

@@ -1,10 +1,9 @@
 #include "board.h"
 #include "at32f421_clock.h"
 #include <stdio.h>
-
 #include "gpio.h"
-#include "slave_board_base.h"
-#include "test.h"
+#include "motor.h"
+#include "platform_base.h"
 
 MotorUnified motor = {
     .brush = {
@@ -79,7 +78,8 @@ void init_system(void){
   uart_print_init(115200);  
 }
 
-void main_logic(){
+int main(){
+  init_system();
   gpio_config();
   adc_config(senses, 2);
   
@@ -98,18 +98,5 @@ void main_logic(){
     printf("sense1:%u sense2:%u\n", sensed[0], sensed[1]);
     delay_ms(1000);
   }
-
-}
-
-int main(void) {
-  init_system();
-
-  /* test_adc(senses); */
-  /* test_brush_motor(&motor); */
-  /* test_brushless_motor(&motor); */
-  test_gpout(gpout, sizeof(gpout) / sizeof(gpout[0]));
-  /* test_gpin(gpin, sizeof(gpin) / sizeof(gpin[0])); */
-  
-  /* main_logic(); */
 }
 

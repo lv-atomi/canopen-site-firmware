@@ -1,5 +1,5 @@
-#ifndef SLAVE_BOARD_BASE_H
-#define SLAVE_BOARD_BASE_H
+#ifndef PLATFORM_BASE_H
+#define PLATFORM_BASE_H
 
 #include <stdint.h>
 #include "gpio.h"
