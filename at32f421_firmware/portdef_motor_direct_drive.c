@@ -44,8 +44,8 @@ PWMPort mdd_speed_sense = {.port = {GPIOA, GPIO_PINS_SOURCE3, GPIO_MUX_0},
                       .channel = TMR_SELECT_CHANNEL_2,
                       .complementary = FALSE};
 
-PWMPort mdd_speed_control={.port = {GPIOA, GPIO_PINS_SOURCE4, GPIO_MUX_4},
-                      .tmr = TMR14,
+PWMPort mdd_speed_control={.port = {GPIOA, GPIO_PINS_SOURCE6, GPIO_MUX_1},
+                      .tmr = TMR3,
                       .channel = TMR_SELECT_CHANNEL_1,
                       .complementary = FALSE};
 
