@@ -1,7 +1,7 @@
 #ifndef __TIMER1_H
 #define __TIMER1_H
 
-#include "at32f403a_407.h"
+#include "board.h"
 
 #ifdef __cplusplus
 extern "C" {

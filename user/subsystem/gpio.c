@@ -1,5 +1,6 @@
 #include "gpio.h"
 #include "log.h"
+#include "board.h"
 
 IOPort *global_devport;
 bool_t global_waiting_bit;

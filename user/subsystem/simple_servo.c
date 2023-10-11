@@ -1,7 +1,4 @@
 #include "simple_servo.h"
-#include "at32f403a_407.h"
-#include "at32f403a_407_debug.h"
-#include "at32f403a_407_usb.h"
 #include "gpio.h"
 #include "log.h"
 #include "motor.h"

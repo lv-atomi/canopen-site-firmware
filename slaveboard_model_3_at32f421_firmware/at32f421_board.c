@@ -38,9 +38,6 @@
 #define STEP_DELAY_MS                    50
 
 /* at-start led resouce array */
-gpio_type *led_gpio_port[LED_NUM]        = {LED2_GPIO, LED3_GPIO, LED4_GPIO};
-uint16_t led_gpio_pin[LED_NUM]           = {LED2_PIN, LED3_PIN, LED4_PIN};
-crm_periph_clock_type led_gpio_crm_clk[LED_NUM] = {LED2_GPIO_CRM_CLK, LED3_GPIO_CRM_CLK, LED4_GPIO_CRM_CLK};
 
 /* delay variable */
 static __IO uint32_t fac_us;
@@ -153,151 +150,8 @@ void at32_board_init()
 {
   /* initialize delay function */
   delay_init();
-
-  /* configure led in at_start_board */
-  /* at32_led_init(LED2); */
-  /* at32_led_init(LED3); */
-  /* at32_led_init(LED4); */
-  /* at32_led_off(LED2); */
-  /* at32_led_off(LED3); */
-  /* at32_led_off(LED4); */
-
-  /* configure button in at_start board */
-  /* at32_button_init(); */
 }
 
-/**
-  * @brief  configure button gpio
-  * @param  button: specifies the button to be configured.
-  * @retval none
-  */
-void at32_button_init(void)
-{
-  gpio_init_type gpio_init_struct;
-
-  /* enable the button clock */
-  crm_periph_clock_enable(USER_BUTTON_CRM_CLK, TRUE);
-
-  /* set default parameter */
-  gpio_default_para_init(&gpio_init_struct);
-
-  /* configure button pin as input with pull-up/pull-down */
-  gpio_init_struct.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-  gpio_init_struct.gpio_out_type  = GPIO_OUTPUT_PUSH_PULL;
-  gpio_init_struct.gpio_mode = GPIO_MODE_INPUT;
-  gpio_init_struct.gpio_pins = USER_BUTTON_PIN;
-  gpio_init_struct.gpio_pull = GPIO_PULL_DOWN;
-  gpio_init(USER_BUTTON_PORT, &gpio_init_struct);
-}
-
-/**
-  * @brief  returns the selected button state
-  * @param  none
-  * @retval the button gpio pin value
-  */
-uint8_t at32_button_state(void)
-{
-  return gpio_input_data_bit_read(USER_BUTTON_PORT, USER_BUTTON_PIN);
-}
-
-/**
-  * @brief  returns which button have press down
-  * @param  none
-  * @retval the button have press down
-  */
-button_type at32_button_press()
-{
-  static uint8_t pressed = 1;
-  /* get button state in at_start board */
-  if((pressed == 1) && (at32_button_state() != RESET))
-  {
-    /* debounce */
-    pressed = 0;
-    delay_ms(10);
-    if(at32_button_state() != RESET)
-      return USER_BUTTON;
-  }
-  else if(at32_button_state() == RESET)
-  {
-    pressed = 1;
-  }
-  return NO_BUTTON;
-}
-
-/**
-  * @brief  configure led gpio
-  * @param  led: specifies the led to be configured.
-  * @retval none
-  */
-void at32_led_init(led_type led)
-{
-  gpio_init_type gpio_init_struct;
-
-  /* enable the led clock */
-  crm_periph_clock_enable(led_gpio_crm_clk[led], TRUE);
-
-  /* set default parameter */
-  gpio_default_para_init(&gpio_init_struct);
-
-  /* configure the led gpio */
-  gpio_init_struct.gpio_drive_strength = GPIO_DRIVE_STRENGTH_STRONGER;
-  gpio_init_struct.gpio_out_type  = GPIO_OUTPUT_PUSH_PULL;
-  gpio_init_struct.gpio_mode = GPIO_MODE_OUTPUT;
-  gpio_init_struct.gpio_pins = led_gpio_pin[led];
-  gpio_init_struct.gpio_pull = GPIO_PULL_NONE;
-  gpio_init(led_gpio_port[led], &gpio_init_struct);
-}
-
-/**
-  * @brief  turns selected led on.
-  * @param  led: specifies the led to be set on.
-  *   this parameter can be one of following parameters:
-  *     @arg LED2
-  *     @arg LED3
-  *     @arg LED4
-  * @retval none
-  */
-void at32_led_on(led_type led)
-{
-  if(led > (LED_NUM - 1))
-    return;
-  if(led_gpio_pin[led])
-    led_gpio_port[led]->clr = led_gpio_pin[led];
-}
-
-/**
-  * @brief  turns selected led off.
-  * @param  led: specifies the led to be set off.
-  *   this parameter can be one of following parameters:
-  *     @arg LED2
-  *     @arg LED3
-  *     @arg LED4
-  * @retval none
-  */
-void at32_led_off(led_type led)
-{
-  if(led > (LED_NUM - 1))
-    return;
-  if(led_gpio_pin[led])
-    led_gpio_port[led]->scr = led_gpio_pin[led];
-}
-
-/**
-  * @brief  turns selected led toggle.
-  * @param  led: specifies the led to be set off.
-  *   this parameter can be one of following parameters:
-  *     @arg LED2
-  *     @arg LED3
-  *     @arg LED4
-  * @retval none
-  */
-void at32_led_toggle(led_type led)
-{
-  if(led > (LED_NUM - 1))
-    return;
-  if(led_gpio_pin[led])
-    led_gpio_port[led]->odt ^= led_gpio_pin[led];
-}
 
 /**
   * @brief  initialize delay function
@@ -312,13 +166,7 @@ void delay_init()
   fac_ms = fac_us * (1000U);
 }
 
-/**
-  * @brief  inserts a delay time.
-  * @param  nus: specifies the delay time length, in microsecond.
-  * @retval none
-  */
-void delay_us(uint32_t nus)
-{
+uint8_t waiting_us_while(uint32_t nus, uint8_t (*cb)()){
   uint32_t temp = 0;
   SysTick->LOAD = (uint32_t)(nus * fac_us);
   SysTick->VAL = 0x00;
@@ -326,19 +174,15 @@ void delay_us(uint32_t nus)
   do
   {
     temp = SysTick->CTRL;
+    if (cb && cb()) return 0;
   }while((temp & 0x01) && !(temp & (1 << 16)));
 
   SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
   SysTick->VAL = 0x00;
+  return 1;
 }
 
-/**
-  * @brief  inserts a delay time.
-  * @param  nms: specifies the delay time length, in milliseconds.
-  * @retval none
-  */
-void delay_ms(uint16_t nms)
-{
+uint8_t waiting_ms_while(uint16_t nms, uint8_t (*cb)()){
   uint32_t temp = 0;
   while(nms)
   {
@@ -357,11 +201,30 @@ void delay_ms(uint16_t nms)
     do
     {
       temp = SysTick->CTRL;
+      if (cb && cb()) return 0;
     }while((temp & 0x01) && !(temp & (1 << 16)));
 
     SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
     SysTick->VAL = 0x00;
   }
+  return 1;
+}
+
+/**
+  * @brief  inserts a delay time.
+  * @param  nus: specifies the delay time length, in microsecond.
+  * @retval none
+  */
+void delay_us(uint32_t nus){
+  waiting_us_while(nus, NULL);
+}
+/**
+  * @brief  inserts a delay time.
+  * @param  nms: specifies the delay time length, in milliseconds.
+  * @retval none
+  */
+void delay_ms(uint16_t nms){
+  waiting_ms_while(nms, NULL);
 }
 
 /**
@@ -378,6 +241,31 @@ void delay_sec(uint16_t sec)
     delay_ms(500);
   }
 }
+
+uint32_t tobe32u(uint32_t e){
+  union {
+    uint32_t i;
+    char c[4];
+  } result;
+  result.c[0] = (e & 0xFF000000) >> 24;
+  result.c[1] = (e & 0x00FF0000) >> 16;
+  result.c[2] = (e & 0x0000FF00) >> 8;
+  result.c[3] = (e & 0x000000FF);
+  return result.i;
+}
+
+int32_t frombe32(const char *e) {
+  return ((int32_t)e[0] << 24) |
+          ((int32_t)(unsigned char)e[1] << 16) |
+          ((int32_t)(unsigned char)e[2] << 8) |
+          (int32_t)(unsigned char)e[3];
+}
+
+uint16_t frombe16u(const char *e) {
+  return ((uint16_t)(unsigned char)e[2] << 8) |
+          (uint16_t)(unsigned char)e[3];
+}
+
 
 /**
   * @}

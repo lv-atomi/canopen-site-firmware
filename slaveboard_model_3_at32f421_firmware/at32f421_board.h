@@ -110,26 +110,22 @@ typedef enum
 /******************** functions ********************/
 void at32_board_init(void);
 
-/* led operation function */
-void at32_led_init(led_type led);
-void at32_led_on(led_type led);
-void at32_led_off(led_type led);
-void at32_led_toggle(led_type led);
-
-/* button operation function */
-void at32_button_init(void);
-button_type at32_button_press(void);
-uint8_t at32_button_state(void);
-
 /* delay function */
 void delay_init(void);
 void delay_us(uint32_t nus);
 void delay_ms(uint16_t nms);
 void delay_sec(uint16_t sec);
+  
+uint8_t waiting_ms_while(uint16_t nms, uint8_t (*cb)());
+uint8_t waiting_us_while(uint32_t nus, uint8_t (*cb)());
 
 /* printf uart init function */
 void uart_print_init(uint32_t baudrate);
-
+  
+uint32_t tobe32u(uint32_t e);
+int32_t frombe32(const char *e);
+uint16_t frombe16u(const char *e);
+  
 /**
   * @}
   */

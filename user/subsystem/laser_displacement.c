@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h> // For memcpy
-#include "at32f403a_407_usart.h"
 #include "log.h"
 #include "modbus_rtu.h"
 #include "rs485.h"

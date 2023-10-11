@@ -1,11 +1,8 @@
-#include "at32f403a_407_clock.h"
-#include "at32f403a_407_misc.h"
-#include "subsystem/keyboard.h"
 #include "timer.h"
 /* #include "key.h" */
 /* #include "oled.h" */
 /* #include "flash.h" */
-#include "can.h"
+/* #include "can.h" */
 #include "log.h"
 // #include <cstdint>
 #include "keyboard.h"

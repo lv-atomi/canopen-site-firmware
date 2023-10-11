@@ -179,17 +179,6 @@ extern "C" {
 /******************** functions ********************/
 void at32_board_init(void);
 
-/* led operation function */
-/* void at32_led_init(led_type led); */
-/* void at32_led_on(led_type led); */
-/* void at32_led_off(led_type led); */
-/* void at32_led_toggle(led_type led); */
-
-/* button operation function */
-/* void at32_button_init(void); */
-/* button_type at32_button_press(void); */
-/* uint8_t at32_button_state(void); */
-
 /* delay function */
 void delay_init(void);
 void delay_us(uint32_t nus);

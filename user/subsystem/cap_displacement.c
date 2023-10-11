@@ -1,10 +1,9 @@
 #include "cap_displacement.h"
-#include "at32f403a_407_spi.h"
 #include "gpio.h"
 #include "log.h"
 #include "spi.h"
-#include "timer.h"
 #include <stdint.h>
+#include "timer.h"
 
 CapacitorDisplacementMeasurePort * cached_displacement_port[MAX_SPI_PORT + 1] = {0};
 
