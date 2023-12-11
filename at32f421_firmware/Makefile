@@ -112,6 +112,7 @@ clean:
 
 
 flash: $(OBJDIR)/$(PROJ_NAME).elf
+	@cp $< $(OBJDIR)/main.elf
 	$(OPENOCD) -f ../program.cfg
 
 reset: $(OBJDIR)/$(PROJ_NAME).elf

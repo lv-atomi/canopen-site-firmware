@@ -44,7 +44,7 @@ void cap_irq_handler(int spi_index) {
     CapacitorDisplacementMeasurePort * port = cached_displacement_port[spi_index];
     if(spi_i2s_flag_get(port->spi.controller, SPI_I2S_RDBF_FLAG) != RESET) {
       port->spi.rx_buf[port->recv_idx] = spi_i2s_data_receive(port->spi.controller);
-      DumpHex(port->spi.rx_buf, port->recv_idx+1);
+      /* DumpHex(port->spi.rx_buf, port->recv_idx+1); */
 
       /* if (port->recv_idx == 0) { */
       /*   uint32_t delay = ticks_diff(&port->last_ticks); */

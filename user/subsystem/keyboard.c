@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "log.h"
 
-KeyboardPort * monitor[KEYBOARD_MAX_KEYS];
+KeyboardPort * keyboard_monitor[KEYBOARD_MAX_KEYS];
 uint8_t keyboard_monitor_num=0;
 bool_t queue_inited=0;
 /* enum KEYSTATUS event_queue[KEYBOARD_MAX_KEYS]; */
@@ -68,7 +68,7 @@ void keyboard_tick(){		/* called every 1ms */
   KeyboardPort * triggered_port = NULL;
 
   for (i=0; i<keyboard_monitor_num; i++){
-    KeyboardPort *port = monitor[i];
+    KeyboardPort *port = keyboard_monitor[i];
     key_val = gpio_read(&port->port);
     if (port->key_last_val != key_val) { /* key status changed */
       /* printf("key_val:%d  last_val: %d  countdown:%d  restart:%d\n", */
@@ -137,7 +137,7 @@ void init_keyboard(KeyboardPort *devport) {
     queue_inited = 1;
   }
   timer_pause();
-  monitor[keyboard_monitor_num++] = devport;
+  keyboard_monitor[keyboard_monitor_num++] = devport;
   if (keyboard_monitor_num == KEYBOARD_MAX_KEYS){
     log_printf("Too many monitored keys\n");
     keyboard_monitor_num = 0;

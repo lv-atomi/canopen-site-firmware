@@ -65,7 +65,13 @@ void init_rs232(RS232Port *devport) {
 
   if (devport->RX.port != NULL) {
     log_printf("Initializing RX GPIO for RS232...\n");
+#if defined (AT32F403Axx)
     init_gpio_input(&devport->RX, GPIO_PULL_UP, GPIO_DRIVE_STRENGTH_STRONGER);
+#endif
+#if defined(AT32F421xx)
+    init_gpio_mux(&devport->RX, GPIO_OUTPUT_OPEN_DRAIN,
+		  GPIO_PULL_UP, GPIO_DRIVE_STRENGTH_STRONGER);
+#endif
   } else {
     log_printf("RX GPIO for RS232 is not defined.\n");
   }
@@ -148,8 +154,8 @@ bool_t rs232_receive(RS232Port *devport, uint8_t *buf, uint16_t size, uint32_t t
   while (idx < size) {
     // 如果设置了超时，并且已经超过了超时时间，则返回失败
     if (timeout != 0 && elapsed_time >= timeout) {
-      /* log_printf("Timeout occurred in rs232_receive after %ld ms.\n", */
-      /*            timeout); // Optional, for debugging */
+      /* log_printf("Timeout occurred in rs232_receive after %ld ms. data readed:%u\n", */
+      /*            timeout, idx); // Optional, for debugging */
       return 0;            // Timeout occurred
     }
 

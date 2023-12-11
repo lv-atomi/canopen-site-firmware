@@ -1,6 +1,7 @@
 #include "at32f403a_407_board.h"
 #include "at32f403a_407_clock.h"
 #include "timer.h"
+#include "log.h"
 #include "pwm.h"
 
 PWMPort port_ch1={
@@ -30,7 +31,7 @@ int main(void) {
   //Timer_Init();
   uart_print_init(115200);	/* init debug uart */
 
-  printf("start\n");
+  log_printf("start\n");
   init_pwm_input(&port_ch3);
 
   uint32_t freq=0;
@@ -39,7 +40,7 @@ int main(void) {
     /* printf("tick:%ld\n", get_ticks()); */
     delay_sec(1);
     pwm_input_freq_duty_sense(&port_ch3, &freq, &duty);
-    printf("freq:%ld, duty:%u\n", freq, duty);
+    log_printf("freq:%ld, duty:%u\n", freq, duty);
     /* delay_sec(1); */
     /* pwm_input_freq_sense(&port_ch2); */
     /* delay_sec(1); */
